@@ -4,7 +4,7 @@
             <video v-show="!isAdd" preload="auto" height="100%" width="100%" 
             autoplay="autoplay" 
             :src="playerData.source"></video>
-            <div v-if="isAdd && !isBlank" class="add-video">
+            <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
                 <div class="add-h"></div>
                 <div class="add-d"></div>
             </div>
@@ -46,6 +46,51 @@
             </div>
             <input type="range" value="0">
         </div>
+        <el-dialog
+            :visible.sync="dialogVisible"
+            width="70%"
+            :show-close="false"
+            >
+            <div slot="title" class="title">
+                添加直播源
+                <span>关闭</span>
+            </div>
+            <div class="content">
+                <div class="name">名称：<input type="text"></div>
+                <div class="radio-wrap">
+                    <template>
+                        <el-radio v-model="steam_radio" label="1">推流直播：请将下列地址配置在采集设备中</el-radio>
+                        <div class="detail-wrap">
+                            <div class="detail-con"></div>
+                            <span class="copy-btn">复制</span>
+                        </div>
+                        <el-radio v-model="steam_radio" label="2">拉流直播</el-radio>
+                    </template>
+                </div>
+                <div class="switch-wrap">
+                    <div class="switch01">
+                        <span>智能黄暴监控：</span>
+                        <el-switch
+                            v-model="monitor01"
+                            active-color="#13ce66"
+                            inactive-color="#383B3C">
+                        </el-switch>
+                    </div>
+                    <div class="switch02">
+                        <span>信号质量监控：</span>
+                        <el-switch
+                            v-model="monitor02"
+                            active-color="#13ce66"
+                            inactive-color="#383B3C">
+                        </el-switch>
+                    </div>
+                </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -65,21 +110,56 @@
                 type: Boolean,
                 required: false,
                 default: false
-            }
+            },
         },
         data () {
             return {
                 value1: true,
-                value2: true
+                value2: true,
+                dialogVisible: false,   // 控制添加对话框显示
+                steam_radio: 1,           // 直播流选择
+                monitor01: true,        // 监控切换
+                monitor02: false,
             }
+        },
+        computed: {
+            todo () {
+                
+            }
+        },
+        created () {
+            
+        },
+        mounted () {
+            // this.playBtnHandel();
+        },
+        methods: {
+            // 定义播放暂停按钮
+            playBtnHandel (isPlay=false) {
+                const playBtn = document.querySelector('.contral-wrap');
+                console.log(playBtn);
+                if (isPlay) {
+                    
+                }
+            },
+            handleClose () {    // 添加直播源
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        console.log('ok')
+                    })
+                    .catch(_ => {});
+                }
         }
     }
 </script>
 <style lang="scss" scoped>
 .video-player-con {
+    .none {
+        display: none;
+    }
     position: relative;
-    min-height: 100px;
-    height: 100px;
+    min-height: 10vh;
+    height: 10vh;
     video {
         display: block;
         object-fit: fill;
@@ -119,8 +199,8 @@
     background-color: #5D5D5D;
 }
 .video-player-con-l {
-    min-height: 250px;
-    height: 250px;
+    min-height: 25vh;
+    height: 25vh;
 }
 .play-bar-wrap {
     text-align: left;
@@ -233,6 +313,89 @@
 .play-item-title {
     font-size: 14px;
 }
+.el-dialog__header {
+    .title {
+        color: #fff;
+        font-size: 18px;
+        text-align: left;
+        position: relative;
+        height: 60px;
+        line-height: 60px;
+        padding: 0 30px;
+        span {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        span::before {
+            content: '';
+            height: 60px;
+            background: #979797;
+            width: 1px;
+            position: absolute;
+            left: -30px;
+            top: 0;
+        }
+    }
+}
+.content {
+    color: #fff;
+    text-align: left;
+    padding: 50px 30px 20px 30px;
+    font-size: 18px;
+    .name {
+        input {
+            outline: none;
+            vertical-align: middle;
+            appearance: none;
+            height: 30px;
+            width: 200px;
+            border: 1px solid #979797;
+        }
+    }
+    .radio-wrap {
+        margin-top: 30px;
+        .el-radio {
+            color: #fff;
+            
+        }
+        .detail-wrap {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin: 15px 0;
+            .detail-con {
+                width: 70%;
+                height: 50px;
+                border: 1px solid #4A4848;
+                margin-right: 30px;
+            }
+            span {
+                background: #333333;
+                border-radius: 6px;
+                padding: 8px 15px; 
+            }
+        }
+    }
+}
+
 </style>
+<style lang="scss">
+    .el-dialog__header {
+        padding: 0;
+       background: #333333;
+    }
+    .el-dialog {
+        background: #6A6B6D !important;
+    }
+    .el-dialog__body {
+        padding: 0 !important; 
+    }
+    .el-radio__label {
+        font-size: 18px !important;
+    }
+</style>
+
 
 

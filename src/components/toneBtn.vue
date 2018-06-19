@@ -27,24 +27,24 @@
     .tone-btn-wrap {
         position: relative;
         width: 35px;
-        height: 165px;
+        height: 17vh;
         background: #D8D8D8;
         border-radius: 10px;
         margin-left: 10px;
         overflow: hidden;
         .tone-btn-top {
-            height: 26px;
+            height: 3vh;
             background: #575B60;
             color: #FFF;
-            line-height: 26px;
+            line-height: 3vh;
         }
         float: left;
         .tone-btn-con {
             .tone-btn-container {
                 input {
-                    transform: rotate(-90deg) translateX(33px) translateY(14px);
+                    transform: rotate(-90deg) translateX(18px) translateY(14px);
                     transform-origin: 0 0;
-                    width: 84px;
+                    width: 9vh;
                 }
                 input[type=range] {
                     -webkit-appearance: none;
@@ -69,24 +69,26 @@
                     text-align: left;
                     transform:scale(0.6);
                     width: 0;
-                    height: 27px;
+                    height: 1.5vh;
                 }
             }
             .tone-btn-bottom {
                 p {
                     position: absolute;
-                    bottom: 5px;
+                    bottom: 3px;
                     left: 50%;
                     width: 10px;
                     height: 12px;
                     transform: translateX(-50%);
                 }
                 .void-icon {
-                    background: url('../assets/void-start.png') no-repeat center 100%;
+                    background: url('../assets/void-start.png') no-repeat center;
+                    background-size: contain;
                 }   
                 .void-icon-s {
-                    bottom: -10px;
-                    background: url('../assets/er.png') no-repeat center 100%;  
+                    bottom: -7px;
+                    background: url('../assets/er.png') no-repeat center; 
+                    background-size: contain; 
                 }
             }
         }

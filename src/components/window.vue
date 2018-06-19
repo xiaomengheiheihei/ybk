@@ -3,7 +3,7 @@
         <div class="edit-video-left-con">
             <div class="edit-video-left-tile">视窗效果<span></span></div>
             <el-row class="video-item-live">
-                <el-col :span="12">
+                <el-col :span="12" class="video-item-live-fir">
                     <Player :isLive = 1
                             :playerData=playerData
                             :isAdd = false
@@ -49,8 +49,8 @@
         .edit-video-left-con {
             .edit-video-left-tile {
                 position: relative;
-                height: 32px;
-                line-height: 32px;
+                height: 3.6vh;
+                line-height: 3.6vh;
                 background-color: #1E2124;
                 color: #fff;
                 font-size: 18px;
@@ -70,6 +70,9 @@
                 border-bottom-left-radius: 15px;
                 border-bottom-right-radius: 15px;
                 overflow: hidden;
+                .video-item-live-fir {
+                    padding-right: 2px;
+                }
             }
         }
     }

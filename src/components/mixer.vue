@@ -47,14 +47,14 @@
         margin-right: 5px;
         .edit-video-left-tile {
             position: relative;
-            height: 32px;
-            line-height: 32px;
+            height: 3.6vh;
+            line-height: 3.6vh;
             background-color: #1E2124;
             color: #fff;
             font-size: 18px;
         }
         .mixer-container {
-            height: 192px;
+            height: 19.3vh;
             background-color:#5D5D5D;
             display: flex;
             align-items: center;

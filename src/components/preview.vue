@@ -57,8 +57,8 @@
         background: #1E2124;
         .edit-video-left-tile {
             position: relative;
-            height: 36px;
-            line-height: 36px;
+            height: 3.6vh;
+            line-height: 3.6vh;
             color: #fff;
             font-size: 18px;
         }

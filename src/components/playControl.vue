@@ -30,8 +30,8 @@
         background: #1E2124;
         .edit-video-left-tile {
             position: relative;
-            height: 36px;
-            line-height: 36px;
+            height: 3.6vh;
+            line-height: 3.6vh;
             color: #fff;
             font-size: 18px;
         }
@@ -41,7 +41,7 @@
             justify-content: center;
             align-content: center;
             flex-grow: 1;
-            height: 225px;
+            height: 25.5vh;
             background: rgb(34, 37, 41);
             .play-con-top {
                 position: relative;
