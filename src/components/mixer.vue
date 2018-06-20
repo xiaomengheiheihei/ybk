@@ -54,7 +54,7 @@
             font-size: 18px;
         }
         .mixer-container {
-            height: 19.3vh;
+            height: 19.1vh;
             background-color:#5D5D5D;
             display: flex;
             align-items: center;

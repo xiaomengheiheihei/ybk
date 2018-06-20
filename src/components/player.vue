@@ -158,8 +158,7 @@
         display: none;
     }
     position: relative;
-    min-height: 10vh;
-    height: 10vh;
+    height: 10.6vh;
     video {
         display: block;
         object-fit: fill;
@@ -199,14 +198,15 @@
     background-color: #5D5D5D;
 }
 .video-player-con-l {
-    min-height: 25vh;
     height: 25vh;
 }
 .play-bar-wrap {
     text-align: left;
     font-size: 12px;
     color: #fff;
-    padding: 3px 5px 0;
+    height: 2.5vh;
+    line-height: 2.5vh;
+    padding: 0 5px;
     background-color: #686F76;
     >.el-col-8 {
         position: relative;
@@ -262,7 +262,8 @@
 }
 .slider-bar-wrap {
     background: #1C2F43;
-    height: 25px;
+    height: 3.5vh;
+    line-height: 3.5vh;
     position: relative;
     .contral-wrap {
         position: absolute;
@@ -292,7 +293,7 @@
         -webkit-appearance: none;
         background-color: #fff;
         outline: none;
-        vertical-align: bottom;
+        vertical-align: middle;
     }
     input[type=range]::-webkit-slider-thumb {
         -webkit-appearance: none;
