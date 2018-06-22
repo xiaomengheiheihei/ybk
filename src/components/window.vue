@@ -49,8 +49,8 @@
         .edit-video-left-con {
             .edit-video-left-tile {
                 position: relative;
-                height: 3.6vh;
-                line-height: 3.6vh;
+                height: 35px;
+                line-height: 35px;
                 background-color: #1E2124;
                 color: #fff;
                 font-size: 18px;

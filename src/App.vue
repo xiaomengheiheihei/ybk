@@ -10,10 +10,13 @@
 
 <style lang="scss">
 html, body {
-  margin: 0;
   padding: 0;
   box-sizing: border-box;
-  overflow: hidden;
+  // overflow: hidden;
+  width: 1600px;
+  height: 900px;
+  margin: 0 auto;
+  background-color: #332e2e;
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

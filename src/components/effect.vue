@@ -87,15 +87,15 @@
         background: #1E2124;
         .edit-video-left-tile {
             position: relative;
-            height: 3.6vh;
-            line-height: 3.6vh;
+            height: 35px;
+            line-height: 35px;
             color: #fff;
             font-size: 18px;
         }
         .effect-container {
             padding: 15px 0;
             box-sizing: border-box;
-            height: 25.5vh;
+            height: 278px;
             background: rgb(42, 46, 49);
             ul {
                 list-style: none;
@@ -109,21 +109,21 @@
                     display: flex;
                     justify-content: flex-start;
                     align-items: center;
-                    height: 32px;
-                    line-height: 32px;
+                    height: 45px;
+                    line-height: 45px;
                     .title {
                         align-self: flex-end;
                         width: 27%;
                         text-align: right;
                     }
                     .list {
-                        margin-right: 10px;
+                        margin-right: 25px;
                         .con {
                             display: flex;
                             align-items: center;
                             justify-content: flex-start;
-                            width: 25px;
-                            height: 25px;
+                            width: 30px;
+                            height: 30px;
                             border-radius: 5px;
                             overflow: hidden;
                             cursor: pointer;

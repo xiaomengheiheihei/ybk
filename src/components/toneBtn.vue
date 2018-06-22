@@ -7,6 +7,10 @@
                 <p class="void-num02">-50</p>
                 <p class="void-num01">-0</p>
                 <input type="range" name="" id="" value="0">
+                <!-- <Range :rangeObj=rangeData></Range> -->
+                <div class="range">
+                    <div class="range-btn"></div>
+                </div>
             </div>
             <div class="tone-btn-bottom">
                 <p class="void-icon"></p>
@@ -16,35 +20,52 @@
     </div>
 </template>
 <script>
+    import Range from '@/components/range.vue'
     export default {
         name: 'Mixer',
+        data () {
+            return {
+                rangeData: {
+                    direction: 'level',
+                    isPlayBar: false,
+                    isScale: true,
+                }
+            }
+        },
         props: {
             l: Boolean,
         },
+        components: {
+            Range,
+        }
     }
 </script>
 <style lang="scss" scoped>
     .tone-btn-wrap {
         position: relative;
         width: 35px;
-        height: 17vh;
+        height: 160px;
         background: #D8D8D8;
         border-radius: 10px;
         margin-left: 10px;
         overflow: hidden;
         .tone-btn-top {
-            height: 3vh;
+            height: 25px;
             background: #575B60;
             color: #FFF;
-            line-height: 3vh;
+            line-height: 25px;
         }
         float: left;
         .tone-btn-con {
             .tone-btn-container {
                 input {
-                    transform: rotate(-90deg) translateX(18px) translateY(14px);
+                    transform: rotate(-90deg) translateY(-50%);
                     transform-origin: 0 0;
-                    width: 9vh;
+                    width: 74px;
+                    position: absolute;
+                    bottom: 40px;
+                    left: 50%;
+                    margin: auto;
                 }
                 input[type=range] {
                     -webkit-appearance: none;
@@ -69,8 +90,20 @@
                     text-align: left;
                     transform:scale(0.6);
                     width: 0;
-                    height: 1.5vh;
+                    height: 20px;
                 }
+                // .range {
+                //     width: 4px;
+                //     height: 70px;
+                //     background: rgb(62, 65, 70);
+                //     margin: 0 auto;
+                //     .range-btn {
+                //         width: 10px;
+                //         height: 10px;
+                //         border-radius: 50%;
+                //         background: rgb(125, 129, 133);
+                //     }
+                // }
             }
             .tone-btn-bottom {
                 p {

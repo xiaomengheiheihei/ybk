@@ -47,14 +47,14 @@
         margin-right: 5px;
         .edit-video-left-tile {
             position: relative;
-            height: 3.6vh;
-            line-height: 3.6vh;
+            height: 35px;
+            line-height: 35px;
             background-color: #1E2124;
             color: #fff;
             font-size: 18px;
         }
         .mixer-container {
-            height: 19.1vh;
+            height: 200px;
             background-color:#5D5D5D;
             display: flex;
             align-items: center;
@@ -62,14 +62,15 @@
                 width: 100%;
                 .left {
                     display: flex;
-                    justify-content: flex-start;
+                    justify-content: space-around;
                     align-items: center;
                 }
                 .right {
                     display: flex;
-                    justify-content: flex-end;
+                    justify-content: space-around;
                     align-items: center;
                     padding-right: 10px;
+                    padding-left: 40px;
                 }
             }
         }

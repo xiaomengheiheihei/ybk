@@ -18,8 +18,8 @@
         margin-right: 5px;
         .edit-video-left-tile {
             position: relative;
-            height: 3.6vh;
-            line-height: 3.6vh;
+            height: 35px;
+            line-height: 35px;
             background-color: #B9B9B9;
             color: #fff;
             font-size: 18px;
@@ -36,7 +36,7 @@
             }
         }
         .clasp-container {
-            height: 13.2vh;
+            height: 130px;
             background: #E1E1E1;
             text-align: center;
             line-height: 12vh;

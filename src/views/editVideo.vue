@@ -29,12 +29,17 @@
                         <div class="edit-video-left-tile">视频矩阵<span></span></div>
                         <el-row class="video-item-live">
                             <el-col :span="6" v-for="(item, index) in playerDataList" :key="index" :style="index < 4 ? {marginBottom: '1px'} : {}">
-                                <Player :isLive = 1
+                                <!-- <Player :isLive = 1
                                         :playerData= item
                                         :isAdd = item.isAdd
                                         :isBlank = item.isBlank
                                         >
-                                </Player>
+                                </Player> -->
+                                <Flash  :isLive= 1
+                                        :playerData= item
+                                        :isAdd = item.isAdd
+                                        :isBlank = item.isBlank>
+                                </Flash>
                             </el-col>
                         </el-row>
                         <el-row class="video-item-live">
@@ -113,6 +118,7 @@
     import Effect from '@/components/effect.vue'
     import PlayControl from '@/components/playControl.vue'
     import ResourceCenter from '@/components/resourceCenter.vue'
+    import Flash from '@/components/playerFlash.vue'
     export default {
         name: 'editVideo',
         data () {
@@ -212,6 +218,7 @@
             Effect,
             PlayControl,
             ResourceCenter,
+            Flash,
         },
         beforeCreate () {
             var el = document.documentElement;
@@ -247,7 +254,7 @@
             position: relative;
             .edit-video-top {
                 background-color: #1E2124;
-                margin: 0 10px;
+                // margin: 0 10px;
                 color: #fff;
                 .edit-video-top-con {
                     display: flex;
@@ -255,7 +262,7 @@
                     align-items: center;
                     .edit-top-left {
                         overflow: hidden;
-                        height: 6.5vh;
+                        height: 45px;
                         padding-left: 20px;
                         width: 50%;
                         a {
@@ -263,7 +270,7 @@
                         }
                         span {
                             float: left;
-                            line-height: 6.5vh;
+                            line-height: 45px;
                             margin-left: 20px;
                             font-size: 24px;
                             box-sizing: border-box;
@@ -272,7 +279,7 @@
                     .edit-top-right {
                         position: relative;
                         overflow: hidden;
-                        height: 6.5vh;
+                        height: 45px;
                         width: 50%;
                         box-sizing: border-box;
                         display: flex;
@@ -281,7 +288,7 @@
                         .edit-top-save-time {
                             padding-left: 15%;
                             font-size: 20px;
-                            line-height: 6.5vh;
+                            line-height: 45px;
                         }
                         .edit-top-icon-con {
                             overflow: hidden;
@@ -319,8 +326,8 @@
                 .edit-top-time {
                     position: relative;
                     clear: both;
-                    height: 6vh;
-                    line-height: 6vh;
+                    height: 45px;
+                    line-height: 45px;
                     color: #0BE235;
                     background-color: #2E3741;
                     font-size: 24px;
@@ -341,7 +348,7 @@
             }
         }
         .edit-video-con {
-            margin: 0 10px;
+            // margin: 0 10px;
             .edit-video-left-con {
                 background-color: #1E2124;
                 border-radius: 15px;
@@ -352,8 +359,8 @@
                     font-size: 20px;
                     position: relative;
                     color: #fff;
-                    height: 3.6vh;
-                    line-height: 3.6vh;
+                    height: 35px;
+                    line-height: 35px;
                     span {
                         position: absolute;
                         right: 10px;

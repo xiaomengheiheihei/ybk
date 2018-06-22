@@ -1,6 +1,6 @@
 <template>
     <div class="range-wrap">
-        <div class="range-con">
+        <div class="range-con range-l">
             <span class="range-bar"></span>
         </div>
     </div>
@@ -34,7 +34,20 @@
     .range-wrap {
         position: relative;
         .range-con {
-            position: absolute;
+            .range-bar {
+                display: block;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: #d8d8d8;
+                box-shadow: 1px 1px #ccc;
+            }
+        }
+        .range-l {
+            width: 4px;
+            height: 50px;
+            background: #bbb;
+            margin: 0 auto;
         }
     }
 </style>

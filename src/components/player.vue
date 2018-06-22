@@ -158,7 +158,7 @@
         display: none;
     }
     position: relative;
-    height: 10.6vh;
+    height: 110px;
     video {
         display: block;
         object-fit: fill;
@@ -198,14 +198,14 @@
     background-color: #5D5D5D;
 }
 .video-player-con-l {
-    height: 25vh;
+    height: 223px;
 }
 .play-bar-wrap {
     text-align: left;
     font-size: 12px;
     color: #fff;
-    height: 2.5vh;
-    line-height: 2.5vh;
+    height: 20px;
+    line-height: 20px;
     padding: 0 5px;
     background-color: #686F76;
     >.el-col-8 {
@@ -245,16 +245,16 @@
     }
 }
 .play-bar-wrap-h {
-    height: 37px;
-    line-height: 37px;
+    height: 40px;
+    line-height: 40px;
     padding: 0 5px;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
     background: #00FF00;
 }
 .play-bar-wrap-r {
-    height: 37px;
-    line-height: 37px;
+    height: 40px;
+    line-height: 40px;
     padding: 0 5px;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
@@ -262,8 +262,8 @@
 }
 .slider-bar-wrap {
     background: #1C2F43;
-    height: 3.5vh;
-    line-height: 3.5vh;
+    height: 20px;
+    line-height: 20px;
     position: relative;
     .contral-wrap {
         position: absolute;
@@ -294,12 +294,13 @@
         background-color: #fff;
         outline: none;
         vertical-align: middle;
+        width: 140px;
     }
     input[type=range]::-webkit-slider-thumb {
         -webkit-appearance: none;
     }  
     ::-webkit-slider-runnable-track {
-        border: 1px solid #fff;
+        // border: 1px solid #fff;
         background: #fff;
         height: 1px;
     }

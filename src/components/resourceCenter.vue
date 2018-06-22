@@ -21,8 +21,8 @@
         overflow: hidden;
         .edit-video-left-tile {
             position: relative;
-            height: 3.6vh;
-            line-height: 3.6vh;
+            height: 35px;
+            line-height: 35px;
             background-color: #B9B9B9;
             color: #fff;
             font-size: 18px;
@@ -37,7 +37,7 @@
             }
         }
         .resource-cationer {
-            height: 19.3vh;
+            height: 200px;
             background: #D8D8D8;
         }
     }
