@@ -4,7 +4,7 @@
         :style="isPreview ? {height: '223px'} : {}">
         <div class="video-player-con" 
             :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''">
-            <div class="bg" v-show="vol" @click.stop="addPvw"></div>
+            <div class="bg" v-if="!isPreview" v-show="vol" @click.stop="addPvw" @dblclick="addPgm"></div>
             <video-player v-if="playerData.url != ''" v-show="!isAdd" class="vjs-custom-skin" 
                     ref="videoPlayer" 
                     :options= playerOptions
@@ -132,6 +132,11 @@
                 default: false
             },
             height: '',
+            isPgm: {
+                type: Boolean,
+                required: false,
+                default: false,
+            }
         },
         data() {
             return {
@@ -167,6 +172,7 @@
                 monitor01: true,        // 监控切换
                 monitor02: false,
                 addLivePLayerData: null,
+                clickTimer: null,
             }
         },
         computed: {
@@ -174,7 +180,7 @@
                 return this.$refs.videoPlayer ? this.$refs.videoPlayer.player : undefined;
             },
             vol () {
-                return this.$store.getters.getPlayerListStatus(this.playerData.seqNo);
+                return this.$store.getters.getPlayerListStatus(this.isPgm ? 13 : this.playerData.seqNo);
             }
         },
         components: {
@@ -186,17 +192,25 @@
         methods: {
             // record current time
             onTimeupdate(e) {      
-                this.player && this.player.volume(this.vol.vol);         
-                //console.log('currentTime', e.cache_.currentTime)
+                this.player && this.player.volume(this.vol.vol);  
             },
             addPvw () {
-                this.http.post('/api/addPVW', {})
-                .then((response) => {
-                    console.log(this.playerData)
-                })
-                .catch((error) => {
+                clearTimeout(this.clickTimer);
+                this.clickTimer = setTimeout(() => {
+                    this.http.post('/api/addPVW', {})
+                    .then((response) => {
+                        this.$store.dispatch('changePvw', this.playerData);
+                        this.playerData.isPvw = 1;
+                        let tempObj = {
+                            id: this.playerData.id,
+                            type: 0
+                        };
+                        this.$store.dispatch('changepvwpgm', tempObj);
+                    })
+                    .catch((error) => {
 
-                });
+                    });
+                }, 300)
             },
             handleClose () {    // 添加直播源
                 this.$confirm('确认关闭？')
@@ -208,7 +222,7 @@
             addLivePlay () {
                 this.http.get('/api/data', {})
                 .then((response) => {
-                    this.addLivePLayerData = response.data;
+                    this.addLivePLayerData = response.data;     
                     console.log(this.addLivePLayerData)
                 })
                 .catch((error) => {
@@ -222,6 +236,22 @@
                 if (this.value1) {
                     this.player.play();
                 }
+            },
+            addPgm () {
+                clearTimeout(this.clickTimer);
+                this.http.post('/api/addPVW', {})
+                .then((response) => {
+                    this.$store.dispatch('changePgm', this.playerData);
+                    this.playerData.isPgm = 1;
+                    let tempObj = {
+                        id: this.playerData.id,
+                        type: 1
+                    };
+                    this.$store.dispatch('changepvwpgm', tempObj);
+                })
+                .catch((error) => {
+
+                });
             }
         }
     }

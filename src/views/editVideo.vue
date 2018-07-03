@@ -61,7 +61,8 @@
                 </el-col>
                 <el-col :span="12">
                     <div class="edit-video-right-con">
-                        <Preview v-if="pvw && pgm" :pvwData="pvw" :pgmData="pgm"></Preview>
+                        <!-- <Preview v-if="pvw && pgm" :pvwData="pvw" :pgmData="pgm"></Preview> -->
+                        <Preview></Preview>
                         <el-row>
                             <el-col :span="12">
                                 <Effect></Effect>
@@ -103,8 +104,6 @@
                     week: '',
                     time: '',
                 },
-                pvw: null,
-                pgm: null,
             }
         },
         components: {
@@ -119,7 +118,9 @@
             Flash,
         },
         computed: {
-
+            pvw () {
+                return
+            }
         },
         beforeCreate () {
             // this.$loading({
@@ -137,6 +138,7 @@
                 this.createStorePlayList(response.data.locals, true);
                 this.playerDataList = response.data.lives;
                 this.localPlayerData = response.data.locals;
+                this.$store.dispatch('addplayerdata', this.playerDataList.concat(this.localPlayerData));
                 this.pvwData(response.data.lives.concat(response.data.locals));
                 this.addDubbing();
             })
@@ -202,17 +204,11 @@
             pvwData (original) {
                 for (let i = 0; i < original.length; i++) {
                     if (original[i].isPvw === 1) {
-                        // this.$store.dispatch('changePvw', original[i])       // 做深拷贝
-                        // Object.assign(this.pvw, ]);
-                        this.pvw = JSON.parse(JSON.stringify(original[i]));
+                        this.$store.dispatch('changePvw', original[i])       
                     }
                     if (original[i].isPgm === 1) {
                         let obj = {};
-                        // this.$store.dispatch('changePgm', original[i])
-                        // this.$store.dispatch('changePgmFirst',13);
-                        // Object.assign(this.pgm, original[i]);
-                        this.pgm = JSON.parse(JSON.stringify(original[i]));
-                        this.pgm.seqNo = 13;
+                        this.$store.dispatch('changePgm', original[i])
                         obj.id = 13,
                         obj.status = false;
                         obj.vol = original[i].volume;
@@ -223,8 +219,6 @@
                         this.$store.dispatch('addPlayList', obj);
                     }
                 }
-                console.log(this.pvw);
-                console.log(this.pgm);
             },
             addDubbing () {
                 let obj = {};

@@ -4,9 +4,9 @@
         <div class="preview-player-con">
             <el-row>
                 <el-col :span="12">
-                    <div class="play-left">
+                    <div class="play-left" v-if="pvw && pgm">
                         <Flash  :isLive= '1'
-                                :playerData= 'pvwData'
+                                :playerData= 'pvw'
                                 :isAdd = 'false'
                                 :isBlank = 'false'
                                 :isPreview = 'true'
@@ -16,14 +16,15 @@
                     </div>
                 </el-col>
                 <el-col :span="12">
-                    <div class="play-right">
+                    <div class="play-right" v-if="pvw && pgm">
                         <Flash  :isLive= '1'
-                                :playerData = 'pgmData'
+                                :playerData = 'pgm'
                                 :isAdd = 'false'
                                 :isBlank = 'false'
                                 :isPreview = 'true'
                                 :isRed = 'true'
-                                :height = '223'>
+                                :height = '223'
+                                :isPgm = 'true'>
                         </Flash>
                     </div>
                 </el-col>
@@ -37,26 +38,37 @@
     export default {
         name: 'Preview',
         data () {
-            return {}
+            return {
+                
+            }
         },
         props: {
-            pvwData: Object,
-            pgmData: Object,
+            // pvwData: Object,
+            // pgmData: Object,
         },
         components: {
             Player,
             Flash,
         },
         computed: {
-            // pgm () {
-            //     return this.$store.getters.getPgm;
-            // },
-            // pvw () {
-            //     return this.$store.getters.getPvw;
-            // }
+            pgm () {
+                return this.$store.getters.getPgm.obj;
+            },
+            pvw () {
+                return this.$store.getters.getPvw.obj;
+            }
         },
         mounted () {
-            console.log(this.pvwData);
+            // setTimeout(() => {
+            //     console.log(this.$store.getters.getPvw.id);
+            // },2000)
+        },
+        watch: {
+            pvw () {
+                // this.$nextTick(() => {
+
+                // })
+            }
         }
     }
 </script>
