@@ -257,6 +257,9 @@
     }
 </script>
 <style lang="scss" scoped>
+    .video-js {
+        width: 100% !important;
+    }
     .bor-2-r::after {
         content: '';
         position: absolute;

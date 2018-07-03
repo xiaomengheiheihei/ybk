@@ -2,7 +2,8 @@
     <div class="qn-player">
         <div class="video-player-con" :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''">
             <video ref="player" v-show="!isAdd" preload="auto" height="100%" width="100%"
-            :src="playerData.url"></video>
+            :src="playerData.url" @click.stop="addPvw" @dblclick="addPgm"
+            :class="playerData.isPvw === 1 ? 'bor-2-g' : '' || playerData.isPgm === 1 ? 'bor-2-r' : ''"></video>
             <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
                 <div class="add-h"></div>
                 <div class="add-d"></div>
@@ -220,7 +221,41 @@
                 .catch((error) => {
                     console.error(error + '请求数据有误');
                 });
-            }
+            },
+            addPgm () {
+                clearTimeout(this.clickTimer);
+                this.http.post('/api/addPVW', {})
+                .then((response) => {
+                    this.$store.dispatch('changePgm', this.playerData);
+                    this.playerData.isPgm = 1;
+                    let tempObj = {
+                        id: this.playerData.id,
+                        type: 1
+                    };
+                    this.$store.dispatch('changepvwpgm', tempObj);
+                })
+                .catch((error) => {
+
+                });
+            },
+            addPvw () {
+                clearTimeout(this.clickTimer);
+                this.clickTimer = setTimeout(() => {
+                    this.http.post('/api/addPVW', {})
+                    .then((response) => {
+                        this.$store.dispatch('changePvw', this.playerData);
+                        this.playerData.isPvw = 1;
+                        let tempObj = {
+                            id: this.playerData.id,
+                            type: 0
+                        };
+                        this.$store.dispatch('changepvwpgm', tempObj);
+                    })
+                    .catch((error) => {
+
+                    });
+                }, 300)
+            },
         },
         watch: {
            
@@ -228,6 +263,26 @@
     }
 </script>
 <style lang="scss" scoped>
+.bor-2-r::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 99%;
+    height: 99%;
+    border: 1px solid #FF0000;
+    pointer-events: none;
+}
+.bor-2-g::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 99%;
+    height: 99%;
+    border: 1px solid #00FF00;
+    pointer-events: none;
+}
 .video-player-con {
     .none {
         display: none;
