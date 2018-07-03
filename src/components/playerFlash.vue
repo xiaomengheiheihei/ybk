@@ -1,13 +1,24 @@
 <template>
-    <div class="flash-player-wrap">
-        <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions" 
-                      @ready="onPlayerReadied" 
-                      @timeupdate="onTimeupdate"
-                      :playsinline= true>
-        </video-player>
+    <div class="flash-player-wrap" 
+        :class="playerData.isPvw === 1 ? 'bor-2-g' : '' || playerData.isPgm === 1 ? 'bor-2-r' : ''"
+        :style="isPreview ? {height: '223px'} : {}">
+        <div class="video-player-con" 
+            :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''">
+            <div class="bg" v-show="vol" @click.stop="addPvw"></div>
+            <video-player v-if="playerData.url != ''" v-show="!isAdd" class="vjs-custom-skin" 
+                    ref="videoPlayer" 
+                    :options= playerOptions
+                    @timeupdate="onTimeupdate"
+                    :playsinline= true>
+            </video-player>
+            <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
+                <div class="add-h"></div>
+                <div class="add-d"></div>
+            </div>
+        </div>
         <el-row class="play-bar-wrap" :class="isPreview &&  !isRed ? 'play-bar-wrap-h' : '' || isPreview &&  isRed ? 'play-bar-wrap-r' : ''">
             <el-col :span="8" v-if="!isPreview">
-                {{ playerData.index }}
+                {{ playerData.seqNo }}
             </el-col>
             <el-col :span="8" v-if="isPreview">
                 {{ playerData.title }}
@@ -29,12 +40,73 @@
             </el-col>
             <el-col :span="8" class="start-btn" v-if="isPreview && !isRed">
                 <el-switch
-                v-model="value2"
-                active-color="#13ce66"
-                inactive-color="#ff4949">
+                    v-model="value1"
+                    @change = "closePvw"
+                    active-color="#60A960"
+                    inactive-color="#5D5D5D">
                 </el-switch>
             </el-col>
         </el-row>
+         <el-dialog
+            :visible.sync="dialogVisible"
+            width="70%"
+            :show-close="false"
+            >
+            <div slot="title" class="title">
+                添加直播源
+                <span @click="dialogVisible = false">关闭</span>
+            </div>
+            <div class="content">
+                <div class="name">名称：<input type="text" placeholder="请输入直播源名称"></div>
+                <div class="radio-wrap">
+                    <template>
+                        <div class="radio01">
+                            <el-radio v-model="steamRadio" label="1">推流直播：请将下列地址配置在采集设备中</el-radio>
+                        </div>
+                        <div class="detail-wrap" v-show="steamRadio == 1">
+                            <div class="detail-con"></div>
+                            <span class="copy-btn">复制</span>
+                        </div>
+                        <div class="radio02">
+                            <el-radio v-model="steamRadio" label="2">拉流直播：支持的协议有rtmp、flv、m3u8、hls</el-radio>
+                        </div>
+                        <div class="pull-wrap" v-show="steamRadio == 2">
+                            <input type="text" id="pull-stream" placeholder="请输入拉流地址"><span @click="addLivePlay">添加</span>
+                        </div>
+                        <div class="preview-wrap">
+                            <Flash v-if="addLivePLayerData != null"  :isLive= 1
+                                    :playerData= addLivePLayerData
+                                    :isAdd = false
+                                    :isBlank = false
+                                    :height = '133'>
+                            </Flash>
+                        </div>
+                    </template>
+                </div>
+                <div class="switch-wrap">
+                    <div class="switch01">
+                        <span>智能黄暴监控：</span>
+                        <el-switch
+                            v-model="monitor01"
+                            active-color="#13ce66"
+                            inactive-color="#383B3C">
+                        </el-switch>
+                    </div>
+                    <div class="switch02">
+                        <span>信号质量监控：</span>
+                        <el-switch
+                            v-model="monitor02"
+                            active-color="#13ce66"
+                            inactive-color="#383B3C">
+                        </el-switch>
+                    </div>
+                </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button class="cancel-btn" @click="dialogVisible = false">取 消</el-button>
+                <el-button class="add-btn" type="primary" @click="dialogVisible = false">添 加</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -59,20 +131,22 @@
                 required: false,
                 default: false
             },
+            height: '',
         },
         data() {
             return {
                 initialized: false,
                 playerOptions: {
-                    height: '110',
+                    height: this.height,
+                    muted: true,
                     sources: [
                         {
-                            type: "rtmp/mp4",
-                            src: "rtmp://live.hkstv.hk.lxdns.com/live/hks"
+                            type: "video/mp4",
+                            src: this.playerData.url.indexOf('http') >= 0 ? this.playerData.url : '',     // 非rtmp协议用h5播放
                         },
                         {
-                            type: "",
-                            src: ""
+                            type: "rtmp/mp4",
+                            src: this.playerData.url, //"rtmp://live.hkstv.hk.lxdns.com/live/hks"
                         }
                     ],
                     flash: {
@@ -81,38 +155,142 @@
                     language: 'zh-CN',
                     overNative: true,
                     sourceOrder: true,
-                    techOrder: ['flash','html5'],
+                    techOrder: ['html5','flash'],
                     autoplay: true,
                     controls: false,
-                    poster: ""
-                }
+                    poster: "",
+                },
+                value2: true,
+                value1: true,
+                dialogVisible: false,   // 控制添加对话框显示
+                steamRadio: '1',           // 直播流选择
+                monitor01: true,        // 监控切换
+                monitor02: false,
+                addLivePLayerData: null,
             }
         },
         computed: {
             player() {
-                return this.$refs.videoPlayer.player
+                return this.$refs.videoPlayer ? this.$refs.videoPlayer.player : undefined;
             },
+            vol () {
+                return this.$store.getters.getPlayerListStatus(this.playerData.seqNo);
+            }
         },
         components: {
             videoPlayer
         },
+        mounted () {
+            this.player && this.player.volume(this.playerData.volume);
+        },
         methods: {
-            onPlayerReadied() {
-            if (!this.initialized) {
-                this.initialized = true
-                this.currentTech = this.player.techName_
-            }
-            },
             // record current time
-            onTimeupdate(e) {
+            onTimeupdate(e) {      
+                this.player && this.player.volume(this.vol.vol);         
                 //console.log('currentTime', e.cache_.currentTime)
             },
+            addPvw () {
+                this.http.post('/api/addPVW', {})
+                .then((response) => {
+                    console.log(this.playerData)
+                })
+                .catch((error) => {
+
+                });
+            },
+            handleClose () {    // 添加直播源
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        console.log('ok')
+                    })
+                    .catch(_ => {});
+            },
+            addLivePlay () {
+                this.http.get('/api/data', {})
+                .then((response) => {
+                    this.addLivePLayerData = response.data;
+                    console.log(this.addLivePLayerData)
+                })
+                .catch((error) => {
+                    console.error(error + '请求数据有误');
+                });
+            },
+            closePvw () {
+                if (!this.value1) {
+                    this.player.pause();
+                }
+                if (this.value1) {
+                    this.player.play();
+                }
+            }
         }
     }
 </script>
 <style lang="scss" scoped>
+    .bor-2-r::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 99%;
+        height: 99%;
+        border: 1px solid #FF0000;
+        pointer-events: none;
+    }
+    .bor-2-g::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 99%;
+        height: 99%;
+        border: 1px solid #00FF00;
+        pointer-events: none;
+    }
     .flash-player-wrap {
+        position: relative;
         height: 110px;
+        .video-player-con {
+            position: relative;
+            min-height: 110px;
+            .bg {
+                position: absolute;
+                left: 0;
+                top: 0;
+                background:transparent;
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+            }   
+            .add-video {
+                position: absolute;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                background-color: #fff;
+                top: 50%;
+                left: 50%;
+                transform: translate3d(-50%, -50%, 0);
+                .add-h {
+                    width: 26px;
+                    height: 3px;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate3d(-50%, -50%, 0);
+                    background: #5D5D5D;
+                }
+                .add-d {
+                    width: 3px;
+                    height: 26px;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate3d(-50%, -50%, 0);
+                    background: #5D5D5D;
+                }
+            }         
+        }
     }
     .play-bar-wrap {
     text-align: left;
@@ -158,6 +336,12 @@
         margin-top: 2px;
     }
 }
+.video-player-con-n {
+    background-color: #5D5D5D;
+}
+.video-player-con-l {
+    height: 223px;
+}
 .play-bar-wrap-h {
     height: 40px;
     line-height: 40px;
@@ -173,6 +357,133 @@
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
     background: #FF0000;
+}
+.el-dialog__header {
+    .title {
+        color: #fff;
+        font-size: 18px;
+        text-align: left;
+        position: relative;
+        height: 40px;
+        line-height: 40px;
+        padding: 0 30px;
+        span {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        span::before {
+            content: '';
+            height: 40px;
+            background: #979797;
+            width: 1px;
+            position: absolute;
+            left: -30px;
+            top: 0;
+        }
+    }
+}
+.content {
+    color: #fff;
+    text-align: left;
+    padding: 50px 30px 20px 30px;
+    font-size: 18px;
+    .name {
+        input {
+            outline: none;
+            vertical-align: middle;
+            appearance: none;
+            height: 30px;
+            width: 200px;
+            font-size: 18px;
+            padding-left: 5px;
+            border: 1px solid #979797;
+        }
+    }
+    .radio-wrap {
+        margin-top: 30px;
+        .preview-wrap {
+            height: 133px;
+            width: 235px;
+            margin-top: 15px;
+        }
+        .radio01, .radio02 {
+            margin-bottom: 15px;
+        }
+        .pull-wrap {
+            margin-top: 15px;
+            margin-bottom: 10px;
+            input {
+                height: 40px;
+                line-height: 40px;
+                width: 65%;
+                font-size: 18px;
+                color: #4A4A4A;
+                padding-left: 5px;
+                outline: none;
+            }
+            span{
+                margin-left: 30px;
+                font-size: 18px;
+                color: #fff;
+                padding: 5px 15px;
+                border-radius: 6px;
+                background: #333333;
+                cursor: pointer;
+            }
+        }
+        .el-radio {
+            color: #fff;
+            
+        }
+        .detail-wrap {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin: 15px 0;
+            .detail-con {
+                width: 70%;
+                height: 50px;
+                border: 1px solid #4A4848;
+                margin-right: 30px;
+            }
+            span {
+                background: #333333;
+                border-radius: 6px;
+                padding: 8px 15px; 
+            }
+        }
+    }
+    .switch-wrap {
+        margin-top: 40px;
+        .switch02 {
+            margin-top: 30px;
+        }
+    }
+}
+.dialog-footer {
+    .cancel-btn {
+        background: #D8D8D8;
+        border-radius: 50px;
+        height: 50px;
+        width: 120px;
+        font-size: 20px;
+        color: #333333;
+        outline: none;
+    }
+    .add-btn {
+        background: #333333;
+        border-radius: 50px;
+        height: 50px;
+        width: 120px;
+        font-size: 20px;
+        color: #fff;
+        outline: none;
+        border: 0;
+        margin-left: 40px;
+    }
 }
 </style>
 

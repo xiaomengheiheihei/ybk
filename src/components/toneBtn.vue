@@ -1,42 +1,50 @@
 <template>
-    <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : ''">
-        <div class="tone-btn-top">GVM</div>
+    <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : ''" >
+        <div class="tone-btn-top">{{ title }}</div>
         <div class="tone-btn-con">
             <div class="tone-btn-container">
-                <p class="void-num03">-100</p>
+                <!-- <p class="void-num03">-100</p>
                 <p class="void-num02">-50</p>
-                <p class="void-num01">-0</p>
-                <input type="range" name="" id="" value="0">
+                <p class="void-num01">-0</p> -->
+                <input ref="volRange" type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="vols.vol">
                 <!-- <Range :rangeObj=rangeData></Range> -->
-                <div class="range">
-                    <div class="range-btn"></div>
-                </div>
             </div>
             <div class="tone-btn-bottom">
-                <p class="void-icon"></p>
+                <p class="void-icon" :class="vols.vol == 0 ? 'void-icon-ss' : ''"></p>
                 <p class="void-icon-s"></p>
             </div>
         </div>
     </div>
 </template>
 <script>
-    import Range from '@/components/range.vue'
     export default {
         name: 'Mixer',
         data () {
             return {
-                rangeData: {
-                    direction: 'level',
-                    isPlayBar: false,
-                    isScale: true,
-                }
+                
             }
         },
         props: {
             l: Boolean,
+            title: String,
+            index: Number,
         },
-        components: {
-            Range,
+        computed: {
+           volRange () {
+               return this.$refs.volRange;
+           },
+           vols () {
+               return this.$store.getters.getPlayerListStatus(this.index);
+           }
+        },
+        mounted () {
+           
+        },
+        methods: {
+            changeVol () {
+                let obj = {index: this.index, vol: this.volRange.value};
+                this.$store.dispatch("changeVol", obj);
+            }
         }
     }
 </script>
@@ -58,12 +66,16 @@
         float: left;
         .tone-btn-con {
             .tone-btn-container {
+                background: url('../assets/scale.png') no-repeat left center;
+                background-size: contain;
+                height: 80px;
+                margin-top: 15px;
                 input {
                     transform: rotate(-90deg) translateY(-50%);
                     transform-origin: 0 0;
-                    width: 74px;
+                    width: 82px;
                     position: absolute;
-                    bottom: 40px;
+                    bottom: 35px;
                     left: 50%;
                     margin: auto;
                 }
@@ -86,24 +98,6 @@
                     transform: translateY(-25%);
                     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
                 }
-                p {
-                    text-align: left;
-                    transform:scale(0.6);
-                    width: 0;
-                    height: 20px;
-                }
-                // .range {
-                //     width: 4px;
-                //     height: 70px;
-                //     background: rgb(62, 65, 70);
-                //     margin: 0 auto;
-                //     .range-btn {
-                //         width: 10px;
-                //         height: 10px;
-                //         border-radius: 50%;
-                //         background: rgb(125, 129, 133);
-                //     }
-                // }
             }
             .tone-btn-bottom {
                 p {
@@ -117,10 +111,18 @@
                 .void-icon {
                     background: url('../assets/void-start.png') no-repeat center;
                     background-size: contain;
-                }   
+                }
+                .void-icon-ss {
+                    background: url('../assets/void-end.png') no-repeat left center;
+                    background-size: 70%;
+                }    
                 .void-icon-s {
                     bottom: -7px;
                     background: url('../assets/er.png') no-repeat center; 
+                    background-size: contain; 
+                }
+                .void-icon-star {
+                    background: url('../assets/er-s.png') no-repeat center; 
                     background-size: contain; 
                 }
             }

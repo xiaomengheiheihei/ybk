@@ -5,25 +5,26 @@
             <el-row>
                 <el-col :span="12">
                     <div class="play-left">
-                        <Player
-                            :isLive = 1
-                            :playerData=playerData
-                            :isAdd = false
-                            :isBlank = false
-                            :isPreview = true
-                        ></Player>
+                        <Flash  :isLive= '1'
+                                :playerData= 'pvwData'
+                                :isAdd = 'false'
+                                :isBlank = 'false'
+                                :isPreview = 'true'
+                                :isRed = 'false'
+                                :height = '223'>
+                        </Flash>
                     </div>
                 </el-col>
                 <el-col :span="12">
                     <div class="play-right">
-                        <Player
-                            :isLive = 1
-                            :playerData=playerData
-                            :isAdd = false
-                            :isBlank = false
-                            :isRed= true
-                            :isPreview = true
-                        ></Player>
+                        <Flash  :isLive= '1'
+                                :playerData = 'pgmData'
+                                :isAdd = 'false'
+                                :isBlank = 'false'
+                                :isPreview = 'true'
+                                :isRed = 'true'
+                                :height = '223'>
+                        </Flash>
                     </div>
                 </el-col>
             </el-row>
@@ -32,20 +33,30 @@
 </template>
 <script>
     import Player from '@/components/player.vue'
+    import Flash from '@/components/playerFlash.vue'
     export default {
         name: 'Preview',
         data () {
-            return {
-                playerData: {
-                    index: 1,
-                    title: 'CAM1',
-                    signalIntensity: 4,
-                    source: 'http://220.170.49.104/13/b/j/v/s/bjvsnuxilfqzafjsojwhzjypnbhbqn/hd.yinyuetai.com/154F016315F0AB7C8179594EFD0252C9.mp4?sc=96c65e474c339711',
-                },
-            }
+            return {}
+        },
+        props: {
+            pvwData: Object,
+            pgmData: Object,
         },
         components: {
             Player,
+            Flash,
+        },
+        computed: {
+            // pgm () {
+            //     return this.$store.getters.getPgm;
+            // },
+            // pvw () {
+            //     return this.$store.getters.getPvw;
+            // }
+        },
+        mounted () {
+            console.log(this.pvwData);
         }
     }
 </script>

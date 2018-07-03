@@ -1,9 +1,8 @@
 <template>
     <div class="qn-player">
         <div class="video-player-con" :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''">
-            <video v-show="!isAdd" preload="auto" height="100%" width="100%" 
-            autoplay="autoplay" 
-            :src="playerData.source"></video>
+            <video ref="player" v-show="!isAdd" preload="auto" height="100%" width="100%"
+            :src="playerData.url"></video>
             <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
                 <div class="add-h"></div>
                 <div class="add-d"></div>
@@ -11,7 +10,7 @@
         </div>
         <el-row class="play-bar-wrap" :class="isPreview &&  !isRed ? 'play-bar-wrap-h' : '' || isPreview &&  isRed ? 'play-bar-wrap-r' : ''">
             <el-col :span="8" v-if="!isPreview">
-                {{ playerData.index }}
+                {{ playerData.seqNo }}
             </el-col>
             <el-col :span="8" v-if="isPreview">
                 {{ playerData.title }}
@@ -40,11 +39,12 @@
             </el-col>
         </el-row>
         <div v-if="isLive != 1" class="slider-bar-wrap">
-            <div class="contral-wrap">
-                <div class="h01"></div>
-                <div class="h02"></div>
+            <div class="contral-wrap" @click="playBtnHandel()" :class="isStart ? 'contral-wrap-start' : '' ">
+                <div class="h01" v-show="!isStart"></div>
+                <div class="h02" v-show="!isStart"></div>
             </div>
-            <input type="range" value="0">
+            <!-- <input ref="range"  type="range" value="0"> -->
+            <div class="range" @click="changeProgress(player,range,$event)"><span class="range-btn" ref="range"></span></div>
         </div>
         <el-dialog
             :visible.sync="dialogVisible"
@@ -53,18 +53,33 @@
             >
             <div slot="title" class="title">
                 添加直播源
-                <span>关闭</span>
+                <span @click="dialogVisible = false">关闭</span>
             </div>
             <div class="content">
-                <div class="name">名称：<input type="text"></div>
+                <div class="name">名称：<input type="text" placeholder="请输入直播源名称"></div>
                 <div class="radio-wrap">
                     <template>
-                        <el-radio v-model="steam_radio" label="1">推流直播：请将下列地址配置在采集设备中</el-radio>
-                        <div class="detail-wrap">
+                        <div class="radio01">
+                            <el-radio v-model="steamRadio" label="1">推流直播：请将下列地址配置在采集设备中</el-radio>
+                        </div>
+                        <div class="detail-wrap" v-show="steamRadio == 1">
                             <div class="detail-con"></div>
                             <span class="copy-btn">复制</span>
                         </div>
-                        <el-radio v-model="steam_radio" label="2">拉流直播</el-radio>
+                        <div class="radio02">
+                            <el-radio v-model="steamRadio" label="2">拉流直播：支持的协议有rtmp、flv、m3u8、hls</el-radio>
+                        </div>
+                        <div class="pull-wrap" v-show="steamRadio == 2">
+                            <input type="text" id="pull-stream" placeholder="请输入拉流地址"><span @click="addLivePlay">添加</span>
+                        </div>
+                        <div class="preview-wrap">
+                            <Flash v-if="addLivePLayerData != null"  :isLive= 1
+                                    :playerData= addLivePLayerData
+                                    :isAdd = false
+                                    :isBlank = false
+                                    :height = '133'>
+                            </Flash>
+                        </div>
                     </template>
                 </div>
                 <div class="switch-wrap">
@@ -87,13 +102,14 @@
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                <el-button class="cancel-btn" @click="dialogVisible = false">取 消</el-button>
+                <el-button class="add-btn" type="primary" @click="dialogVisible = false">添 加</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 <script>
+    import Flash from '@/components/playerFlash.vue'
     export default {
         name: 'player',
         props: {
@@ -117,30 +133,71 @@
                 value1: true,
                 value2: true,
                 dialogVisible: false,   // 控制添加对话框显示
-                steam_radio: 1,           // 直播流选择
+                steamRadio: '1',           // 直播流选择
                 monitor01: true,        // 监控切换
                 monitor02: false,
+                isStart: false,
+                timer: null,        // 控件定时器
+                tempStep: 0,        // 每秒走的距离
+                left: 0,            // 滑块距离父元素左边距离
+                addLivePLayerData: null,
             }
         },
+        components: {
+            Flash,
+        },
         computed: {
-            todo () {
-                
+            playerStatus () {
+                return this.$store.state.playerListStatus;
+            },
+            player () {
+                return this.$refs.player;
+            },
+            range () {
+                return this.$refs.range;
+            },
+            vol () {
+                return this.$store.getters.getPlayerListStatus(this.playerData.seqNo+8);
             }
         },
         created () {
             
         },
         mounted () {
-            // this.playBtnHandel();
+            let that = this;
+            
+            this.player.oncanplay = function () {                   // 视频可以播放时
+                let duration = Math.floor(that.player.duration);    // 视频总时长
+                that.tempStep = 140 / duration;
+                // 设置初始声音
+                that.player ? that.player.volume = that.vol.vol : '';
+            };
+            this.player.onplay = function () {                  // 开始播放时
+                this.timer = setInterval(() => {
+                    that.range ? that.range.style.left =  that.left + that.tempStep + 'px' : '';
+                    that.left = that.left + that.tempStep;
+                }, 1000)
+            }
+            this.player.ontimeupdate = function () {            // 当目前播放位置更改时
+                that.player ? that.player.volume = that.vol.vol : '';
+            };
+            this.player.onended = function () {                 // 视频结束清除定时器
+                clearInterval(this.timer);
+            }
+            this.player.onpause = function () {
+                clearInterval(this.timer);
+            }
+            this.player.onseeked = function () {        // 跳跃到新位置时改变left值
+                that.left = that.range.offsetLeft;
+            }
         },
         methods: {
             // 定义播放暂停按钮
-            playBtnHandel (isPlay=false) {
-                const playBtn = document.querySelector('.contral-wrap');
-                console.log(playBtn);
-                if (isPlay) {
-                    
-                }
+            playBtnHandel () {
+                this.isStart = !this.isStart;       // 改变播放状态
+                this.$store.commit('changePlayStatus', this.playerData.seqNo);
+                let index = this.playerData.seqNo;
+                this.$store.getters.getPlayerListStatus(index).status ? this.player.play() : this.player.pause();
             },
             handleClose () {    // 添加直播源
                 this.$confirm('确认关闭？')
@@ -148,7 +205,25 @@
                         console.log('ok')
                     })
                     .catch(_ => {});
-                }
+            },
+            changeProgress (player,range, event) {
+                let currentProgress = event.offsetX * player.duration / 140;
+                range.style.left = event.offsetX + 'px';
+                player.currentTime = currentProgress;
+            },
+            addLivePlay () {
+                this.http.get('/api/data', {})
+                .then((response) => {
+                    this.addLivePLayerData = response.data;
+                    console.log(this.addLivePLayerData)
+                })
+                .catch((error) => {
+                    console.error(error + '请求数据有误');
+                });
+            }
+        },
+        watch: {
+           
         }
     }
 </script>
@@ -164,6 +239,7 @@
         object-fit: fill;
         width: 100%;
         height: 100%;
+        background-color: #5D5D5D;
     }
     .add-video {
         position: absolute;
@@ -288,28 +364,27 @@
         border-right: 6px solid transparent;
         border-top: 6px solid transparent;
         border-bottom: 6px solid transparent;
+        left: 10px;
     }
-    input[type=range] {
-        -webkit-appearance: none;
-        background-color: #fff;
-        outline: none;
-        vertical-align: middle;
+    .range {
+        position: absolute;
         width: 140px;
-    }
-    input[type=range]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-    }  
-    ::-webkit-slider-runnable-track {
-        // border: 1px solid #fff;
-        background: #fff;
         height: 1px;
-    }
-    ::-webkit-slider-thumb {
-        background-color: #34538b;
-        border: 3px solid #fff;
-        width: 3px;
-        border-radius: 50%;
+        background-color: #fff;
+        top: 50%;
+        left: 25px;
         transform: translateY(-50%);
+        span {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: #f4f6fa;
+            transform: translateY(-50%);
+            transition: all .3s ease;
+        }
     }
 }
 .play-item-title {
@@ -321,18 +396,19 @@
         font-size: 18px;
         text-align: left;
         position: relative;
-        height: 60px;
-        line-height: 60px;
+        height: 40px;
+        line-height: 40px;
         padding: 0 30px;
         span {
             position: absolute;
             right: 30px;
             top: 50%;
             transform: translateY(-50%);
+            cursor: pointer;
         }
         span::before {
             content: '';
-            height: 60px;
+            height: 40px;
             background: #979797;
             width: 1px;
             position: absolute;
@@ -353,11 +429,43 @@
             appearance: none;
             height: 30px;
             width: 200px;
+            font-size: 18px;
+            padding-left: 5px;
             border: 1px solid #979797;
         }
     }
     .radio-wrap {
         margin-top: 30px;
+        .preview-wrap {
+            height: 133px;
+            width: 235px;
+            margin-top: 15px;
+        }
+        .radio01, .radio02 {
+            margin-bottom: 15px;
+        }
+        .pull-wrap {
+            margin-top: 15px;
+            margin-bottom: 10px;
+            input {
+                height: 40px;
+                line-height: 40px;
+                width: 65%;
+                font-size: 18px;
+                color: #4A4A4A;
+                padding-left: 5px;
+                outline: none;
+            }
+            span{
+                margin-left: 30px;
+                font-size: 18px;
+                color: #fff;
+                padding: 5px 15px;
+                border-radius: 6px;
+                background: #333333;
+                cursor: pointer;
+            }
+        }
         .el-radio {
             color: #fff;
             
@@ -380,8 +488,35 @@
             }
         }
     }
+    .switch-wrap {
+        margin-top: 40px;
+        .switch02 {
+            margin-top: 30px;
+        }
+    }
 }
-
+.dialog-footer {
+    .cancel-btn {
+        background: #D8D8D8;
+        border-radius: 50px;
+        height: 50px;
+        width: 120px;
+        font-size: 20px;
+        color: #333333;
+        outline: none;
+    }
+    .add-btn {
+        background: #333333;
+        border-radius: 50px;
+        height: 50px;
+        width: 120px;
+        font-size: 20px;
+        color: #fff;
+        outline: none;
+        border: 0;
+        margin-left: 40px;
+    }
+}
 </style>
 <style lang="scss">
     .el-dialog__header {
@@ -396,6 +531,10 @@
     }
     .el-radio__label {
         font-size: 18px !important;
+    }
+    .el-dialog__footer {
+        border-top: 1px solid #fff;
+        padding-top: 20px !important;
     }
 </style>
 

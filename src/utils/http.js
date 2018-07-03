@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-axios.defaults.baseURL = '/api'
+axios.defaults.baseURL = ''
 axios.defaults.headers = {
     appversion:"1.1.4",
     uuid:"21712201756195fw5ci3jmtarrmxk0000000",

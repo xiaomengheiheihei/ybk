@@ -1,3 +1,4 @@
+
 module.exports = {
     lintOnSave: false,
     devServer: {
@@ -7,12 +8,18 @@ module.exports = {
         hotOnly: false,
         proxy: {
             '/api': {
-                target: 'http://123.59.204.198/',
+                target: 'http://bmmqcrhhtgv6.kegate-xq.cloudappl.com/',
                 changeOrigin:true,
                 pathRewrite:{
                     '^/api':''
                 }
             }
-        }
+        },
+    },
+    configureWebpack: config => {
+        if (process.env.NODE_ENV === 'development') {
+          config.devtool = 'source-map'
+          // mutate config for production...
+        } 
     }
 }

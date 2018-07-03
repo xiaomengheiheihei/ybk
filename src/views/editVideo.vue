@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="edit-top-time">
-                    2018年05月24日<span class="week">星期四</span><span class="time">12:30:34</span>
+                    {{ date.day }}<span class="week">{{ date.week }}</span><span class="time">{{ date.time }}</span>
                     <span class="edit-start-btn"></span>
                 </div>
             </div>
@@ -28,52 +28,24 @@
                     <div class="edit-video-left-con">
                         <div class="edit-video-left-tile">视频矩阵<span></span></div>
                         <el-row class="video-item-live">
-                            <el-col :span="6" v-for="(item, index) in playerDataList" :key="index" :style="index < 4 ? {marginBottom: '1px'} : {}">
-                                <!-- <Player :isLive = 1
-                                        :playerData= item
-                                        :isAdd = item.isAdd
-                                        :isBlank = item.isBlank
-                                        >
-                                </Player> -->
+                            <el-col :span="6" v-for="(item, index) in playerDataList" :key="index" 
+                                    :style="index < 4 ? {marginBottom: '1px'} : {}">
                                 <Flash  :isLive= 1
                                         :playerData= item
-                                        :isAdd = item.isAdd
-                                        :isBlank = item.isBlank>
+                                        :isAdd = false
+                                        :isBlank = false
+                                        :height = '110'>
                                 </Flash>
                             </el-col>
                         </el-row>
                         <el-row class="video-item-live">
-                            <el-col :span="6">
+                            <el-col :span="6" v-for="(item, index) in localPlayerData" :key="index">
                                 <Player :isLive = 0
-                                        :playerData=playerDataList[3]
+                                        :playerData=item
                                         :isAdd = false
                                         :isBlank = false
                                         >
                                 </Player>  
-                            </el-col>
-                            <el-col :span="6">
-                                <Player :isLive = 0
-                                        :playerData=playerDataList[3]
-                                        :isAdd = false
-                                        :isBlank = false
-                                        >
-                                </Player> 
-                            </el-col>
-                            <el-col :span="6">
-                                <Player :isLive = 0
-                                        :playerData=playerDataList[3]
-                                        :isAdd = true
-                                        :isBlank = false
-                                        >
-                                </Player> 
-                            </el-col>
-                            <el-col :span="6">
-                                <Player :isLive = 0
-                                        :playerData=playerDataList[3]
-                                        :isAdd = true
-                                        :isBlank = true
-                                        >
-                                </Player> 
                             </el-col>
                         </el-row>
                     </div>
@@ -89,7 +61,7 @@
                 </el-col>
                 <el-col :span="12">
                     <div class="edit-video-right-con">
-                        <Preview></Preview>
+                        <Preview v-if="pvw && pgm" :pvwData="pvw" :pgmData="pgm"></Preview>
                         <el-row>
                             <el-col :span="12">
                                 <Effect></Effect>
@@ -123,90 +95,16 @@
         name: 'editVideo',
         data () {
             return {
-                playerDataList: [
-                    {
-                        index: 1,
-                        title: 'CAM1',
-                        signalIntensity: 4,
-                        vol: 55,
-                        isAdd: false,
-                        isBlank: false,
-                        source: 'http://220.170.49.104/13/b/j/v/s/bjvsnuxilfqzafjsojwhzjypnbhbqn/hd.yinyuetai.com/154F016315F0AB7C8179594EFD0252C9.mp4?sc=96c65e474c339711',
-                    },
-                    {
-                        index: 2,               // 视频矩阵索引
-                        title: 'CAM2',          // title
-                        signalIntensity: 3,     // 信号强度
-                        vol: 55,                // 音量
-                        isAdd: false,           // 是否显示新增图标
-                        isBlank: false,         // 是否空白
-                        source: 'http://220.170.49.104/13/b/j/v/s/bjvsnuxilfqzafjsojwhzjypnbhbqn/hd.yinyuetai.com/154F016315F0AB7C8179594EFD0252C9.mp4?sc=96c65e474c339711',
-                    },
-                    {
-                        index: 3,
-                        title: 'CAM3',
-                        signalIntensity: 2,
-                        vol: 55,
-                        isBlank: false,
-                        isAdd: false,
-                        source: 'http://220.170.49.104/13/b/j/v/s/bjvsnuxilfqzafjsojwhzjypnbhbqn/hd.yinyuetai.com/154F016315F0AB7C8179594EFD0252C9.mp4?sc=96c65e474c339711',
-                    },
-                    {
-                        index: 4,
-                        title: 'CAM4',
-                        vol: 55,
-                        isAdd: false,
-                        isBlank: false,
-                        signalIntensity: 1,
-                        source: 'http://220.170.49.104/13/b/j/v/s/bjvsnuxilfqzafjsojwhzjypnbhbqn/hd.yinyuetai.com/154F016315F0AB7C8179594EFD0252C9.mp4?sc=96c65e474c339711',
-                    },
-                    {
-                        index: 4,
-                        title: 'CAM4',
-                        vol: 55,
-                        isAdd: false,
-                        isBlank: false,
-                        signalIntensity: 1,
-                        source: 'http://220.170.49.104/13/b/j/v/s/bjvsnuxilfqzafjsojwhzjypnbhbqn/hd.yinyuetai.com/154F016315F0AB7C8179594EFD0252C9.mp4?sc=96c65e474c339711',
-                    },
-                    {
-                        index: 4,
-                        title: 'CAM4',
-                        vol: 55,
-                        isAdd: false,
-                        isBlank: false,
-                        signalIntensity: 1,
-                        source: 'http://220.170.49.104/13/b/j/v/s/bjvsnuxilfqzafjsojwhzjypnbhbqn/hd.yinyuetai.com/154F016315F0AB7C8179594EFD0252C9.mp4?sc=96c65e474c339711',
-                    },
-                    {
-                        index: 4,
-                        title: 'CAM4',
-                        vol: 55,
-                        isAdd: true,
-                        isBlank: false,
-                        signalIntensity: 1,
-                        source: 'http://220.170.49.104/13/b/j/v/s/bjvsnuxilfqzafjsojwhzjypnbhbqn/hd.yinyuetai.com/154F016315F0AB7C8179594EFD0252C9.mp4?sc=96c65e474c339711',
-                    },
-                    {
-                        index: 4,
-                        title: 'CAM4',
-                        vol: 55,
-                        isAdd: true,
-                        isBlank: true,
-                        signalIntensity: 1,
-                        source: 'http://220.170.49.104/13/b/j/v/s/bjvsnuxilfqzafjsojwhzjypnbhbqn/hd.yinyuetai.com/154F016315F0AB7C8179594EFD0252C9.mp4?sc=96c65e474c339711',
-                    }
-                ],
-                localPlayerData: [      // 本地视频数据
-                    {
-                        index: 1,
-                        title: 'CAM1',
-                        signalIntensity: 4,
-                        vol: 55,
-                        source: 'http://220.170.49.104/13/b/j/v/s/bjvsnuxilfqzafjsojwhzjypnbhbqn/hd.yinyuetai.com/154F016315F0AB7C8179594EFD0252C9.mp4?sc=96c65e474c339711',
-                    }
-                ],
+                playerDataList: [],
+                localPlayerData: [],
                 isLock: true,
+                date: {
+                    day: '',
+                    week: '',
+                    time: '',
+                },
+                pvw: null,
+                pgm: null,
             }
         },
         components: {
@@ -220,28 +118,124 @@
             ResourceCenter,
             Flash,
         },
+        computed: {
+
+        },
         beforeCreate () {
-            var el = document.documentElement;
-            var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;      
-            if(typeof rfs != "undefined" && rfs) {
-                rfs.call(el);
-            };
-            return;
+            // this.$loading({
+            //     lock: true,
+            //     text: '玩儿命加载中...',
+            //     spinner: 'el-icon-loading',
+            //     background: 'rgba(255, 255, 255, 1)'
+            // });
         },
         created () {
-            this.http.get('/get/config', {token: ''})
+            this.http.get('/api/ybkBase/1', {})
             .then((response) => {
-                //if (response.success == 1) {
-                    console.log(response);
+                // 组装store所需信息
+                this.createStorePlayList(response.data.lives);
+                this.createStorePlayList(response.data.locals, true);
+                this.playerDataList = response.data.lives;
+                this.localPlayerData = response.data.locals;
+                this.pvwData(response.data.lives.concat(response.data.locals));
+                this.addDubbing();
             })
             .catch((error) => {
                 console.error(error + '请求数据有误');
             });
-            this.$store.commit('changePlay', this.playerDataList);
+        },
+        mounted () {
+            this.$nextTick(() => {
+                setInterval(this.getNowDate, 1000);
+            });
         },
         methods: {
             changeLock (event) {
                 this.isLock = !this.isLock;
+            },
+            getNowDate () {
+                let date = new Date();
+                let sign = ":";
+                let year = date.getFullYear() // 年
+                let month = date.getMonth() + 1; // 月
+                let day  = date.getDate(); // 日
+                let hour = date.getHours(); // 时
+                let minutes = date.getMinutes(); // 分
+                let seconds = date.getSeconds() //秒
+                let weekArr = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期天'];
+                let week = weekArr[date.getDay()];
+                // 给一位数数据前面加 “0”
+                if (month >= 1 && month <= 9) {
+                    month = "0" + month;
+                }
+                if (day >= 0 && day <= 9) {
+                    day = "0" + day;
+                }
+                if (hour >= 0 && hour <= 9) {
+                    hour = "0" + hour;
+                }
+                if (minutes >= 0 && minutes <= 9) {
+                    minutes = "0" + minutes;
+                }
+                if (seconds >= 0 && seconds <= 9) {
+                    seconds = "0" + seconds;
+                }
+                this.date =  {
+                    day: year + '年' + month + '月' + day + '日',
+                    week: week,
+                    time: hour + sign + minutes + sign + seconds,
+                }
+            },
+            createStorePlayList (original, islocal = false) {
+                for (let i = 0; i < original.length; i++) {
+                    let obj = {};
+                    islocal ? obj.id = original[i].seqNo + 8 : obj.id = original[i].seqNo;
+                    obj.status = false;
+                    obj.vol = original[i].volume;
+                    obj.title = original[i].title;
+                    obj.isPvw = original[i].isPvw;
+                    obj.isPgm = original[i].isPgm;
+                    obj.url = original[i].url;
+                    this.$store.dispatch('addPlayList', obj);
+                }
+            },
+            pvwData (original) {
+                for (let i = 0; i < original.length; i++) {
+                    if (original[i].isPvw === 1) {
+                        // this.$store.dispatch('changePvw', original[i])       // 做深拷贝
+                        // Object.assign(this.pvw, ]);
+                        this.pvw = JSON.parse(JSON.stringify(original[i]));
+                    }
+                    if (original[i].isPgm === 1) {
+                        let obj = {};
+                        // this.$store.dispatch('changePgm', original[i])
+                        // this.$store.dispatch('changePgmFirst',13);
+                        // Object.assign(this.pgm, original[i]);
+                        this.pgm = JSON.parse(JSON.stringify(original[i]));
+                        this.pgm.seqNo = 13;
+                        obj.id = 13,
+                        obj.status = false;
+                        obj.vol = original[i].volume;
+                        obj.title = original[i].title;
+                        obj.isPvw = original[i].isPvw;
+                        obj.isPgm = original[i].isPgm;
+                        obj.url = original[i].url;
+                        this.$store.dispatch('addPlayList', obj);
+                    }
+                }
+                console.log(this.pvw);
+                console.log(this.pgm);
+            },
+            addDubbing () {
+                let obj = {};
+                obj.id = 14,
+                obj.status = false;
+                obj.vol = 0;
+                obj.title = '配音';
+                obj.isPvw = 0;
+                obj.isPgm = 0;
+                obj.url = '';
+                this.$store.dispatch('addPlayList', obj);
             }
         }
     }

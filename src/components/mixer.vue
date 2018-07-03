@@ -4,22 +4,21 @@
         <div class="mixer-container">
             <el-row align="middle" class="con-tt">
                 <el-col :span="19" class="left">
-                    <Tone></Tone>
-                    <Tone></Tone>
-                    <Tone></Tone>
-                    <Tone></Tone>
-                    <Tone></Tone>
-                    <Tone></Tone>
-                    <Tone></Tone>
-                    <Tone></Tone>
-                    <Tone></Tone>
-                    <Tone></Tone>
-                    <Tone></Tone>
-                    <Tone></Tone>
+                    <Tone   :title = v.title
+                            :index = v.id
+                            v-for="(v, i) in playerList" :key="i" v-if="i < 12">
+                    </Tone>
                 </el-col>
                 <el-col :span="5" class="right">
-                    <Tone :l=true></Tone>
-                    <Tone></Tone>
+                    <Tone   :l= l
+                            :title = ii.title
+                            :index = ii.id
+                            v-for="(ii, vv) in playerList" :key="vv" v-if="vv === 13">
+                    </Tone>
+                    <Tone   :title = pgmTitle
+                            :index = ii.id
+                            v-for="(ii, vv) in playerList" :key="vv" v-if="vv === 12">
+                    </Tone>
                 </el-col>
             </el-row>
         </div>
@@ -31,11 +30,20 @@
         name: 'Mixer',
         data () {
             return {
-                
+                l: true,
+                pgmTitle: 'PGM'
+            }
+        },
+        computed: {
+            playerList () {
+                return this.$store.getters.playerCon;
             }
         },
         components: {
             Tone,   
+        },
+        mounted () {
+            // console.log(this.playerList)
         }
     }
 </script>

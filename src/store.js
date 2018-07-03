@@ -5,19 +5,72 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-      player: '',       // 播放器信息
-      playerStatus: {
-        id: 1,        // 视频索引
-        status: 0,    // 0暂停，1播放
-      }
+      playerListStatus: [],
+      pgm: {},
+      pvw: {},
+  },
+  getters: {
+    playerCon: state => {
+      return state.playerListStatus;
+    },
+    getPlayerListStatus: (state) => (index) =>  {
+      return state.playerListStatus.find(i => i.id === index);
+    },
+    getVol: (state, getters) => {
+      return getters.getPlayerListStatus.vol;
+    },
+    getPvw: state => {
+      return state.pvw;
+    },
+    getPgm: state => {
+      return state.pgm;
+    }
   },
   mutations: {
-      changePlay (state, currentData) {
-        // 将播放数据同步给store
-        state.player = currentData;
+      changePlayStatus (state, id) {
+        for (let i = 0; i < state.playerListStatus.length; i++) {
+          if (state.playerListStatus[i].id === id) {
+            state.playerListStatus[i].status = !state.playerListStatus[i].status;
+          }
+        }
+      },
+      CHANGEVOL (state, obj) {
+        for (let i = 0; i < state.playerListStatus.length; i++) {
+          if (state.playerListStatus[i].id === obj.index) {
+            state.playerListStatus[i].vol = obj.vol;
+          }
+        }
+      },
+      ADDPLAYLIST (state, obj) {
+        state.playerListStatus.push(obj);
+      },
+      CHANGEPVW (state, obj) {
+        Object.assign(state.pvw, obj);
+        // state.pvw = {...state.pvw, obj};
+      },
+      CHANGEPGMN (state, obj) {
+        // state.pgm = {...state.pgm, obj};
+        Object.assign(state.pgm, obj);
+      },
+      CHANGEPGMFIRST (state, id) {
+        state.pgm.seqNo = id;
       }
   },
   actions: {
-
+    changeVol ({commit},obj) {
+      commit("CHANGEVOL", obj);
+    },
+    addPlayList ({commit}, obj) {
+      commit('ADDPLAYLIST', obj);
+    },
+    changePvw ({commit}, obj) {
+      commit('CHANGEPVW', obj);
+    },
+    changePgm ({commit}, obj) {
+      commit('CHANGEPGMN', obj);
+    },
+    changePgmFirst ({commit}, id) {
+      commit('CHANGEPGMFIRST',id)
+    }
   }
 })
