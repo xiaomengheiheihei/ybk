@@ -1,6 +1,6 @@
 <template>
     <div class="flash-player-wrap" 
-        :class="playerData.isPvw === 1 ? 'bor-2-g' : '' || playerData.isPgm === 1 ? 'bor-2-r' : ''"
+        :class="playerData.isPgm === 1 && !isPvw ? 'bor-2-r' : '' || playerData.isPvw === 1 ? 'bor-2-g' : ''"
         :style="isPreview ? {height: '223px'} : {}">
         <div class="video-player-con" 
             :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''">
@@ -136,12 +136,18 @@
                 type: Boolean,
                 required: false,
                 default: false,
+            },
+            isPvw: {
+                type: Boolean,
+                required: false,
+                default: false,
             }
         },
         data() {
             return {
                 initialized: false,
                 playerOptions: {
+                    techOrder: ['flash', 'html5'],
                     height: this.height,
                     muted: true,
                     sources: [
@@ -160,7 +166,6 @@
                     language: 'zh-CN',
                     overNative: true,
                     sourceOrder: true,
-                    techOrder: ['flash', 'html5'],
                     autoplay: true,
                     controls: false,
                     poster: "",

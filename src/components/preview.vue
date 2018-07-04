@@ -11,7 +11,8 @@
                                 :isBlank = 'false'
                                 :isPreview = 'true'
                                 :isRed = 'false'
-                                :height = '223'>
+                                :height = '223'
+                                :isPvw = 'true'>
                         </Flash>
                     </div>
                 </el-col>
