@@ -7,11 +7,11 @@ module.exports = {
         https: false,
         hotOnly: false,
         proxy: {
-            '/api': {
+            '/biz': {
                 target: 'http://bmmqcrhhtgv6.kegate-xq.cloudappl.com/',
                 changeOrigin:true,
                 pathRewrite:{
-                    '^/api':''
+                    '^/biz':''
                 }
             }
         },

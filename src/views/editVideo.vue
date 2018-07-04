@@ -131,7 +131,7 @@
             // });
         },
         created () {
-            this.http.get('/api/ybkBase/1', {})
+            this.http.get('/biz/ybkBase/1', {})
             .then((response) => {
                 // 组装store所需信息
                 this.createStorePlayList(response.data.lives);
