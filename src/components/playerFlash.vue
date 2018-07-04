@@ -146,12 +146,12 @@
                     muted: true,
                     sources: [
                         {
-                            type: "video/mp4",
-                            src: this.playerData.url.indexOf('http') >= 0 ? this.playerData.url : '',     // 非rtmp协议用h5播放
-                        },
-                        {
                             type: "rtmp/mp4",
                             src: this.playerData.url, //"rtmp://live.hkstv.hk.lxdns.com/live/hks"
+                        },
+                        {
+                            type: "video/mp4",
+                            src: this.playerData.url.indexOf('http') >= 0 ? this.playerData.url : '',     // 非rtmp协议用h5播放
                         }
                     ],
                     flash: {
@@ -160,7 +160,7 @@
                     language: 'zh-CN',
                     overNative: true,
                     sourceOrder: true,
-                    techOrder: ['html5','flash'],
+                    techOrder: ['flash', 'html5'],
                     autoplay: true,
                     controls: false,
                     poster: "",

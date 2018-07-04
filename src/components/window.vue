@@ -10,6 +10,20 @@
                         <div class="template01-item">CAM3</div>
                         <div class="template01-item">CAM4</div>
                     </div>
+                    <el-row class="play-bar-wrap">
+                        <el-col :span="8">
+                            12
+                        </el-col>
+                        <el-col :span="8" class="play-item-title">
+                            win1
+                        </el-col>
+                        <el-col :span="8" class="btn-wrap">
+                            <div class="btn01 btn"></div>
+                            <div class="btn02 btn"></div>
+                            <div class="btn03 btn single-grap"></div>
+                            <div class="btn04 btn"></div>
+                        </el-col>
+                    </el-row>
                 </el-col>
                 <el-col :span="12">
                     <!-- <Player :isLive = 1
@@ -24,6 +38,20 @@
                             <div class="add-d"></div>
                         </div>
                     </div>
+                    <el-row class="play-bar-wrap">
+                        <el-col :span="8">
+                            12
+                        </el-col>
+                        <el-col :span="8" class="play-item-title">
+                            win1
+                        </el-col>
+                        <el-col :span="8" class="btn-wrap">
+                            <div class="btn01 btn"></div>
+                            <div class="btn02 btn"></div>
+                            <div class="btn03 btn single-grap"></div>
+                            <div class="btn04 btn"></div>
+                        </el-col>
+                    </el-row>
                 </el-col>
             </el-row>
         </div>
@@ -43,7 +71,7 @@
     }
 </script>
 <style lang="scss" scoped>
-    $border1pxfff: 1px solid #fff;
+    $border1pxfff: 1px solid #A9A5A5;
     .window-wrap {
         margin-top: 3px;
         padding-right: 2px;
@@ -71,8 +99,52 @@
                 border-bottom-left-radius: 15px;
                 border-bottom-right-radius: 15px;
                 overflow: hidden;
+                 .play-bar-wrap {
+                    text-align: left;
+                    font-size: 12px;
+                    color: #fff;
+                    height: 20px;
+                    line-height: 20px;
+                    padding: 0 5px;
+                    background-color: #686F76;
+                    >.el-col-8 {
+                        position: relative;
+                        overflow: hidden;
+                        .btn {
+                            background-color: #0BE235;
+                            width: 2px;
+                            float: right;
+                            margin: 0 1px;
+                        }
+                        .btn04 {
+                            height: 3px;
+                        }
+                        .btn03 {
+                            height: 6px;
+                        }
+                        .btn02 {
+                            height: 9px;
+                        }
+                        .btn01 {
+                            height: 14px;
+                        }
+                        .single-grap {
+                            background-color: #332e2e;
+                        }
+                    }
+                    .play-item-title {
+                        text-align: center;
+                    }
+                    .start-btn {
+                        text-align: right;
+                    }
+                    .btn-wrap {
+                        transform: rotateX(180deg) rotateY(-360deg);
+                        margin-top: 2px;
+                    }
+                }
                 .template-add {
-                    height: 131px;
+                    height: 110px;
                     background-color: #5D5D5D;
                     position: relative;
                     .add-video {
@@ -111,13 +183,13 @@
                         justify-content: center;
                         align-items: center;
                         flex-wrap: wrap;
-                        height: 131px;
+                        height: 110px;
                         .template01-item {
                             width: 50%;
                             height: 50%;
                             background-color: #5D5D5D;
                             color: #fff;
-                            line-height: 65px;
+                            line-height: 56px;
                             box-sizing: border-box;
                         }
                         .template01-item:first-child {

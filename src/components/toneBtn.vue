@@ -3,11 +3,7 @@
         <div class="tone-btn-top">{{ title }}</div>
         <div class="tone-btn-con">
             <div class="tone-btn-container">
-                <!-- <p class="void-num03">-100</p>
-                <p class="void-num02">-50</p>
-                <p class="void-num01">-0</p> -->
                 <input ref="volRange" type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="vols.vol">
-                <!-- <Range :rangeObj=rangeData></Range> -->
             </div>
             <div class="tone-btn-bottom">
                 <p class="void-icon" :class="vols.vol == 0 ? 'void-icon-ss' : ''"></p>
@@ -102,7 +98,7 @@
             .tone-btn-bottom {
                 p {
                     position: absolute;
-                    bottom: 3px;
+                    bottom: 7px;
                     left: 50%;
                     width: 10px;
                     height: 12px;

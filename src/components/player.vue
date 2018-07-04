@@ -45,7 +45,7 @@
                 <div class="h02" v-show="!isStart"></div>
             </div>
             <!-- <input ref="range"  type="range" value="0"> -->
-            <div class="range" @click="changeProgress(player,range,$event)"><span class="range-btn" ref="range"></span></div>
+            <div class="range" @click="changeProgress(player,range,timer,$event)"><span class="range-btn" ref="range"></span></div>
         </div>
         <el-dialog
             :visible.sync="dialogVisible"
@@ -174,22 +174,30 @@
                 that.player ? that.player.volume = that.vol.vol : '';
             };
             this.player.onplay = function () {                  // 开始播放时
-                this.timer = setInterval(() => {
+                that.timer = setInterval(() => {
                     that.range ? that.range.style.left =  that.left + that.tempStep + 'px' : '';
                     that.left = that.left + that.tempStep;
-                }, 1000)
+                }, 1000);
             }
             this.player.ontimeupdate = function () {            // 当目前播放位置更改时
                 that.player ? that.player.volume = that.vol.vol : '';
             };
             this.player.onended = function () {                 // 视频结束清除定时器
-                clearInterval(this.timer);
+                that.range.style.left = 0+'px';
+                that.player.currentTime = 0;
+                clearInterval(that.timer);
             }
             this.player.onpause = function () {
-                clearInterval(this.timer);
+                clearInterval(that.timer);
             }
             this.player.onseeked = function () {        // 跳跃到新位置时改变left值
+                clearInterval(that.timer);
                 that.left = that.range.offsetLeft;
+                if(that.player.currentTime == 0 )  return;
+                that.timer = setInterval(() => {
+                    that.range ? that.range.style.left =  that.left + that.tempStep + 'px' : '';
+                    that.left = that.left + that.tempStep;
+                }, 1000);
             }
         },
         methods: {
@@ -207,8 +215,9 @@
                     })
                     .catch(_ => {});
             },
-            changeProgress (player,range, event) {
+            changeProgress (player,range,timer,event) {
                 let currentProgress = event.offsetX * player.duration / 140;
+                clearInterval(timer);
                 range.style.left = event.offsetX + 'px';
                 player.currentTime = currentProgress;
             },
