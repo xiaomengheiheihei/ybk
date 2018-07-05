@@ -139,7 +139,10 @@
                 this.playerDataList = response.data.lives;
                 this.localPlayerData = response.data.locals;
                 this.$store.dispatch('addplayerdata', this.playerDataList.concat(this.localPlayerData));
-                this.pvwData(response.data.lives.concat(response.data.locals));
+                // this.pvwData(response.data.lives.concat(response.data.locals), response.data);
+                this.$store.dispatch('addPgm', response.data.pgm);
+                this.$store.dispatch('addPvw', response.data.pvw);
+                this.addPgm(response.data.pgm);
                 this.addDubbing();
             })
             .catch((error) => {
@@ -201,24 +204,16 @@
                     this.$store.dispatch('addPlayList', obj);
                 }
             },
-            pvwData (original) {
-                for (let i = 0; i < original.length; i++) {
-                    if (original[i].isPvw === 1) {
-                        this.$store.dispatch('changePvw', original[i])       
-                    }
-                    if (original[i].isPgm === 1) {
-                        let obj = {};
-                        this.$store.dispatch('changePgm', original[i])
-                        obj.id = 13,
-                        obj.status = false;
-                        obj.vol = original[i].volume;
-                        obj.title = original[i].title;
-                        obj.isPvw = original[i].isPvw;
-                        obj.isPgm = original[i].isPgm;
-                        obj.url = original[i].url;
-                        this.$store.dispatch('addPlayList', obj);
-                    }
-                }
+            addPgm (pgm) {
+                let obj = {};
+                obj.id = 13,
+                obj.status = false;
+                obj.vol = pgm.volume;
+                obj.title = pgm.title;
+                obj.isPvw = '0';
+                obj.isPgm = '0';
+                obj.url = pgm.url;
+                this.$store.dispatch('addPlayList', obj);
             },
             addDubbing () {
                 let obj = {};

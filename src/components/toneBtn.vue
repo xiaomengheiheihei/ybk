@@ -1,5 +1,5 @@
 <template>
-    <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : ''" >
+    <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : '' || isPgm === 1 ? 'bor-1-r': ''" >
         <div class="tone-btn-top">{{ title }}</div>
         <div class="tone-btn-con">
             <div class="tone-btn-container">
@@ -7,7 +7,7 @@
             </div>
             <div class="tone-btn-bottom">
                 <p class="void-icon" :class="vols.vol == 0 ? 'void-icon-ss' : ''"></p>
-                <p class="void-icon-s"></p>
+                <p class="void-icon-s" :class="listening ? 'void-icon-star' : '' " @click="tryListen"></p>
             </div>
         </div>
     </div>
@@ -17,7 +17,7 @@
         name: 'Mixer',
         data () {
             return {
-                
+                listening: false,
             }
         },
         props: {
@@ -31,20 +31,29 @@
            },
            vols () {
                return this.$store.getters.getPlayerListStatus(this.index);
+           },
+           isPgm () {
+               return this.$store.getters.getPlayerListStatus(this.index).isPgm;
            }
         },
         mounted () {
-           
+           console.log(this.isPgm)
         },
         methods: {
             changeVol () {
                 let obj = {index: this.index, vol: this.volRange.value};
                 this.$store.dispatch("changeVol", obj);
+            },
+            tryListen () {  // 试听
+                this.listening = !this.listening;
             }
         }
     }
 </script>
 <style lang="scss" scoped>
+    .bor-1-r {
+        border: 1px solid red;
+    }
     .tone-btn-wrap {
         position: relative;
         width: 35px;
@@ -53,6 +62,7 @@
         border-radius: 10px;
         margin-left: 10px;
         overflow: hidden;
+        box-sizing: border-box;
         .tone-btn-top {
             height: 25px;
             background: #575B60;

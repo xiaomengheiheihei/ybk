@@ -45,14 +45,14 @@ export default new Vuex.Store({
       CHANGEPVWPGM (state, obj) {       // 改变pvw和pgm输出线路
         let arr = state.playerListStatus;
         for (let i = 0; i < arr.length; i++) {
-          arr[i].isPvw === 1 ? arr[i].isPvw = 0 : '';
-          arr[i].isPgm === 1 ? arr[i].isPgm = 0 : '';
           switch (obj.type) {   // 0 pvw 1 pgm
             case 0:
-              arr[i].id === obj.id ? arr[i].isPvw = 1 : '';
+              arr[i].isPvw === 1 ? arr[i].isPvw = 0 : '';
+              arr[i].id === obj.index ? arr[i].isPvw = 1 : '';
               break;
             case 1:
-              arr[i].id === obj.id ? arr[i].isPgm = 1 : '';
+              arr[i].isPgm === 1 ? arr[i].isPgm = 0 : '';
+              arr[i].id === obj.index ? arr[i].isPgm = 1 : '';
               break;
           }
         }
@@ -77,9 +77,17 @@ export default new Vuex.Store({
         state.playerDataList = [...arr];
       },
       CHANGEPVW (state, obj) {
+        state.pvw.obj.title = obj.title;
+        state.pvw.obj.isPvw = 1;
+      },
+      CHANGEPGM (state, obj) {
+        state.pgm.obj.title = obj.title;
+        state.pgm.obj.isPgm = 1;
+      },
+      ADDPVW (state, obj) {
         state.pvw = {...state.pvw, obj};
       },
-      CHANGEPGMN (state, obj) {
+      ADDPGM (state, obj) {
         state.pgm = {...state.pgm, obj};
       },
   },
@@ -94,7 +102,13 @@ export default new Vuex.Store({
       commit('CHANGEPVW', obj);
     },
     changePgm ({commit}, obj) {
-      commit('CHANGEPGMN', obj);
+      commit('CHANGEPGM', obj);
+    },
+    addPvw ({commit}, obj) {
+      commit('ADDPVW', obj);
+    },
+    addPgm ({commit}, obj) {
+      commit('ADDPGM', obj);
     },
     changepvwpgm ({commit}, obj) {
       commit('CHANGEPVWPGM', obj);

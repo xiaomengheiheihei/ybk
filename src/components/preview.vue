@@ -60,17 +60,8 @@
             }
         },
         mounted () {
-            // setTimeout(() => {
-            //     console.log(this.$store.getters.getPvw.id);
-            // },2000)
+            
         },
-        watch: {
-            pvw () {
-                // this.$nextTick(() => {
-
-                // })
-            }
-        }
     }
 </script>
 <style lang="scss" scoped>

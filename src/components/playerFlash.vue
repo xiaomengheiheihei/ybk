@@ -9,6 +9,7 @@
                     ref="videoPlayer" 
                     :options= playerOptions
                     @timeupdate="onTimeupdate"
+                    @play ="changeWidth"
                     :playsinline= true>
             </video-player>
             <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
@@ -185,19 +186,19 @@
                 return this.$refs.videoPlayer ? this.$refs.videoPlayer.player : undefined;
             },
             vol () {
-                return this.$store.getters.getPlayerListStatus(this.isPgm ? 13 : this.playerData.seqNo);
+                return this.$store.getters.getPlayerListStatus(13);
             }
         },
         components: {
             videoPlayer
         },
         mounted () {
-            this.player && this.player.volume(this.playerData.volume);
+            this.isPgm && this.player && this.player.volume(0.5);
         },
         methods: {
             // record current time
-            onTimeupdate(e) {      
-                this.player && this.player.volume(this.vol.vol);  
+            onTimeupdate(e) {  
+                this.isPgm && this.player && this.player.volume(this.vol.vol);  
             },
             addPvw () {
                 clearTimeout(this.clickTimer);
@@ -208,7 +209,8 @@
                         this.playerData.isPvw = 1;
                         let tempObj = {
                             id: this.playerData.id,
-                            type: 0
+                            type: 0,
+                            index: this.playerData.seqNo,
                         };
                         this.$store.dispatch('changepvwpgm', tempObj);
                     })
@@ -250,13 +252,22 @@
                     this.playerData.isPgm = 1;
                     let tempObj = {
                         id: this.playerData.id,
-                        type: 1
+                        type: 1,
+                        index: this.playerData.seqNo,
                     };
                     this.$store.dispatch('changepvwpgm', tempObj);
                 })
                 .catch((error) => {
 
                 });
+            },
+            changeWidth () {
+                setTimeout(() => {
+                    this.player.el().style.width = '99%';
+                    setTimeout (() => {
+                        this.player.el().style.width = '100%';
+                    },500);
+                },500);
             }
         }
     }
@@ -270,8 +281,8 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 99%;
-        height: 99%;
+        width: 99.5%;
+        height: 100%;
         border: 1px solid #FF0000;
         pointer-events: none;
     }
@@ -280,8 +291,8 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 99%;
-        height: 99%;
+        width: 99.5%;
+        height: 100%;
         border: 1px solid #00FF00;
         pointer-events: none;
     }

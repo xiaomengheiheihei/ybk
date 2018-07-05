@@ -1,9 +1,10 @@
 <template>
     <div class="qn-player">
-        <div class="video-player-con" :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''">
+        <div class="video-player-con" :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''
+        || playerData.isPvw === 1 ? 'bor-2-g' : '' || playerData.isPgm === 1 ? 'bor-2-r' : ''">
             <video ref="player" v-show="!isAdd" preload="auto" height="100%" width="100%"
             :src="playerData.url" @click.stop="addPvw" @dblclick="addPgm"
-            :class="playerData.isPvw === 1 ? 'bor-2-g' : '' || playerData.isPgm === 1 ? 'bor-2-r' : ''"></video>
+            ></video>
             <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
                 <div class="add-h"></div>
                 <div class="add-d"></div>
@@ -239,7 +240,8 @@
                     this.playerData.isPgm = 1;
                     let tempObj = {
                         id: this.playerData.id,
-                        type: 1
+                        type: 1,
+                        index: this.playerData.seqNo+8,
                     };
                     this.$store.dispatch('changepvwpgm', tempObj);
                 })
@@ -256,7 +258,8 @@
                         this.playerData.isPvw = 1;
                         let tempObj = {
                             id: this.playerData.id,
-                            type: 0
+                            type: 0,
+                            index: this.playerData.seqNo+8,
                         };
                         this.$store.dispatch('changepvwpgm', tempObj);
                     })
@@ -281,6 +284,7 @@
     height: 99%;
     border: 1px solid #FF0000;
     pointer-events: none;
+    z-index: 100;
 }
 .bor-2-g::after {
     content: '';
@@ -291,6 +295,7 @@
     height: 99%;
     border: 1px solid #00FF00;
     pointer-events: none;
+    z-index: 100;
 }
 .video-player-con {
     .none {
