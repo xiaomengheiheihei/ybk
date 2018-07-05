@@ -147,7 +147,7 @@
             return {
                 initialized: false,
                 playerOptions: {
-                    techOrder: ['flash', 'html5'],
+                    techOrder: ['html5', 'flash'],
                     height: this.height,
                     muted: true,
                     sources: [
@@ -161,7 +161,7 @@
                         }
                     ],
                     flash: {
-                        swf: '/video-js.swf'
+                        swf: './video-js.swf'
                     },
                     language: 'zh-CN',
                     overNative: true,
