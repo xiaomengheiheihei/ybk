@@ -1,13 +1,13 @@
 <template>
-    <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : '' || isPgm === 1 ? 'bor-1-r': ''" >
+    <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : '' || isPgm === 1 ? 'bor-1-r': ''" @dblclick="switchVol" >
         <div class="tone-btn-top">{{ title }}</div>
         <div class="tone-btn-con">
             <div class="tone-btn-container">
                 <input ref="volRange" type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="vols.vol">
             </div>
             <div class="tone-btn-bottom">
-                <p class="void-icon" :class="vols.vol == 0 ? 'void-icon-ss' : ''"></p>
-                <p class="void-icon-s" :class="listening ? 'void-icon-star' : '' " @click="tryListen"></p>
+                <p class="void-icon" :class="vols.vol == 0 ? 'void-icon-ss' : ''" @click="isMute"></p>
+                <p class="void-icon-s" :class="vols.isListening ? 'void-icon-star' : '' " @click="tryListen"></p>
             </div>
         </div>
     </div>
@@ -17,7 +17,7 @@
         name: 'Mixer',
         data () {
             return {
-                listening: false,
+                lastVol: 0,
             }
         },
         props: {
@@ -34,18 +34,61 @@
            },
            isPgm () {
                return this.$store.getters.getPlayerListStatus(this.index).isPgm;
-           }
+           },
         },
         mounted () {
-           console.log(this.isPgm)
+           
         },
         methods: {
             changeVol () {
-                let obj = {index: this.index, vol: this.volRange.value};
-                this.$store.dispatch("changeVol", obj);
+                if (this.index === 13) {
+                    let obj = {index: this.index, vol: this.volRange.value};
+                    this.$store.dispatch("changeVol", obj);
+                } else if(!this.vols.isListening) {
+                    let req = {
+                        id: this.vols.playerId,
+                        volume: this.volRange.value
+                    }
+                    this.http.post('./biz/ybk/setVolume', req)
+                    .then((res)=> {
+                        if(res.code === 0) {
+                            this.$message({
+                                message: '修改音量成功！',
+                                type: 'success'
+                            });
+                        }
+                    })
+                    .catch((err) => {
+                        this.$message.error('修改音量失败，请重试！');
+                    });
+                }
             },
             tryListen () {  // 试听
-                this.listening = !this.listening;
+                if (this. vols.status && !this.vols.isListening) {
+                    this.lastVol = this.volRange.value;
+                    this.vols.vol = 1;
+                    this.vols.isListening = !this.vols.isListening;
+                } else if (this. vols.status) {
+                    this.vols.vol = this.lastVol;
+                    this.vols.isListening = !this.vols.isListening;
+                }
+            },
+            isMute () {
+                if (this.vols.vol !== 0) {
+                    this.lastVol = this.volRange.value;
+                    this.vols.vol = 0;
+                } else {
+                    this.vols.vol = this.lastVol
+                }
+            },
+            switchVol () {      // 双击切换音频输出
+                this.http.post('', {})
+                .then((res)=> {
+                    console.log(res)
+                })
+                .catch((err)=> {
+                    console.log(err);
+                })
             }
         }
     }

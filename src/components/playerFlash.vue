@@ -4,7 +4,7 @@
         :style="isPreview ? {height: '223px'} : {}">
         <div class="video-player-con" 
             :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''">
-            <div class="bg" v-if="!isPreview" v-show="vol" @click.stop="addPvw" @dblclick="addPgm"></div>
+            <div class="bg" v-if="!isPreview && playerData.url != ''" v-show="vol" @click.stop="addPvw" @dblclick="addPgm"></div>
             <video-player v-if="playerData.url != ''" v-show="!isAdd" class="vjs-custom-skin" 
                     ref="videoPlayer" 
                     :options= playerOptions
@@ -58,7 +58,7 @@
                 <span @click="dialogVisible = false">关闭</span>
             </div>
             <div class="content">
-                <div class="name">名称：<input type="text" placeholder="请输入直播源名称"></div>
+                <div class="name">名称：<input type="text" :placeholder="playerData.title"></div>
                 <div class="radio-wrap">
                     <template>
                         <div class="radio01">
@@ -187,23 +187,28 @@
             },
             vol () {
                 return this.$store.getters.getPlayerListStatus(13);
+            },
+            listening () {
+                return this.$store.getters.getPlayerListStatus(this.playerData.seqNo);
             }
         },
         components: {
             videoPlayer
         },
         mounted () {
-            this.isPgm && this.player && this.player.volume(0.5);
+            this.isPgm && this.player && this.player.volume('0.5');
         },
         methods: {
-            // record current time
-            onTimeupdate(e) {  
-                this.isPgm && this.player && this.player.volume(this.vol.vol);  
+            onTimeupdate(e) {
+                this.isPgm && this.player && this.player.volume(this.vol.vol); 
+                if (!!this.listening) {
+                    this.listening.isListening ? this.player && this.player.volume(this.listening.vol) : this.player.volume(0);
+                } 
             },
             addPvw () {
                 clearTimeout(this.clickTimer);
                 this.clickTimer = setTimeout(() => {
-                    this.http.post('/api/addPVW', {})
+                    this.http.post('./biz/ybk/switch2PVW', {id:this.playerData.id})
                     .then((response) => {
                         this.$store.dispatch('changePvw', this.playerData);
                         this.playerData.isPvw = 1;
@@ -246,7 +251,7 @@
             },
             addPgm () {
                 clearTimeout(this.clickTimer);
-                this.http.post('/api/addPVW', {})
+                this.http.post('./biz/ybk/switch2PGM', {"id": this.playerData.id})
                 .then((response) => {
                     this.$store.dispatch('changePgm', this.playerData);
                     this.playerData.isPgm = 1;
@@ -302,6 +307,7 @@
         .video-player-con {
             position: relative;
             min-height: 110px;
+            background-color: #5D5D5D;
             .bg {
                 position: absolute;
                 left: 0;

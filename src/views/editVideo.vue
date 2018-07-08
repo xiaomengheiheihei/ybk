@@ -29,22 +29,38 @@
                         <div class="edit-video-left-tile">视频矩阵<span></span></div>
                         <el-row class="video-item-live">
                             <el-col :span="6" v-for="(item, index) in playerDataList" :key="index" 
-                                    :style="index < 4 ? {marginBottom: '1px'} : {}">
+                                    :style="index < 4 ? {marginBottom: '1px'} : {}"
+                                    >
+                                <Flash  :isLive= 1
+                                        :playerData= item
+                                        :isAdd = true
+                                        :isBlank = false
+                                        :height = '110'
+                                        v-if="playerDataList.find(i => i.url === '').id === item.id">
+                                </Flash>
                                 <Flash  :isLive= 1
                                         :playerData= item
                                         :isAdd = false
                                         :isBlank = false
-                                        :height = '110'>
+                                        :height = '110'
+                                        v-else>
                                 </Flash>
                             </el-col>
+                            
                         </el-row>
                         <el-row class="video-item-live">
                             <el-col :span="6" v-for="(item, index) in localPlayerData" :key="index">
                                 <Player :isLive = 0
                                         :playerData=item
+                                        :isAdd = true
+                                        :isBlank = false
+                                        v-if="localPlayerData.find(i => i.url === '').id === item.id">
+                                </Player>
+                                <Player :isLive = 0
+                                        :playerData=item
                                         :isAdd = false
                                         :isBlank = false
-                                        >
+                                        v-else>
                                 </Player>  
                             </el-col>
                         </el-row>
@@ -118,9 +134,7 @@
             Flash,
         },
         computed: {
-            pvw () {
-                return
-            }
+            
         },
         beforeCreate () {
             // this.$loading({
@@ -140,7 +154,10 @@
                 this.localPlayerData = response.data.locals;
                 this.$store.dispatch('addplayerdata', this.playerDataList.concat(this.localPlayerData));
                 // this.pvwData(response.data.lives.concat(response.data.locals), response.data);
+                response.data.pgm.isPgm = 1;
+                response.data.pgm.volume = 0.5;
                 this.$store.dispatch('addPgm', response.data.pgm);
+                response.data.pvw.isPvw = 1;
                 this.$store.dispatch('addPvw', response.data.pvw);
                 this.addPgm(response.data.pgm);
                 this.addDubbing();
@@ -195,7 +212,9 @@
                 for (let i = 0; i < original.length; i++) {
                     let obj = {};
                     islocal ? obj.id = original[i].seqNo + 8 : obj.id = original[i].seqNo;
-                    obj.status = false;
+                    islocal ? obj.status = false : obj.status = true;
+                    obj.isListening = false;
+                    obj.playerId = original[i].id;
                     obj.vol = original[i].volume;
                     obj.title = original[i].title;
                     obj.isPvw = original[i].isPvw;
@@ -212,6 +231,8 @@
                 obj.title = pgm.title;
                 obj.isPvw = '0';
                 obj.isPgm = '0';
+                obj.playerId = pgm.pgmId;
+                obj.isListening = false;
                 obj.url = pgm.url;
                 this.$store.dispatch('addPlayList', obj);
             },
@@ -223,6 +244,7 @@
                 obj.title = '配音';
                 obj.isPvw = 0;
                 obj.isPgm = 0;
+                obj.isListening = false;
                 obj.url = '';
                 this.$store.dispatch('addPlayList', obj);
             }

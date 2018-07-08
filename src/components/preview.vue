@@ -60,7 +60,6 @@
             }
         },
         mounted () {
-            
         },
     }
 </script>

@@ -54,25 +54,27 @@
             :show-close="false"
             >
             <div slot="title" class="title">
-                添加直播源
+                添加本地内容
                 <span @click="dialogVisible = false">关闭</span>
             </div>
             <div class="content">
-                <div class="name">名称：<input type="text" placeholder="请输入直播源名称"></div>
+                <div class="name">名称：<input type="text" :placeholder="playerData.title"></div>
                 <div class="radio-wrap">
                     <template>
                         <div class="radio01">
-                            <el-radio v-model="steamRadio" label="1">推流直播：请将下列地址配置在采集设备中</el-radio>
+                            <el-radio v-model="steamRadio" label="1">添加图片：支持的格式有bmp、jpg、png</el-radio>
                         </div>
                         <div class="detail-wrap" v-show="steamRadio == 1">
-                            <div class="detail-con"></div>
-                            <span class="copy-btn">复制</span>
+                            <div class="detail-con">{{ filePathi }}</div>
+                            <input type="file" id="add-image" accept="image/png,image/bmp,image/jpg" @input="addImage($event)" placeholder="">
+                            <span class="copy-btn">上传</span>
                         </div>
                         <div class="radio02">
-                            <el-radio v-model="steamRadio" label="2">拉流直播：支持的协议有rtmp、flv、m3u8、hls</el-radio>
+                            <el-radio v-model="steamRadio" label="2">添加视频：支持的格式有avi、mkv、mp4、mpeg、wmv</el-radio>
                         </div>
                         <div class="pull-wrap" v-show="steamRadio == 2">
-                            <input type="text" id="pull-stream" placeholder="请输入拉流地址"><span @click="addLivePlay">添加</span>
+                            <div class="file-z">{{ filePathv }}</div>
+                            <input type="file" id="add-video" placeholder=""><span @click="addLivePlay">上传</span>
                         </div>
                         <div class="preview-wrap">
                             <Flash v-if="addLivePLayerData != null"  :isLive= 1
@@ -89,14 +91,6 @@
                         <span>智能黄暴监控：</span>
                         <el-switch
                             v-model="monitor01"
-                            active-color="#13ce66"
-                            inactive-color="#383B3C">
-                        </el-switch>
-                    </div>
-                    <div class="switch02">
-                        <span>信号质量监控：</span>
-                        <el-switch
-                            v-model="monitor02"
                             active-color="#13ce66"
                             inactive-color="#383B3C">
                         </el-switch>
@@ -143,6 +137,8 @@
                 tempStep: 0,        // 每秒走的距离
                 left: 0,            // 滑块距离父元素左边距离
                 addLivePLayerData: null,
+                filePathv: '',       // 上传视频路径
+                filePathi: '',         // 上传图片路径
             }
         },
         components: {
@@ -172,7 +168,7 @@
                 let duration = Math.floor(that.player.duration);    // 视频总时长
                 that.tempStep = 140 / duration;
                 // 设置初始声音
-                that.player ? that.player.volume = that.vol.vol : '';
+                that.player.volume = 0;
             };
             this.player.onplay = function () {                  // 开始播放时
                 that.timer = setInterval(() => {
@@ -181,7 +177,14 @@
                 }, 1000);
             }
             this.player.ontimeupdate = function () {            // 当目前播放位置更改时
-                that.player ? that.player.volume = that.vol.vol : '';
+                // that.player ? that.player.volume = that.vol.vol : '';
+                if (!!that.vol) {
+                    if (that.vol.isListening && that.player) {
+                        that.player.volume = that.vol.vol
+                    } else {
+                        that.player.volume = 0;
+                    }  
+                } 
             };
             this.player.onended = function () {                 // 视频结束清除定时器
                 that.range.style.left = 0+'px';
@@ -205,8 +208,8 @@
             // 定义播放暂停按钮
             playBtnHandel () {
                 this.isStart = !this.isStart;       // 改变播放状态
-                this.$store.commit('changePlayStatus', this.playerData.seqNo);
-                let index = this.playerData.seqNo;
+                this.$store.commit('changePlayStatus', this.playerData.seqNo + 8);
+                let index = this.playerData.seqNo + 8;
                 this.$store.getters.getPlayerListStatus(index).status ? this.player.play() : this.player.pause();
             },
             handleClose () {    // 添加直播源
@@ -234,7 +237,7 @@
             },
             addPgm () {
                 clearTimeout(this.clickTimer);
-                this.http.post('/api/addPVW', {})
+                this.http.post('./biz/ybk/switch2PGM', {})
                 .then((response) => {
                     this.$store.dispatch('changePgm', this.playerData);
                     this.playerData.isPgm = 1;
@@ -268,6 +271,16 @@
                     });
                 }, 300)
             },
+            addImage (e) {
+                this.filePathi = e.target.value;
+                this.http.post('./biz/ybkBase/uploadFile', e.target.files[0])
+                .then((res) => {
+                    console.log(res);
+                })
+                .catch((err)=> {
+
+                });
+            }
         },
         watch: {
            
@@ -298,6 +311,7 @@
     z-index: 100;
 }
 .video-player-con {
+    background-color: #5D5D5D;
     .none {
         display: none;
     }
@@ -516,6 +530,18 @@
         .pull-wrap {
             margin-top: 15px;
             margin-bottom: 10px;
+            position: relative;
+            .file-z {
+                position: absolute;
+                left: 5px;
+                top: 0;
+                height: 40px;
+                line-height: 40px;
+                width: 65%;
+                font-size: 18px;
+                color: #4A4A4A;
+                background-color: #fff;
+            }
             input {
                 height: 40px;
                 line-height: 40px;
@@ -524,6 +550,7 @@
                 color: #4A4A4A;
                 padding-left: 5px;
                 outline: none;
+                opacity: 0;
             }
             span{
                 margin-left: 30px;
@@ -544,16 +571,31 @@
             justify-content: flex-start;
             align-items: center;
             margin: 15px 0;
+            position: relative;
+            input {
+                opacity: 0;
+                width: 65%;
+                height: 40px;
+            }
             .detail-con {
-                width: 70%;
-                height: 50px;
-                border: 1px solid #4A4848;
-                margin-right: 30px;
+                width: 65%;
+                height: 40px;
+                line-height: 40px;
+                position: absolute;
+                left: 5px;
+                top: 0;
+                background-color: #fff;
+                font-size: 18px;
+                color: #4A4A4A;
+                padding-left: 15px;
             }
             span {
                 background: #333333;
                 border-radius: 6px;
-                padding: 8px 15px; 
+                padding: 5px 15px; 
+                cursor: pointer;
+                margin-left: 30px;
+                font-size: 18px;
             }
         }
     }
