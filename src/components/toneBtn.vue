@@ -1,12 +1,15 @@
 <template>
-    <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : '' || isPgm === 1 ? 'bor-1-r': ''" @dblclick="switchVol" >
+    <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : '' || isPgm === 1 && changeSync ? 'bor-1-r': ''
+    || this.vols.isMute == 0 && !changeSync ? 'bor-1-r': ''" @dblclick="switchVol" >
         <div class="tone-btn-top">{{ title }}</div>
         <div class="tone-btn-con">
             <div class="tone-btn-container">
-                <input ref="volRange" type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="vols.vol">
+                <input v-if="index < 13 || index == 14" ref="volRange" type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="isMuted" :disabled ="disabled">
+                <input v-if="index == 13" ref="volRange" type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="vols.vol">
             </div>
             <div class="tone-btn-bottom">
-                <p class="void-icon" :class="vols.vol == 0 ? 'void-icon-ss' : ''" @click="isMute"></p>
+                <p class="void-icon" v-if="index < 13 || index == 14" :class="(isMuted == 0 || vols.vol == 0) ? 'void-icon-ss' : ''" @click="isMute"></p>
+                <p class="void-icon" v-if="index == 13" :class="vols.vol == 0 ? 'void-icon-ss' : ''" @click="isMute"></p>
                 <p class="void-icon-s" :class="vols.isListening ? 'void-icon-star' : '' " @click="tryListen"></p>
             </div>
         </div>
@@ -35,6 +38,15 @@
            isPgm () {
                return this.$store.getters.getPlayerListStatus(this.index).isPgm;
            },
+           isMuted () {
+               return this.vols.isMute === 1 ? 0 : this.vols.vol;
+           },
+           changeSync () {
+               return this.$store.getters.getPlaySync;
+           },
+           disabled () {
+               return this.isPgm === 1 && this.changeSync ? false : true && this.isMuted !== 0 && !this.changeSync ? false : true;
+           }
         },
         mounted () {
            
@@ -57,6 +69,9 @@
                                 type: 'success'
                             });
                         }
+                        let obj = {index: this.index, vol: this.volRange.value};
+                    this.$store.dispatch("changeVol", obj);
+                    console.log(this.vols.vol);
                     })
                     .catch((err) => {
                         this.$message.error('修改音量失败，请重试！');
@@ -74,7 +89,8 @@
                 }
             },
             isMute () {
-                if (this.vols.vol !== 0) {
+                this.$store.dispatch('changemute', this.vols.playerId);
+                if (this.vols.vol != 0) {
                     this.lastVol = this.volRange.value;
                     this.vols.vol = 0;
                 } else {
@@ -82,13 +98,19 @@
                 }
             },
             switchVol () {      // 双击切换音频输出
-                this.http.post('', {})
-                .then((res)=> {
-                    console.log(res)
-                })
-                .catch((err)=> {
-                    console.log(err);
-                })
+                if (this.changeSync) {      // 音视频同步切换，阻止直接选中
+
+                } else {                    // 音视频可不同步切换，选中后其他路静音
+                    this.http.post('./biz/ybk/setMute', {id:this.vols.playerId,mute: 0})
+                    .then((res)=> {
+                        if(res.code == 0) {
+                            this.$store.dispatch('changemute', this.vols.playerId);
+                        }
+                    })
+                    .catch((err)=> {
+                        console.log(err);
+                    })
+                }
             }
         }
     }

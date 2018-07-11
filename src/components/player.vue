@@ -2,7 +2,7 @@
     <div class="qn-player">
         <div class="video-player-con" :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''
         || playerData.isPvw === 1 ? 'bor-2-g' : '' || playerData.isPgm === 1 ? 'bor-2-r' : ''">
-            <video ref="player" v-show="!isAdd" preload="auto" height="100%" width="100%"
+            <video ref="player" v-if="playerData.url !== ''" v-show="!isAdd" preload="auto" height="100%" width="100%"
             :src="playerData.url" @click.stop="addPvw" @dblclick="addPgm"
             ></video>
             <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
@@ -12,7 +12,7 @@
         </div>
         <el-row class="play-bar-wrap" :class="isPreview &&  !isRed ? 'play-bar-wrap-h' : '' || isPreview &&  isRed ? 'play-bar-wrap-r' : ''">
             <el-col :span="8" v-if="!isPreview">
-                {{ playerData.seqNo }}
+                {{ playerData.seqNo+1 }}
             </el-col>
             <el-col :span="8" v-if="isPreview">
                 {{ playerData.title }}
@@ -155,7 +155,7 @@
                 return this.$refs.range;
             },
             vol () {
-                return this.$store.getters.getPlayerListStatus(this.playerData.seqNo+8);
+                return this.$store.getters.getPlayerListStatus(this.playerData.seqNo+1);
             }
         },
         created () {
@@ -164,52 +164,54 @@
         mounted () {
             let that = this;
             
-            this.player.oncanplay = function () {                   // 视频可以播放时
-                let duration = Math.floor(that.player.duration);    // 视频总时长
-                that.tempStep = 140 / duration;
-                // 设置初始声音
-                that.player.volume = 0;
-            };
-            this.player.onplay = function () {                  // 开始播放时
-                that.timer = setInterval(() => {
-                    that.range ? that.range.style.left =  that.left + that.tempStep + 'px' : '';
-                    that.left = that.left + that.tempStep;
-                }, 1000);
-            }
-            this.player.ontimeupdate = function () {            // 当目前播放位置更改时
-                // that.player ? that.player.volume = that.vol.vol : '';
-                if (!!that.vol) {
-                    if (that.vol.isListening && that.player) {
-                        that.player.volume = that.vol.vol
-                    } else {
-                        that.player.volume = 0;
-                    }  
-                } 
-            };
-            this.player.onended = function () {                 // 视频结束清除定时器
-                that.range.style.left = 0+'px';
-                that.player.currentTime = 0;
-                clearInterval(that.timer);
-            }
-            this.player.onpause = function () {
-                clearInterval(that.timer);
-            }
-            this.player.onseeked = function () {        // 跳跃到新位置时改变left值
-                clearInterval(that.timer);
-                that.left = that.range.offsetLeft;
-                if(that.player.currentTime == 0 )  return;
-                that.timer = setInterval(() => {
-                    that.range ? that.range.style.left =  that.left + that.tempStep + 'px' : '';
-                    that.left = that.left + that.tempStep;
-                }, 1000);
+            if (!!this.player) {
+                this.player.oncanplay = function () {                   // 视频可以播放时
+                    let duration = Math.floor(that.player.duration);    // 视频总时长
+                    that.tempStep = 140 / duration;
+                    // 设置初始声音
+                    that.player.volume = 0;
+                };
+                this.player.onplay = function () {                  // 开始播放时
+                    that.timer = setInterval(() => {
+                        that.range ? that.range.style.left =  that.left + that.tempStep + 'px' : '';
+                        that.left = that.left + that.tempStep;
+                    }, 1000);
+                }
+                this.player.ontimeupdate = function () {            // 当目前播放位置更改时
+                    // that.player ? that.player.volume = that.vol.vol : '';
+                    if (!!that.vol) {
+                        if (that.vol.isListening && that.player) {
+                            that.player.volume = that.vol.vol
+                        } else {
+                            that.player.volume = 0;
+                        }  
+                    } 
+                };
+                this.player.onended = function () {                 // 视频结束清除定时器
+                    that.range.style.left = 0+'px';
+                    that.player.currentTime = 0;
+                    clearInterval(that.timer);
+                }
+                this.player.onpause = function () {
+                    clearInterval(that.timer);
+                }
+                this.player.onseeked = function () {        // 跳跃到新位置时改变left值
+                    clearInterval(that.timer);
+                    that.left = that.range.offsetLeft;
+                    if(that.player.currentTime == 0 )  return;
+                    that.timer = setInterval(() => {
+                        that.range ? that.range.style.left =  that.left + that.tempStep + 'px' : '';
+                        that.left = that.left + that.tempStep;
+                    }, 1000);
+                }
             }
         },
         methods: {
             // 定义播放暂停按钮
             playBtnHandel () {
                 this.isStart = !this.isStart;       // 改变播放状态
-                this.$store.commit('changePlayStatus', this.playerData.seqNo + 8);
-                let index = this.playerData.seqNo + 8;
+                this.$store.commit('changePlayStatus', this.playerData.seqNo + 1);
+                let index = this.playerData.seqNo + 1;
                 this.$store.getters.getPlayerListStatus(index).status ? this.player.play() : this.player.pause();
             },
             handleClose () {    // 添加直播源
@@ -237,14 +239,14 @@
             },
             addPgm () {
                 clearTimeout(this.clickTimer);
-                this.http.post('./biz/ybk/switch2PGM', {})
+                this.http.post('./biz/ybk/switch2PGM', {id: this.playerData.id})
                 .then((response) => {
                     this.$store.dispatch('changePgm', this.playerData);
                     this.playerData.isPgm = 1;
                     let tempObj = {
                         id: this.playerData.id,
                         type: 1,
-                        index: this.playerData.seqNo+8,
+                        index: this.playerData.seqNo+1,
                     };
                     this.$store.dispatch('changepvwpgm', tempObj);
                 })
@@ -262,7 +264,7 @@
                         let tempObj = {
                             id: this.playerData.id,
                             type: 0,
-                            index: this.playerData.seqNo+8,
+                            index: this.playerData.seqNo+1,
                         };
                         this.$store.dispatch('changepvwpgm', tempObj);
                     })

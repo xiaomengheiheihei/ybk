@@ -5,6 +5,9 @@ import store from './store'
 import Element from 'element-ui'
 import Http from './utils/http'
 import 'element-ui/lib/theme-chalk/index.css'
+import VueClipboard from 'vue-clipboard2'
+ 
+Vue.use(VueClipboard)
 
 require('./utils/mock')
 

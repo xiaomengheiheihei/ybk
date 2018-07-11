@@ -7,7 +7,7 @@
             </div>
             <div class="play-con-bottom">
                 <input type="range" name="" id="">
-                <el-checkbox v-model="checked">音视频同步切换</el-checkbox>
+                <el-checkbox @change="changeSync" v-model="checked">音视频同步切换</el-checkbox>
             </div>
         </div>
     </div>
@@ -17,7 +17,15 @@
         name: 'PlayControl',
         data () {
             return {
-                checked: true
+                checked: true,
+            }
+        },
+        computed: {
+    
+        },
+        methods: {
+            changeSync () {
+                this.$store.dispatch('changePlaySync', this.checked);
             }
         }
     }

@@ -9,6 +9,7 @@ export default new Vuex.Store({
       playerListStatus: [],     // 所有播放器数据
       pgm: {},                 
       pvw: {},
+      playSync: true,       // 音视频是否同步切换
   },
   getters: {
     playerCon: state => {
@@ -25,6 +26,9 @@ export default new Vuex.Store({
     },
     getPgm: state => {
       return state.pgm;
+    },
+    getPlaySync: state => {
+      return state.playSync;
     }
   },
   mutations: {
@@ -39,6 +43,16 @@ export default new Vuex.Store({
         for (let i = 0; i < state.playerListStatus.length; i++) {
           if (state.playerListStatus[i].id === obj.index) {
             state.playerListStatus[i].vol = obj.vol;
+          }
+        }
+      },
+      CHANGEMUTE (state, id) {       // 改变音频状态
+        let list = state.playerListStatus;
+        for(let i = 0; i < list.length; i++) {
+          if (id === list[i].playerId) {
+            list[i].isMute = 0;
+          } else {
+            list[i].isMute = 1;
           }
         }
       },
@@ -90,6 +104,9 @@ export default new Vuex.Store({
       ADDPGM (state, obj) {
         state.pgm = {...state.pgm, obj};
       },
+      CHANGEPLAYSYNC(state, bol){      // 改变音视频同步切换状态
+        state.playSync = bol;
+      }
   },
   actions: {
     changeVol ({commit},obj) {
@@ -115,6 +132,12 @@ export default new Vuex.Store({
     },
     addplayerdata ({commit}, arr) {
       commit('ADDPLAYERDATA', arr);
+    },
+    changemute ({commit}, id) {
+      commit('CHANGEMUTE', id);
+    },
+    changePlaySync({commit}, bol) {
+      commit('CHANGEPLAYSYNC', bol)
     }
   }
 })

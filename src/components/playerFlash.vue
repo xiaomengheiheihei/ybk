@@ -19,7 +19,7 @@
         </div>
         <el-row class="play-bar-wrap" :class="isPreview &&  !isRed ? 'play-bar-wrap-h' : '' || isPreview &&  isRed ? 'play-bar-wrap-r' : ''">
             <el-col :span="8" v-if="!isPreview">
-                {{ playerData.seqNo }}
+                {{ playerData.seqNo+1 }}
             </el-col>
             <el-col :span="8" v-if="isPreview">
                 {{ playerData.title }}
@@ -65,14 +65,14 @@
                             <el-radio v-model="steamRadio" label="1">推流直播：请将下列地址配置在采集设备中</el-radio>
                         </div>
                         <div class="detail-wrap" v-show="steamRadio == 1">
-                            <div class="detail-con"></div>
-                            <span class="copy-btn">复制</span>
+                            <div class="detail-con" :copyData = "addUrl">{{ addUrl }}</div>
+                            <span class="copy-btn" v-clipboard:copy="addUrl" v-clipboard:success="onCopy" v-clipboard:error="onError">复制</span>
                         </div>
                         <div class="radio02">
                             <el-radio v-model="steamRadio" label="2">拉流直播：支持的协议有rtmp、flv、m3u8、hls</el-radio>
                         </div>
                         <div class="pull-wrap" v-show="steamRadio == 2">
-                            <input type="text" id="pull-stream" placeholder="请输入拉流地址"><span @click="addLivePlay">添加</span>
+                            <input type="text" ref="pull" id="pull-stream" placeholder="请输入拉流地址"><span @click="addLivePlay">添加</span>
                         </div>
                         <div class="preview-wrap">
                             <Flash v-if="addLivePLayerData != null"  :isLive= 1
@@ -153,12 +153,12 @@
                     muted: true,
                     sources: [
                         {
-                            type: "rtmp/mp4",
-                            src: this.playerData.url, //"rtmp://live.hkstv.hk.lxdns.com/live/hks"
-                        },
-                        {
                             type: "video/mp4",
                             src: this.playerData.url.indexOf('http') >= 0 ? this.playerData.url : '',     // 非rtmp协议用h5播放
+                        },
+                        {
+                            type: "rtmp/mp4",
+                            src: this.playerData.url, //"rtmp://live.hkstv.hk.lxdns.com/live/hks"
                         }
                     ],
                     flash: {
@@ -179,6 +179,7 @@
                 monitor02: false,
                 addLivePLayerData: null,
                 clickTimer: null,
+                addUrl: window.location.href,
             }
         },
         computed: {
@@ -189,7 +190,10 @@
                 return this.$store.getters.getPlayerListStatus(13);
             },
             listening () {
-                return this.$store.getters.getPlayerListStatus(this.playerData.seqNo);
+                return this.$store.getters.getPlayerListStatus(this.playerData.seqNo+1);
+            },
+            pullSteam () {
+                return this.$refs.pull;
             }
         },
         components: {
@@ -215,7 +219,7 @@
                         let tempObj = {
                             id: this.playerData.id,
                             type: 0,
-                            index: this.playerData.seqNo,
+                            index: this.playerData.seqNo+1,
                         };
                         this.$store.dispatch('changepvwpgm', tempObj);
                     })
@@ -232,10 +236,14 @@
                     .catch(_ => {});
             },
             addLivePlay () {
-                this.http.get('/api/data', {})
+                console.log(this.playerData);
+                this.http.put('./biz/ybkChannel', this.playerData)
                 .then((response) => {
-                    this.addLivePLayerData = response.data;     
-                    console.log(this.addLivePLayerData)
+                    if(response.code === 0) {
+                        this.playerData.url = this.pullSteam.value;
+                        this.addLivePLayerData = this.playerData;     
+                        console.log(this.addLivePLayerData)
+                    }
                 })
                 .catch((error) => {
                     console.error(error + '请求数据有误');
@@ -258,7 +266,7 @@
                     let tempObj = {
                         id: this.playerData.id,
                         type: 1,
-                        index: this.playerData.seqNo,
+                        index: this.playerData.seqNo+1,
                     };
                     this.$store.dispatch('changepvwpgm', tempObj);
                 })
@@ -273,6 +281,18 @@
                         this.player.el().style.width = '100%';
                     },500);
                 },500);
+            },
+            onCopy: function (e) {
+                this.$alert(e.text + '已复制到您的剪切板！', '复制成功', {
+                    confirmButtonText: '确定',
+                    callback: ()=>{}
+                })
+            },
+            onError: function (e) {
+                this.$alert('已复制到剪切板失败，请稍后重试！', '复制失败', {
+                    confirmButtonText: '确定',
+                    callback: ()=>{}
+                })
             }
         }
     }
@@ -503,11 +523,16 @@
                 height: 50px;
                 border: 1px solid #4A4848;
                 margin-right: 30px;
+                line-height: 50px;
+                padding-left: 20px;
+                color: #ddd;
+                font-size: 18px;
             }
             span {
                 background: #333333;
                 border-radius: 6px;
                 padding: 8px 15px; 
+                cursor: pointer;
             }
         }
     }

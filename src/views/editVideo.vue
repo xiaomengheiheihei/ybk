@@ -211,7 +211,7 @@
             createStorePlayList (original, islocal = false) {
                 for (let i = 0; i < original.length; i++) {
                     let obj = {};
-                    islocal ? obj.id = original[i].seqNo + 8 : obj.id = original[i].seqNo;
+                    obj.id = original[i].seqNo + 1;
                     islocal ? obj.status = false : obj.status = true;
                     obj.isListening = false;
                     obj.playerId = original[i].id;
@@ -220,6 +220,7 @@
                     obj.isPvw = original[i].isPvw;
                     obj.isPgm = original[i].isPgm;
                     obj.url = original[i].url;
+                    obj.isMute = original[i].isMute;
                     this.$store.dispatch('addPlayList', obj);
                 }
             },
@@ -231,9 +232,10 @@
                 obj.title = pgm.title;
                 obj.isPvw = '0';
                 obj.isPgm = '0';
-                obj.playerId = pgm.pgmId;
+                obj.pgmId = pgm.pgmId;
                 obj.isListening = false;
                 obj.url = pgm.url;
+                obj.isMute = 1;
                 this.$store.dispatch('addPlayList', obj);
             },
             addDubbing () {
@@ -245,6 +247,7 @@
                 obj.isPvw = 0;
                 obj.isPgm = 0;
                 obj.isListening = false;
+                obj.isMute = 1;
                 obj.url = '';
                 this.$store.dispatch('addPlayList', obj);
             }

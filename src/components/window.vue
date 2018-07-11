@@ -33,7 +33,7 @@
                             >
                     </Player> -->
                     <div class="template-add">
-                        <div class="add-video">
+                        <div class="add-video" @click="addNew">
                             <div class="add-h"></div>
                             <div class="add-d"></div>
                         </div>
@@ -55,6 +55,23 @@
                 </el-col>
             </el-row>
         </div>
+        <el-dialog
+            :visible.sync="dialogVisible"
+            width="70%"
+            :show-close="false"
+            >
+            <div slot="title" class="title">
+                添加画中画
+                <span @click="dialogVisible = false">关闭</span>
+            </div>
+            <div class="content">
+                
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button class="cancel-btn" @click="dialogVisible = false">取 消</el-button>
+                <el-button class="add-btn" type="primary" @click="dialogVisible = false">添 加</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -62,11 +79,16 @@
         name: 'window',
         data () {
             return {
-                
+                dialogVisible: false,
             }
         },
         components: {
            
+        },
+        methods: {
+            addNew () {
+                this.dialogVisible = !this.dialogVisible;
+            }
         }
     }
 </script>
@@ -203,6 +225,33 @@
                             border-right: $border1pxfff;
                         }
                     }
+                }
+            }
+        }
+        .el-dialog__header {
+            .title {
+                color: #fff;
+                font-size: 18px;
+                text-align: left;
+                position: relative;
+                height: 40px;
+                line-height: 40px;
+                padding: 0 30px;
+                span {
+                    position: absolute;
+                    right: 30px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    cursor: pointer;
+                }
+                span::before {
+                    content: '';
+                    height: 40px;
+                    background: #979797;
+                    width: 1px;
+                    position: absolute;
+                    left: -30px;
+                    top: 0;
                 }
             }
         }
