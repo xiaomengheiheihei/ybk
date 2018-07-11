@@ -4,20 +4,27 @@
         :style="isPreview ? {height: '223px'} : {}">
         <div class="video-player-con" 
             :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''">
-            <div class="bg" v-if="!isPreview && playerData.url != ''" v-show="vol" @click.stop="addPvw" @dblclick="addPgm"></div>
-            <video-player v-if="playerData.url != ''" v-show="!isAdd" class="vjs-custom-skin" 
+            <div class="bg" v-if="!isPreview && addLivePLayerData === null && playerData.url != ''" v-show="vol" @click.stop="addPvw" @dblclick="addPgm"></div>
+            <video-player v-if="playerData.url != '' && addLivePLayerData === null" v-show="!isAdd" class="vjs-custom-skin" 
                     ref="videoPlayer" 
                     :options= playerOptions
                     @timeupdate="onTimeupdate"
                     @play ="changeWidth"
                     :playsinline= true>
             </video-player>
+            <Flash v-if="addLivePLayerData != null"  
+                :isLive= 1
+                :playerData= addLivePLayerData
+                :isAdd = false
+                :isBlank = false
+                :height = '110'>
+            </Flash>
             <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
                 <div class="add-h"></div>
                 <div class="add-d"></div>
             </div>
         </div>
-        <el-row class="play-bar-wrap" :class="isPreview &&  !isRed ? 'play-bar-wrap-h' : '' || isPreview &&  isRed ? 'play-bar-wrap-r' : ''">
+        <el-row v-if="addLivePLayerData === null" class="play-bar-wrap" :class="isPreview &&  !isRed ? 'play-bar-wrap-h' : '' || isPreview &&  isRed ? 'play-bar-wrap-r' : ''">
             <el-col :span="8" v-if="!isPreview">
                 {{ playerData.seqNo+1 }}
             </el-col>
@@ -236,13 +243,12 @@
                     .catch(_ => {});
             },
             addLivePlay () {
-                console.log(this.playerData);
                 this.http.put('./biz/ybkChannel', this.playerData)
                 .then((response) => {
                     if(response.code === 0) {
                         this.playerData.url = this.pullSteam.value;
                         this.addLivePLayerData = this.playerData;     
-                        console.log(this.addLivePLayerData)
+                        console.log(this.playerData)
                     }
                 })
                 .catch((error) => {

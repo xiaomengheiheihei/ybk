@@ -32,7 +32,7 @@ export default {
     },
     put: (url,params = {}) => {
         return new Promise((resolve, reject) => {
-            axios.get(url, {params})
+            axios.put(url, {params})
             .then (response => {
                 resolve(response.data);
             })
