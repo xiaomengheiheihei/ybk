@@ -12,7 +12,7 @@
                     @play ="changeWidth"
                     :playsinline= true>
             </video-player>
-            <Flash v-if="addLivePLayerData != null"  
+            <Flash v-if="addLivePLayerData != null && playerData.url != ''"  
                 :isLive= 1
                 :playerData= addLivePLayerData
                 :isAdd = false
@@ -112,7 +112,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button class="cancel-btn" @click="dialogVisible = false">取 消</el-button>
-                <el-button class="add-btn" type="primary" @click="dialogVisible = false">添 加</el-button>
+                <el-button class="add-btn" type="primary" @click="addLiveList">添 加</el-button>
             </span>
         </el-dialog>
     </div>
@@ -171,6 +171,7 @@
                     flash: {
                         swf: './video-js.swf'
                     },
+                    loop:true,
                     language: 'zh-CN',
                     overNative: true,
                     sourceOrder: true,
@@ -235,20 +236,29 @@
                     });
                 }, 300)
             },
-            handleClose () {    // 添加直播源
-                this.$confirm('确认关闭？')
-                    .then(_ => {
-                        console.log('ok')
-                    })
-                    .catch(_ => {});
+            addLiveList () {    // 添加直播源
+                this.playerData.url = this.addLivePLayerData.url;
+                this.dialogVisible = false;
+                let obj = {
+                    id: this.addLivePLayerData.id,
+                    title: this.addLivePLayerData.title,
+                    url: this.addLivePLayerData.url,
+                }
+                this.$store.dispatch('addLivePlayerUrl', obj);
+                console.log(this.$store.state.playerListStatus);
             },
             addLivePlay () {
-                this.http.put('./biz/ybkChannel', this.playerData)
+                let data = {
+                    id: this.playerData.id,
+                    url: this.pullSteam.value,
+                    title: this.playerData.title,
+                    streamType: '1',
+                };
+                this.http.post('./biz/ybk/setChannelInfo',data)
                 .then((response) => {
                     if(response.code === 0) {
-                        this.playerData.url = this.pullSteam.value;
-                        this.addLivePLayerData = this.playerData;     
-                        console.log(this.playerData)
+                        this.addLivePLayerData = JSON.parse(JSON.stringify(this.playerData ));
+                        this.addLivePLayerData.url =  this.pullSteam.value;  
                     }
                 })
                 .catch((error) => {

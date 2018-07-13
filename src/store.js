@@ -106,6 +106,15 @@ export default new Vuex.Store({
       },
       CHANGEPLAYSYNC(state, bol){      // 改变音视频同步切换状态
         state.playSync = bol;
+      },
+      ADDLIVEPLAYERURL (state, obj) {
+        let arr = state.playerListStatus;
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i].playerId === obj.id) {
+            arr[i].url = obj.url;
+            arr[i].title = obj.title;
+          }
+        }
       }
   },
   actions: {
@@ -138,6 +147,9 @@ export default new Vuex.Store({
     },
     changePlaySync({commit}, bol) {
       commit('CHANGEPLAYSYNC', bol)
+    },
+    addLivePlayerUrl({commit}, obj) {
+      commit('ADDLIVEPLAYERURL', obj)
     }
   }
 })

@@ -1,6 +1,6 @@
 <template>
     <div class="clasp-wrap">
-        <div class="edit-video-left-tile">扣像特效<span></span></div>
+        <div class="edit-video-left-tile">抠像特效<span></span></div>
         <div class="clasp-container">此功能需要权限</div>
     </div>
 </template>
