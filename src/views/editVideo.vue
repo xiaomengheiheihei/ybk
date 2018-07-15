@@ -36,7 +36,7 @@
                                         :isAdd = true
                                         :isBlank = false
                                         :height = '110'
-                                        v-if="playerDataList.find(i => i.url === '').id === item.id">
+                                        v-if="(playerDataList.find(i => i.url === '')) ? playerDataList.find(i => i.url === '').id === item.id : ''">
                                 </Flash>
                                 <Flash  :isLive= 1
                                         :playerData= item
@@ -54,7 +54,7 @@
                                         :playerData=item
                                         :isAdd = true
                                         :isBlank = false
-                                        v-if="localPlayerData.find(i => i.url === '').id === item.id">
+                                        v-if="(localPlayerData.find(i => i.url === '')) ? localPlayerData.find(i => i.url === '').id === item.id : ''">
                                 </Player>
                                 <Player :isLive = 0
                                         :playerData=item
@@ -169,20 +169,25 @@
         mounted () {
             this.$nextTick(() => {
                 setInterval(this.getNowDate, 1000);
-            });
-            let data = {
-                id: 4,
-                url: '',
-                title: 'CAM4',
-                streamType: '1',
-            }
-            this.http.post('./biz/ybk/setChannelInfo',data)
-            .then((response) => {
                 
-            })
-            .catch((error) => {
-                console.error(error + '请求数据有误');
             });
+            setTimeout(()=>{
+                console.log(this.playerDataList.find(i => i.url === ''))
+            },500)
+            
+            // let data = {
+            //     id: 4,
+            //     url: '',
+            //     title: 'CAM4',
+            //     streamType: '1',
+            // }
+            // this.http.post('./biz/ybk/setChannelInfo',data)
+            // .then((response) => {
+                
+            // })
+            // .catch((error) => {
+            //     console.error(error + '请求数据有误');
+            // });
         },
         methods: {
             changeLock (event) {
