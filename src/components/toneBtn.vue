@@ -10,7 +10,7 @@
             <div class="tone-btn-bottom">
                 <p class="void-icon" v-if="index < 13 || index == 14" :class="(isMuted === 0 || vols.vol == 0) ? 'void-icon-ss' : ''" @click="isMute"></p>
                 <p class="void-icon" v-if="index == 13" :class="vols.vol == 0 ? 'void-icon-ss' : ''" @click="isMute"></p>
-                <p class="void-icon-s" :class="vols.isListening ? 'void-icon-star' : '' " @click="tryListen"></p>
+                <p v-if="index != 13" class="void-icon-s" :class="vols.isListening ? 'void-icon-star' : '' " @click="tryListen"></p>
             </div>
         </div>
     </div>

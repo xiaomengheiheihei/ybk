@@ -252,8 +252,6 @@
                     title: this.addLivePLayerData.title,
                     url: this.addLivePLayerData.url,
                 }
-                console.log(this.addLivePLayerData.id);
-                console.log(this.playerData);
                 this.$store.dispatch('addLivePlayerUrl', obj);
             },
             addLivePlay () {
@@ -278,7 +276,9 @@
             },
             closePvw () {
                 if (!this.value1) {
+                    console.log(this.player.el_);
                     this.player.pause();
+                    this.player.el_.style.opacity = 0;
                 }
                 if (this.value1) {
                     this.player.play();
