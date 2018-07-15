@@ -171,10 +171,6 @@
                 setInterval(this.getNowDate, 1000);
                 
             });
-            setTimeout(()=>{
-                console.log(this.playerDataList.find(i => i.url === ''))
-            },500)
-            
             // let data = {
             //     id: 4,
             //     url: '',
