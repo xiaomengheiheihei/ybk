@@ -50,7 +50,7 @@ export default new Vuex.Store({
         let list = state.playerListStatus;
         for(let i = 0; i < list.length; i++) {
           if (id === list[i].playerId) {
-            list[i].isMute = 0;
+            list[i].isMute == 0 ? list[i].isMute = 1 : list[i].isMute = 0;
           } else {
             list[i].isMute = 1;
           }
@@ -66,6 +66,8 @@ export default new Vuex.Store({
               break;
             case 1:
               arr[i].isPgm === 1 ? arr[i].isPgm = 0 : '';
+              arr[i].isMute === 1 ? '' : arr[i].isMute = 1;
+              arr[i].id === obj.index ? arr[i].isMute = 0 : '';
               arr[i].id === obj.index ? arr[i].isPgm = 1 : '';
               break;
           }

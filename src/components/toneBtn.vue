@@ -8,7 +8,7 @@
                 <input v-if="index == 13" ref="volRange" type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="vols.vol">
             </div>
             <div class="tone-btn-bottom">
-                <p class="void-icon" v-if="index < 13 || index == 14" :class="(isMuted == 0 || vols.vol == 0) ? 'void-icon-ss' : ''" @click="isMute"></p>
+                <p class="void-icon" v-if="index < 13 || index == 14" :class="(isMuted === 0 || vols.vol == 0) ? 'void-icon-ss' : ''" @click="isMute"></p>
                 <p class="void-icon" v-if="index == 13" :class="vols.vol == 0 ? 'void-icon-ss' : ''" @click="isMute"></p>
                 <p class="void-icon-s" :class="vols.isListening ? 'void-icon-star' : '' " @click="tryListen"></p>
             </div>
@@ -89,7 +89,27 @@
                 }
             },
             isMute () {
-                this.$store.dispatch('changemute', this.vols.playerId);
+                if (this.isMuted === 0) {   // 取消静音
+                    this.http.post('./biz/ybk/setMute', {id:this.vols.playerId,mute: 0})
+                    .then((res)=> {
+                        if(res.code == 0) {
+                            this.$store.dispatch('changemute', this.vols.playerId);
+                        }
+                    })
+                    .catch((err)=> {
+                        console.log(err);
+                    })
+                } else {
+                    this.http.post('./biz/ybk/setMute', {id:this.vols.playerId,mute: 1})
+                    .then((res)=> {
+                        if(res.code == 0) {
+                            this.$store.dispatch('changemute', this.vols.playerId);
+                        }
+                    })
+                    .catch((err)=> {
+                        console.log(err);
+                    })
+                }
                 if (this.vols.vol != 0) {
                     this.lastVol = this.volRange.value;
                     this.vols.vol = 0;

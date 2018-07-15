@@ -257,7 +257,7 @@
             addPvw () {
                 clearTimeout(this.clickTimer);
                 this.clickTimer = setTimeout(() => {
-                    this.http.post('/api/addPVW', {})
+                    this.http.post('./biz/ybk/switch2PVW', {id:this.playerData.id})
                     .then((response) => {
                         this.$store.dispatch('changePvw', this.playerData);
                         this.playerData.isPvw = 1;

@@ -4,19 +4,20 @@
         :style="isPreview ? {height: '223px'} : {}">
         <div class="video-player-con" 
             :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''">
-            <div class="bg" v-if="!isPreview && addLivePLayerData === null && playerData.url != ''" v-show="vol" @click.stop="addPvw" @dblclick="addPgm"></div>
+            <div class="bg" v-if="!isPreview && addLivePLayerData === null && playerData.url != ''" v-show="vol" @click.stop="addPvw" @dblclick.stop="addPgm"></div>
             <video-player v-if="playerData.url != '' && addLivePLayerData === null" v-show="!isAdd" class="vjs-custom-skin" 
                     ref="videoPlayer" 
                     :options= playerOptions
                     @timeupdate="onTimeupdate"
                     @play ="changeWidth"
-                    :playsinline= true>
+                    :playsinline = true>
             </video-player>
             <Flash v-if="addLivePLayerData != null && playerData.url != ''"  
                 :isLive= 1
                 :playerData= addLivePLayerData
                 :isAdd = false
                 :isBlank = false
+                :isPlayBar = 'true'
                 :height = '110'>
             </Flash>
             <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
@@ -24,7 +25,7 @@
                 <div class="add-d"></div>
             </div>
         </div>
-        <el-row v-if="addLivePLayerData === null" class="play-bar-wrap" :class="isPreview &&  !isRed ? 'play-bar-wrap-h' : '' || isPreview &&  isRed ? 'play-bar-wrap-r' : ''">
+        <el-row v-if="(showBar || playerData.url != '') && !isPlayBar" class="play-bar-wrap" :class="isPreview &&  !isRed ? 'play-bar-wrap-h' : '' || isPreview &&  isRed ? 'play-bar-wrap-r' : ''">
             <el-col :span="8" v-if="!isPreview">
                 {{ playerData.seqNo+1 }}
             </el-col>
@@ -149,6 +150,11 @@
                 type: Boolean,
                 required: false,
                 default: false,
+            },
+            isPlayBar: {
+                type: Boolean,
+                require: false,
+                default: false,
             }
         },
         data() {
@@ -188,6 +194,7 @@
                 addLivePLayerData: null,
                 clickTimer: null,
                 addUrl: window.location.href,
+                showBar: true,          // 是否显示播控按钮
             }
         },
         computed: {
@@ -239,13 +246,15 @@
             addLiveList () {    // 添加直播源
                 this.playerData.url = this.addLivePLayerData.url;
                 this.dialogVisible = false;
+                this.showBar = !this.showBar;
                 let obj = {
                     id: this.addLivePLayerData.id,
                     title: this.addLivePLayerData.title,
                     url: this.addLivePLayerData.url,
                 }
+                console.log(this.addLivePLayerData.id);
+                console.log(this.playerData);
                 this.$store.dispatch('addLivePlayerUrl', obj);
-                console.log(this.$store.state.playerListStatus);
             },
             addLivePlay () {
                 let data = {
@@ -258,6 +267,8 @@
                 .then((response) => {
                     if(response.code === 0) {
                         this.addLivePLayerData = JSON.parse(JSON.stringify(this.playerData ));
+                        this.addLivePLayerData.isPvw = 0;
+                        this.addLivePLayerData.isPgm = 0;
                         this.addLivePLayerData.url =  this.pullSteam.value;  
                     }
                 })
@@ -285,6 +296,7 @@
                         index: this.playerData.seqNo+1,
                     };
                     this.$store.dispatch('changepvwpgm', tempObj);
+                    console.log(this.$store.state.playerListStatus);
                 })
                 .catch((error) => {
 

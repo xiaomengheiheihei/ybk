@@ -170,6 +170,19 @@
             this.$nextTick(() => {
                 setInterval(this.getNowDate, 1000);
             });
+            // let data = {
+            //     id: 4,
+            //     url: '',
+            //     title: 'CAM4',
+            //     streamType: '1',
+            // }
+            // this.http.post('./biz/ybk/setChannelInfo',data)
+            // .then((response) => {
+                
+            // })
+            // .catch((error) => {
+            //     console.error(error + '请求数据有误');
+            // });
         },
         methods: {
             changeLock (event) {
