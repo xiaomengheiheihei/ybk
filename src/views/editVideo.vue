@@ -147,6 +147,10 @@
         created () {
             this.http.get('/biz/ybkBase/1', {})
             .then((response) => {
+                // 保存音视频同步与否状态
+                let isSync = response.data.isSync === 1 ? true : false;  
+                this.$store.dispatch('changePlaySync', isSync);
+                this.$store.dispatch('addYbkId', response.data.id);
                 // 组装store所需信息
                 this.createStorePlayList(response.data.lives);
                 this.createStorePlayList(response.data.locals, true);
@@ -172,9 +176,9 @@
                 
             });
             // let data = {
-            //     id: 4,
+            //     id: 11,
             //     url: '',
-            //     title: 'CAM4',
+            //     title: 'LOC3',
             //     streamType: '1',
             // }
             // this.http.post('./biz/ybk/setChannelInfo',data)

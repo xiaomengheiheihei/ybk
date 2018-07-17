@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+      ybkId: 0,
       playerDataList: [],
       playerListStatus: [],     // 所有播放器数据
       pgm: {},                 
@@ -46,13 +47,18 @@ export default new Vuex.Store({
           }
         }
       },
-      CHANGEMUTE (state, id) {       // 改变音频状态
+      CHANGEMUTE (state, obj) {       // 改变音频状态
         let list = state.playerListStatus;
         for(let i = 0; i < list.length; i++) {
-          if (id === list[i].playerId) {
-            list[i].isMute == 0 ? list[i].isMute = 1 : list[i].isMute = 0;
-          } else {
+          if (obj.type === 'mute') {    // 单独设置某一路静音
+            if (obj.id === list[i].playerId) {
+              list[i].isMute == 0 ? list[i].isMute = 1 : list[i].isMute = 0;
+            }
+          } else {          // 切换音频，当前音频取消静音，其他路音频静音
             list[i].isMute = 1;
+            if (obj.id === list[i].playerId) {
+              list[i].isMute = 0;
+            }
           }
         }
       },
@@ -66,9 +72,11 @@ export default new Vuex.Store({
               break;
             case 1:
               arr[i].isPgm === 1 ? arr[i].isPgm = 0 : '';
-              arr[i].isMute === 1 ? '' : arr[i].isMute = 1;
-              arr[i].id === obj.index ? arr[i].isMute = 0 : '';
               arr[i].id === obj.index ? arr[i].isPgm = 1 : '';
+              if (state.playSync) {
+                arr[i].isMute === 1 ? '' : arr[i].isMute = 1;
+                arr[i].id === obj.index ? arr[i].isMute = 0 : '';
+              }
               break;
           }
         }
@@ -117,6 +125,9 @@ export default new Vuex.Store({
             arr[i].title = obj.title;
           }
         }
+      },
+      ADDYBKID (state, id) {
+        state.ybkId = id;
       }
   },
   actions: {
@@ -144,14 +155,17 @@ export default new Vuex.Store({
     addplayerdata ({commit}, arr) {
       commit('ADDPLAYERDATA', arr);
     },
-    changemute ({commit}, id) {
-      commit('CHANGEMUTE', id);
+    changemute ({commit}, obj) {
+      commit('CHANGEMUTE', obj);
     },
     changePlaySync({commit}, bol) {
       commit('CHANGEPLAYSYNC', bol)
     },
     addLivePlayerUrl({commit}, obj) {
       commit('ADDLIVEPLAYERURL', obj)
+    },
+    addYbkId ({commit}, id) {
+      commit('ADDYBKID', id)
     }
   }
 })

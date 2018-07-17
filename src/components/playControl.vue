@@ -7,7 +7,7 @@
             </div>
             <div class="play-con-bottom">
                 <input type="range" name="" id="">
-                <el-checkbox @change="changeSync" v-model="checked">音视频同步切换</el-checkbox>
+                <el-checkbox @change="changeSync" v-model="isSync">音视频同步切换</el-checkbox>
             </div>
         </div>
     </div>
@@ -17,16 +17,34 @@
         name: 'PlayControl',
         data () {
             return {
-                checked: true,
+                isSync: true,
             }
+        },
+        mounted () {
+            
         },
         computed: {
-    
+            sync () {
+                return this.$store.state.playSync
+            }
         },
         methods: {
-            changeSync () {
-                this.$store.dispatch('changePlaySync', this.checked);
+            changeSync (sync) {
+                this.http.post('./biz/ybk/setAudioVedioSync', {id:this.$store.state.ybkId,sync: Number(this.isSync)})
+                    .then((res)=> {
+                        if(res.code == 0) {
+                            this.$store.dispatch('changePlaySync', this.isSync);
+                        }
+                    })
+                    .catch((err)=> {
+                        console.log(err);
+                    })
             }
+        },
+        watch: {
+           sync () {
+              this.isSync =  this.sync;
+           } 
         }
     }
 </script>

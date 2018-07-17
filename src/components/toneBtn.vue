@@ -4,7 +4,8 @@
         <div class="tone-btn-top">{{ title }}</div>
         <div class="tone-btn-con">
             <div class="tone-btn-container">
-                <input v-if="index < 13 || index == 14" ref="volRange" type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="isMuted" :disabled ="disabled">
+                <input v-if="index < 13 || index == 14" ref="volRange" 
+                type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="isMuted" :disabled = disabled>
                 <input v-if="index == 13" ref="volRange" type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="vols.vol">
             </div>
             <div class="tone-btn-bottom">
@@ -45,7 +46,8 @@
                return this.$store.getters.getPlaySync;
            },
            disabled () {
-               return this.isPgm === 1 && this.changeSync ? false : true && this.isMuted !== 0 && !this.changeSync ? false : true;
+               return (this.isPgm === 1 && this.changeSync ? false : true) &&
+               (this.isMuted !== 0 && !this.changeSync ? false : true);
            }
         },
         mounted () {
@@ -71,7 +73,6 @@
                         }
                         let obj = {index: this.index, vol: this.volRange.value};
                     this.$store.dispatch("changeVol", obj);
-                    console.log(this.vols.vol);
                     })
                     .catch((err) => {
                         this.$message.error('修改音量失败，请重试！');
@@ -93,7 +94,11 @@
                     this.http.post('./biz/ybk/setMute', {id:this.vols.playerId,mute: 0})
                     .then((res)=> {
                         if(res.code == 0) {
-                            this.$store.dispatch('changemute', this.vols.playerId);
+                            let obj = {
+                                id: this.vols.playerId,
+                                type: 'mute'
+                            }
+                            this.$store.dispatch('changemute', obj);
                         }
                     })
                     .catch((err)=> {
@@ -103,7 +108,11 @@
                     this.http.post('./biz/ybk/setMute', {id:this.vols.playerId,mute: 1})
                     .then((res)=> {
                         if(res.code == 0) {
-                            this.$store.dispatch('changemute', this.vols.playerId);
+                            let obj = {
+                                id: this.vols.playerId,
+                                type: 'mute'
+                            }
+                            this.$store.dispatch('changemute', obj);
                         }
                     })
                     .catch((err)=> {
@@ -124,7 +133,11 @@
                     this.http.post('./biz/ybk/setMute', {id:this.vols.playerId,mute: 0})
                     .then((res)=> {
                         if(res.code == 0) {
-                            this.$store.dispatch('changemute', this.vols.playerId);
+                            let obj = {
+                                id: this.vols.playerId,
+                                type: 'switch'
+                            }
+                            this.$store.dispatch('changemute', obj);
                         }
                     })
                     .catch((err)=> {

@@ -216,6 +216,9 @@
         },
         mounted () {
             this.isPgm && this.player && this.player.volume('0.5');
+            if (this.isPgm) {
+                console.log(this.playerData);
+            }
         },
         methods: {
             onTimeupdate(e) {
@@ -282,11 +285,13 @@
                 }
                 if (this.value1) {
                     this.player.play();
+                    this.player.el_.style.opacity = 1;
                 }
             },
             addPgm () {
                 clearTimeout(this.clickTimer);
-                this.http.post('./biz/ybk/switch2PGM', {"id": this.playerData.id})
+                let sync = Number(this.$store.state.playSync);
+                this.http.post('./biz/ybk/switch2PGM', {"id": this.playerData.id,sync: sync})
                 .then((response) => {
                     this.$store.dispatch('changePgm', this.playerData);
                     this.playerData.isPgm = 1;
@@ -296,7 +301,7 @@
                         index: this.playerData.seqNo+1,
                     };
                     this.$store.dispatch('changepvwpgm', tempObj);
-                    console.log(this.$store.state.playerListStatus);
+                    console.log(this.$store.state.playSync);
                 })
                 .catch((error) => {
 

@@ -1,10 +1,11 @@
 <template>
     <div class="qn-player">
         <div class="video-player-con" :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''
-        || playerData.isPvw === 1 ? 'bor-2-g' : '' || playerData.isPgm === 1 ? 'bor-2-r' : ''">
-            <video ref="player" v-if="playerData.url !== ''" v-show="!isAdd" preload="auto" height="100%" width="100%"
+        || playerData.isPgm === 1 ? 'bor-2-r' : '' || playerData.isPvw === 1 ? 'bor-2-g' : ''">
+            <video ref="player" v-if="playerData.url !== '' && playerData.fileType === 1" v-show="!isAdd" preload="auto" height="100%" width="100%"
             :src="playerData.url" @click.stop="addPvw" @dblclick="addPgm"
             ></video>
+            <img :src="playerData.url" v-if="playerData.url !== '' && playerData.fileType === 2" @click.stop="addPvw" @dblclick="addPgm" width="100%" height="100%" alt="">
             <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
                 <div class="add-h"></div>
                 <div class="add-d"></div>
@@ -58,7 +59,7 @@
                 <span @click="dialogVisible = false">关闭</span>
             </div>
             <div class="content">
-                <div class="name">名称：<input type="text" :placeholder="playerData.title"></div>
+                <div class="name">名称：<input type="text" :value="uploadTitle" :placeholder="playerData.title"></div>
                 <div class="radio-wrap">
                     <template>
                         <div class="radio01">
@@ -66,23 +67,31 @@
                         </div>
                         <div class="detail-wrap" v-show="steamRadio == 1">
                             <div class="detail-con">{{ filePathi }}</div>
-                            <input type="file" id="add-image" accept="image/png,image/bmp,image/jpg" @input="addImage($event)" placeholder="">
                             <span class="copy-btn">上传</span>
+                            <input type="file" id="add-image" accept="image/png,image/bmp,image/jpg" @input="addImage($event)" placeholder="">
                         </div>
                         <div class="radio02">
                             <el-radio v-model="steamRadio" label="2">添加视频：支持的格式有avi、mkv、mp4、mpeg、wmv</el-radio>
                         </div>
                         <div class="pull-wrap" v-show="steamRadio == 2">
                             <div class="file-z">{{ filePathv }}</div>
-                            <input type="file" id="add-video" placeholder=""><span @click="addLivePlay">上传</span>
+                            <span @click="upload">上传</span>
+                            <input type="file" id="add-video" accept="video/mp4,video/ogg,video/flv" @input="addVideo" placeholder="">
                         </div>
                         <div class="preview-wrap">
-                            <Flash v-if="addLivePLayerData != null"  :isLive= 1
+                            <!-- <Flash v-if="addLivePLayerData != null"  :isLive= 1
                                     :playerData= addLivePLayerData
                                     :isAdd = false
                                     :isBlank = false
                                     :height = '133'>
-                            </Flash>
+                            </Flash> -->
+                            <player v-if="playerData.url != '' && playerData.fileType === 1" :isLive = 0
+                                    :playerData = this.playerData
+                                    :isAdd = false
+                                    :isBlank = false
+                                    >
+                            </player>
+                            <img width="100%" height="100%" v-if="uploadImg !== ''" :src="uploadImg" alt="">
                         </div>
                     </template>
                 </div>
@@ -99,7 +108,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button class="cancel-btn" @click="dialogVisible = false">取 消</el-button>
-                <el-button class="add-btn" type="primary" @click="dialogVisible = false">添 加</el-button>
+                <el-button class="add-btn" type="primary" @click="upload">添 加</el-button>
             </span>
         </el-dialog>
     </div>
@@ -139,6 +148,10 @@
                 addLivePLayerData: null,
                 filePathv: '',       // 上传视频路径
                 filePathi: '',         // 上传图片路径
+                uploadTitle: this.playerData.title,     // 上传文件标题
+                uploadData: null,          // 上传文件
+                uploadImg: '',              // 上传图片地址
+                loadVideo: true,            // true为上传video，false为图片
             }
         },
         components: {
@@ -149,7 +162,7 @@
                 return this.$store.state.playerListStatus;
             },
             player () {
-                return this.$refs.player;
+                return this.playerData.url === '' ? '' : this.$refs.player;
             },
             range () {
                 return this.$refs.range;
@@ -162,8 +175,7 @@
             
         },
         mounted () {
-            let that = this;
-            
+            let that = this;       
             if (!!this.player) {
                 this.player.oncanplay = function () {                   // 视频可以播放时
                     let duration = Math.floor(that.player.duration);    // 视频总时长
@@ -209,6 +221,7 @@
         methods: {
             // 定义播放暂停按钮
             playBtnHandel () {
+                if (this.playerData.fileType === 2) { return false; }
                 this.isStart = !this.isStart;       // 改变播放状态
                 this.$store.commit('changePlayStatus', this.playerData.seqNo + 1);
                 let index = this.playerData.seqNo + 1;
@@ -227,19 +240,9 @@
                 range.style.left = event.offsetX + 'px';
                 player.currentTime = currentProgress;
             },
-            addLivePlay () {
-                this.http.get('/api/data', {})
-                .then((response) => {
-                    this.addLivePLayerData = response.data;
-                    console.log(this.addLivePLayerData)
-                })
-                .catch((error) => {
-                    console.error(error + '请求数据有误');
-                });
-            },
             addPgm () {
                 clearTimeout(this.clickTimer);
-                this.http.post('./biz/ybk/switch2PGM', {id: this.playerData.id})
+                this.http.post('./biz/ybk/switch2PGM', {id: this.playerData.id,sync: Number(this.$store.state.playSync)})
                 .then((response) => {
                     this.$store.dispatch('changePgm', this.playerData);
                     this.playerData.isPgm = 1;
@@ -274,10 +277,46 @@
                 }, 300)
             },
             addImage (e) {
-                this.filePathi = e.target.value;
-                this.http.post('./biz/ybkBase/uploadFile', e.target.files[0])
+                this.filePathi =  e.target.value;//window.webkitURL.createObjectURL(e.target.files[0]);
+                this.uploadData = e.target.files[0];
+                this.loadVideo = false;
+                this.playerData.fileType = 2;
+                let reader = new FileReader();
+                reader.readAsDataURL(this.uploadData);
+                reader.onload = (e) => {
+                    this.uploadImg = reader.result;
+                    // this.playerData.url = reader.result;
+                }
+            },
+             getObjectURL(file) {       // 获取blod url地址
+                let url = null;
+                if (window.createObjcectURL != undefined) {
+                    url = window.createOjcectURL(file);
+                } else if (window.URL != undefined) {
+                    url = window.URL.createObjectURL(file);
+                } else if (window.webkitURL != undefined) {
+                    url = window.webkitURL.createObjectURL(file);
+                }
+                return url;
+            },
+            addVideo (e) {
+                this.filePathv = e.target.value;
+                // this.playerData.url = this.getObjectURL(e.target.files[0]);
+                this.playerData.fileType = 1;
+                this.uploadData = e.target.files[0];
+                this.loadVideo = true;
+            },
+            upload () {
+                let data = new FormData();
+                let fileType = this.loadVideo ? 1 : 2;
+                data.append('file', this.uploadData);
+                data.append('title', this.uploadTitle);
+                data.append('id', this.playerData.id);
+                data.append('fileType', fileType);
+                this.http.post('./biz/ybk/upload', data)
                 .then((res) => {
-                    console.log(res);
+                    this.dialogVisible = false;
+                    this.playerData.url = this.getObjectURL(this.uploadData);
                 })
                 .catch((err)=> {
 
@@ -533,10 +572,10 @@
             margin-top: 15px;
             margin-bottom: 10px;
             position: relative;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
             .file-z {
-                position: absolute;
-                left: 5px;
-                top: 0;
                 height: 40px;
                 line-height: 40px;
                 width: 65%;
@@ -547,12 +586,13 @@
             input {
                 height: 40px;
                 line-height: 40px;
-                width: 65%;
+                width: 80px;
                 font-size: 18px;
                 color: #4A4A4A;
                 padding-left: 5px;
                 outline: none;
                 opacity: 0;
+                margin-left: 35px;
             }
             span{
                 margin-left: 30px;
@@ -562,6 +602,8 @@
                 border-radius: 6px;
                 background: #333333;
                 cursor: pointer;
+                position: absolute;
+                left: 68%;
             }
         }
         .el-radio {
@@ -576,16 +618,14 @@
             position: relative;
             input {
                 opacity: 0;
-                width: 65%;
+                width: 80px;
                 height: 40px;
+                margin-left: 35px;
             }
             .detail-con {
                 width: 65%;
                 height: 40px;
                 line-height: 40px;
-                position: absolute;
-                left: 5px;
-                top: 0;
                 background-color: #fff;
                 font-size: 18px;
                 color: #4A4A4A;
@@ -598,6 +638,8 @@
                 cursor: pointer;
                 margin-left: 30px;
                 font-size: 18px;
+                position: absolute;
+                left: 68%;
             }
         }
     }
