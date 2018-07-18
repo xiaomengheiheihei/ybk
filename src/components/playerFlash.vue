@@ -216,9 +216,6 @@
         },
         mounted () {
             this.isPgm && this.player && this.player.volume('0.5');
-            if (this.isPgm) {
-                console.log(this.playerData);
-            }
         },
         methods: {
             onTimeupdate(e) {

@@ -176,9 +176,9 @@
                 
             });
             // let data = {
-            //     id: 11,
+            //     id: 12,
             //     url: '',
-            //     title: 'LOC3',
+            //     title: 'LOC4',
             //     streamType: '1',
             // }
             // this.http.post('./biz/ybk/setChannelInfo',data)

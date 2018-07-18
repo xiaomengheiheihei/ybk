@@ -116,6 +116,7 @@ export default new Vuex.Store({
       },
       CHANGEPLAYSYNC(state, bol){      // 改变音视频同步切换状态
         state.playSync = bol;
+        state.isSync = !state.isSync;
       },
       ADDLIVEPLAYERURL (state, obj) {
         let arr = state.playerListStatus;

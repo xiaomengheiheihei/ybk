@@ -1,6 +1,6 @@
 <template>
     <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : '' || isPgm === 1 && changeSync ? 'bor-1-r': ''
-    || this.vols.isMute == 0 && !changeSync ? 'bor-1-r': ''" @dblclick="switchVol" >
+    || (vols.isMute === 0 && !changeSync) ? 'bor-1-r': ''" @dblclick="switchVol" >
         <div class="tone-btn-top">{{ title }}</div>
         <div class="tone-btn-con">
             <div class="tone-btn-container">
@@ -47,8 +47,8 @@
            },
            disabled () {
                return (this.isPgm === 1 && this.changeSync ? false : true) &&
-               (this.isMuted !== 0 && !this.changeSync ? false : true);
-           }
+               (this.vols.isMute === 0 && !this.changeSync ? false : true);
+           },
         },
         mounted () {
            
@@ -127,10 +127,26 @@
                 }
             },
             switchVol () {      // 双击切换音频输出
-                if (this.changeSync) {      // 音视频同步切换，阻止直接选中
+                if (this.vols.url === '') {return false}        // 如果音频不存在
+                if (this.changeSync) {      // 音视频同步切换
+                    let sync = Number(this.$store.state.playSync);
+                    this.http.post('./biz/ybk/switch2PGM', {"id": this.vols.playerId,sync: sync})
+                    .then((response) => {
+                        this.$store.dispatch('changePgm', this.vols);
+                        this.vols.isPgm = 1;
+                        let tempObj = {
+                            id: this.vols.playerId,
+                            type: 1,
+                            index: this.vols.id,
+                        };
+                        this.$store.dispatch('changepvwpgm', tempObj);
+                    })
+                    .catch((error) => {
 
+                    });
                 } else {                    // 音视频可不同步切换，选中后其他路静音
-                    this.http.post('./biz/ybk/setMute', {id:this.vols.playerId,mute: 0})
+                    let sync = Number(this.$store.state.playSync);
+                    this.http.post('./biz/ybk/setMute', {id:this.vols.playerId,mute: 0,sync: sync})
                     .then((res)=> {
                         if(res.code == 0) {
                             let obj = {
@@ -145,7 +161,7 @@
                     })
                 }
             }
-        }
+        },
     }
 </script>
 <style lang="scss" scoped>

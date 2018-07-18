@@ -42,9 +42,9 @@
             </el-col>
         </el-row>
         <div v-if="isLive != 1" class="slider-bar-wrap">
-            <div class="contral-wrap" @click="playBtnHandel()" :class="isStart ? 'contral-wrap-start' : '' ">
-                <div class="h01" v-show="!isStart"></div>
-                <div class="h02" v-show="!isStart"></div>
+            <div class="contral-wrap" @click="playBtnHandel()" :class="!isStart ? 'contral-wrap-start' : '' ">
+                <div class="h01" v-show="isStart"></div>
+                <div class="h02" v-show="isStart"></div>
             </div>
             <!-- <input ref="range"  type="range" value="0"> -->
             <div class="range" @click="changeProgress(player,range,timer,$event)"><span class="range-btn" ref="range"></span></div>
