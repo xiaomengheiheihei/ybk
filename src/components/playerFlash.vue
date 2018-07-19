@@ -235,6 +235,11 @@
         },
         mounted () {
             this.isPgm && this.player && this.player.volume('0.5');
+            if (this.isPgm && this.player) {
+                this.player.onplay = () => {
+                    this.player.currentTime(this.$store.state.currentTime);
+                }
+            }
         },
         methods: {
             onTimeupdate(e) {
@@ -295,7 +300,6 @@
             },
             closePvw () {
                 if (!this.value1) {
-                    console.log(this.player.el_);
                     this.player.pause();
                     this.player.el_.style.opacity = 0;
                 }
@@ -316,6 +320,7 @@
                         type: 1,
                         index: this.playerData.seqNo+1,
                     };
+                    this.$store.dispatch('saveTime', this.player.currentTime());
                     this.$store.dispatch('changepvwpgm', tempObj);
                 })
                 .catch((error) => {

@@ -12,6 +12,7 @@ export default new Vuex.Store({
       pvw: {},
       playSync: true,       // 音视频是否同步切换
       settingStatus: false,   // 设置视频浮层状态
+      currentTime: 0,       // 保存当前时间
   },
   getters: {
     playerCon: state => {
@@ -138,6 +139,9 @@ export default new Vuex.Store({
       },
       CHANGESETTINGSTATUS (state) {
         state.settingStatus = !state.settingStatus;
+      },
+      SAVETIME (state, time) {
+        state.currentTime = time;
       }
   },
   actions: {
@@ -179,6 +183,9 @@ export default new Vuex.Store({
     },
     changeSettingStatus ({commit}) {
       commit('CHANGESETTINGSTATUS');
+    },
+    saveTime ({commit}, time) {
+      commit('SAVETIME', time)
     }
   }
 })

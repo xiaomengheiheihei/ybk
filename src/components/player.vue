@@ -261,6 +261,9 @@
                         type: 1,
                         index: this.playerData.seqNo+1,
                     };
+                    if (this.player) {
+                        this.$store.dispatch('saveTime', this.player.currentTime);
+                    }
                     this.$store.dispatch('changepvwpgm', tempObj);
                 })
                 .catch((error) => {

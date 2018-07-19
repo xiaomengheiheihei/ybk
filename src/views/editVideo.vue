@@ -182,9 +182,9 @@
                 
             });
             // let data = {
-            //     id: 12,
+            //     id: 1,
             //     url: '',
-            //     title: 'LOC4',
+            //     title: 'live1',
             //     streamType: '1',
             // }
             // this.http.post('./biz/ybk/setChannelInfo',data)
@@ -228,7 +228,7 @@
                 }
                 this.date =  {
                     day: year + '年' + month + '月' + day + '日',
-                    week: week,
+                    week: '星期四',
                     time: hour + sign + minutes + sign + seconds,
                 }
             },
