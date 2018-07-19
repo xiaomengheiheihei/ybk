@@ -7180,7 +7180,7 @@ verror@1.10.0:
     videojs-vtt.js "0.12.6"
     xhr "2.4.0"
 
-videojs-contrib-hls@^5.12.2:
+videojs-contrib-hls@^5.12.2, videojs-contrib-hls@^5.14.1:
   version "5.14.1"
   resolved "https://registry.yarnpkg.com/videojs-contrib-hls/-/videojs-contrib-hls-5.14.1.tgz#eba4f4f6772a74a68ee7a213536ed7d2738972bd"
   dependencies:

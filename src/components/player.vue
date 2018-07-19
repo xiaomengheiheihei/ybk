@@ -2,6 +2,11 @@
     <div class="qn-player">
         <div class="video-player-con" :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''
         || playerData.isPgm === 1 ? 'bor-2-r' : '' || playerData.isPvw === 1 ? 'bor-2-g' : ''">
+            <div class="setting-bg" v-if="isSetting && 
+            !playerData.isPgm && !playerData.isPvw && playerData.url != ''">
+                <div class="delete" @click="deleteVideo"><i class="ybk-icon icon-iconfontshanchu"></i></div>
+                <div class="editar"><i class="ybk-icon icon-501"></i></div>
+            </div>
             <video ref="player" v-if="playerData.url !== '' && playerData.fileType === 1" v-show="!isAdd" preload="auto" height="100%" width="100%"
             :src="playerData.url" @click.stop="addPvw" @dblclick="addPgm"
             ></video>
@@ -132,6 +137,11 @@
                 required: false,
                 default: false
             },
+            isSetting: {
+                type: Boolean,
+                require: false,
+                default: false,
+            }
         },
         data () {
             return {
@@ -321,6 +331,28 @@
                 .catch((err)=> {
 
                 });
+            },
+            deleteVideo () {
+                let data = {
+                    id: this.playerData.id,
+                    url: '',
+                    title: this.playerData.title,
+                    streamType: '1',
+                }
+                this.http.post('./biz/ybk/setChannelInfo',data)
+                .then((response) => {
+                    if(response.code === 0) {
+                        this.playerData.url = '';
+                        this.$alert('删除成功！', '温馨提示', {
+                            confirmButtonText: '确定',
+                            callback: ()=>{}
+                        })
+                        this.$store.dispatch('changeSettingStatus');
+                    }
+                })
+                .catch((error) => {
+                    console.error(error + '请求数据有误');
+                });
             }
         },
         watch: {
@@ -339,6 +371,33 @@
     border: 1px solid #FF0000;
     pointer-events: none;
     z-index: 100;
+}
+.setting-bg {
+    background-color: rgba(247, 66, 66, 0.5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 101%;
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .delete {
+        margin-right: 40px;
+        i {
+            font-size: 40px;
+            color: #fff;
+        }
+    }
+    .editar {
+        i {
+            font-size: 33px;
+            color: #fff;
+            margin-top: -7px;
+            display: block;
+        }
+    }
 }
 .bor-2-g::after {
     content: '';

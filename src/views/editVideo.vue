@@ -26,7 +26,7 @@
             <el-row class="edit-video-con">
                 <el-col :span="12">
                     <div class="edit-video-left-con">
-                        <div class="edit-video-left-tile">视频矩阵<span></span></div>
+                        <div class="edit-video-left-tile">视频矩阵<span @click="settingVideo"></span></div>
                         <el-row class="video-item-live">
                             <el-col :span="6" v-for="(item, index) in playerDataList" :key="index" 
                                     :style="index < 4 ? {marginBottom: '1px'} : {}"
@@ -35,6 +35,7 @@
                                         :playerData= item
                                         :isAdd = true
                                         :isBlank = false
+                                        :isSetting = "settingStatus"
                                         :height = '110'
                                         v-if="(playerDataList.find(i => i.url === '')) ? playerDataList.find(i => i.url === '').id === item.id : ''">
                                 </Flash>
@@ -43,6 +44,7 @@
                                         :isAdd = false
                                         :isBlank = false
                                         :height = '110'
+                                        :isSetting = "settingStatus"
                                         v-else>
                                 </Flash>
                             </el-col>
@@ -54,11 +56,13 @@
                                         :playerData=item
                                         :isAdd = true
                                         :isBlank = false
+                                        :isSetting = "settingStatus"
                                         v-if="(localPlayerData.find(i => i.url === '')) ? localPlayerData.find(i => i.url === '').id === item.id : ''">
                                 </Player>
                                 <Player :isLive = 0
                                         :playerData=item
                                         :isAdd = false
+                                        :isSetting = "settingStatus"
                                         :isBlank = false
                                         v-else>
                                 </Player>  
@@ -134,7 +138,9 @@
             Flash,
         },
         computed: {
-            
+            settingStatus () {
+                return this.$store.state.settingStatus;
+            }
         },
         beforeCreate () {
             // this.$loading({
@@ -268,6 +274,9 @@
                 obj.isMute = 1;
                 obj.url = '';
                 this.$store.dispatch('addPlayList', obj);
+            },
+            settingVideo () {           // 修改或删除视频矩阵
+                this.$store.dispatch('changeSettingStatus');
             }
         }
     }

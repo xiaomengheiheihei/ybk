@@ -1,6 +1,5 @@
 <template>
-    <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : '' || isPgm === 1 && changeSync ? 'bor-1-r': ''
-    || (vols.isMute === 0 && !changeSync) ? 'bor-1-r': ''" @dblclick="switchVol" >
+    <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : '' || vols.isMute === 0 || settingMute? 'bor-1-r': ''" @dblclick="switchVol" >
         <div class="tone-btn-top">{{ title }}</div>
         <div class="tone-btn-con">
             <div class="tone-btn-container">
@@ -22,6 +21,7 @@
         data () {
             return {
                 lastVol: 0,
+                settingMute: false,
             }
         },
         props: {
@@ -99,6 +99,7 @@
                                 type: 'mute'
                             }
                             this.$store.dispatch('changemute', obj);
+                            this.settingMute = false;
                         }
                     })
                     .catch((err)=> {
@@ -113,6 +114,7 @@
                                 type: 'mute'
                             }
                             this.$store.dispatch('changemute', obj);
+                            this.settingMute = true;
                         }
                     })
                     .catch((err)=> {

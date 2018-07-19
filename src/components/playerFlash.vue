@@ -4,7 +4,13 @@
         :style="isPreview ? {height: '223px'} : {}">
         <div class="video-player-con" 
             :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''">
-            <div class="bg" v-if="!isPreview && addLivePLayerData === null && playerData.url != ''" v-show="vol" @click.stop="addPvw" @dblclick.stop="addPgm"></div>
+            <div class="bg" v-if="!isPreview && addLivePLayerData === null && playerData.url != ''" v-show="vol" 
+                @click.stop="addPvw" @dblclick.stop="addPgm"></div>
+            <div class="setting-bg" v-if="isSetting && !isPreview && 
+            !playerData.isPgm && !playerData.isPvw && playerData.url != ''">
+                <div class="delete" @click="deleteVideo"><i class="ybk-icon icon-iconfontshanchu"></i></div>
+                <div class="editar"><i class="ybk-icon icon-501"></i></div>
+            </div>
             <video-player v-if="playerData.url != '' && addLivePLayerData === null" v-show="!isAdd" class="vjs-custom-skin" 
                     ref="videoPlayer" 
                     :options= playerOptions
@@ -120,6 +126,7 @@
 </template>
 <script>
     import 'videojs-flash'
+    import 'videojs-contrib-hls'
     import { videoPlayer } from 'vue-video-player';
     require('video.js/dist/video-js.css')
     require('vue-video-player/src/custom-theme.css')
@@ -155,6 +162,11 @@
                 type: Boolean,
                 require: false,
                 default: false,
+            },
+            isSetting: {
+                type: Boolean,
+                require: false,
+                default: false,
             }
         },
         data() {
@@ -167,14 +179,21 @@
                     sources: [
                         {
                             type: "video/mp4",
-                            src: this.playerData.url.indexOf('http') >= 0 ? this.playerData.url : '',     // 非rtmp协议用h5播放
+                            src: (this.playerData.url.indexOf('http') >= 0 && this.playerData.url.indexOf('.m3u8') < 0) ? 
+                            this.playerData.url : '',     // 非rtmp协议用h5播放
+                        },
+                        {
+                            withCredentials: false,
+                            type: 'application/x-mpegURL',
+                            src: this.playerData.url.indexOf('.m3u8') >= 0 ? this.playerData.url : '',
                         },
                         {
                             type: "rtmp/mp4",
                             src: this.playerData.url, //"rtmp://live.hkstv.hk.lxdns.com/live/hks"
-                        }
+                        },
                     ],
                     flash: {
+                        hls: {withCredentials: false},
                         swf: './video-js.swf'
                     },
                     loop:true,
@@ -298,7 +317,6 @@
                         index: this.playerData.seqNo+1,
                     };
                     this.$store.dispatch('changepvwpgm', tempObj);
-                    console.log(this.$store.state.playSync);
                 })
                 .catch((error) => {
 
@@ -323,6 +341,28 @@
                     confirmButtonText: '确定',
                     callback: ()=>{}
                 })
+            },
+            deleteVideo () {
+                let data = {
+                    id: this.playerData.id,
+                    url: '',
+                    title: this.playerData.title,
+                    streamType: '1',
+                }
+                this.http.post('./biz/ybk/setChannelInfo',data)
+                .then((response) => {
+                    if(response.code === 0) {
+                        this.playerData.url = '';
+                        this.$alert('删除成功！', '温馨提示', {
+                            confirmButtonText: '确定',
+                            callback: ()=>{}
+                        })
+                        this.$store.dispatch('changeSettingStatus');
+                    }
+                })
+                .catch((error) => {
+                    console.error(error + '请求数据有误');
+                });
             }
         }
     }
@@ -330,6 +370,33 @@
 <style lang="scss" scoped>
     .video-js {
         width: 100% !important;
+    }
+    .setting-bg {
+        background-color: rgba(247, 66, 66, 0.5);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 101%;
+        z-index: 999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .delete {
+            margin-right: 40px;
+            i {
+                font-size: 40px;
+                color: #fff;
+            }
+        }
+        .editar {
+            i {
+                font-size: 33px;
+                color: #fff;
+                margin-top: -7px;
+                display: block;
+            }
+        }
     }
     .bor-2-r::after {
         content: '';

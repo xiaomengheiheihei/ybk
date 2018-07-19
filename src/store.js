@@ -11,6 +11,7 @@ export default new Vuex.Store({
       pgm: {},                 
       pvw: {},
       playSync: true,       // 音视频是否同步切换
+      settingStatus: false,   // 设置视频浮层状态
   },
   getters: {
     playerCon: state => {
@@ -69,6 +70,9 @@ export default new Vuex.Store({
             case 0:
               arr[i].isPvw === 1 ? arr[i].isPvw = 0 : '';
               arr[i].id === obj.index ? arr[i].isPvw = 1 : '';
+              if (arr[i].id === obj.index ) {
+                state.pvw.obj.url = arr[i].url;
+              }
               break;
             case 1:
               arr[i].isPgm === 1 ? arr[i].isPgm = 0 : '';
@@ -76,6 +80,9 @@ export default new Vuex.Store({
               if (state.playSync) {
                 arr[i].isMute === 1 ? '' : arr[i].isMute = 1;
                 arr[i].id === obj.index ? arr[i].isMute = 0 : '';
+              }
+              if (arr[i].id === obj.index ) {
+                  state.pgm.obj.url = arr[i].url;
               }
               break;
           }
@@ -116,7 +123,6 @@ export default new Vuex.Store({
       },
       CHANGEPLAYSYNC(state, bol){      // 改变音视频同步切换状态
         state.playSync = bol;
-        state.isSync = !state.isSync;
       },
       ADDLIVEPLAYERURL (state, obj) {
         let arr = state.playerListStatus;
@@ -129,6 +135,9 @@ export default new Vuex.Store({
       },
       ADDYBKID (state, id) {
         state.ybkId = id;
+      },
+      CHANGESETTINGSTATUS (state) {
+        state.settingStatus = !state.settingStatus;
       }
   },
   actions: {
@@ -167,6 +176,9 @@ export default new Vuex.Store({
     },
     addYbkId ({commit}, id) {
       commit('ADDYBKID', id)
+    },
+    changeSettingStatus ({commit}) {
+      commit('CHANGESETTINGSTATUS');
     }
   }
 })
