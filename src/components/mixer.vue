@@ -43,7 +43,6 @@
             Tone,   
         },
         mounted () {
-            console.log(this.playerList)
         }
     }
 </script>

@@ -3,10 +3,15 @@
         <div class="edit-video-left-tile">播控区</div>
         <div class="play-container">
             <div class="play-con-top">
-                <div class="bt">应急切换</div>
+                <div class="bt">应急<br>切换</div>
             </div>
             <div class="play-con-bottom">
-                <input type="range" name="" id="">
+                <el-slider class="slider-input"
+                v-model="sliderValue"
+                vertical
+                :show-tooltip="false"
+                height="150px">
+                </el-slider>
                 <el-checkbox @change="changeSync" v-model="isSync">音视频同步切换</el-checkbox>
             </div>
         </div>
@@ -18,6 +23,7 @@
         data () {
             return {
                 isSync: true,
+                sliderValue: 0,
             }
         },
         mounted () {
@@ -67,33 +73,47 @@
             justify-content: center;
             align-content: center;
             flex-grow: 1;
+            flex-direction: row;
             height: 278px;
             background: rgb(34, 37, 41);
             .play-con-top {
                 position: relative;
-                width: 100%;
+                width: 55%;
                 flex-grow: 1;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 .bt {
-                    width: 180px;
-                    height: 40px;
-                    line-height: 40px;
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    word-break: break-all;
+                    padding: 15px;
+                    overflow: hidden;
                     color: #fff;
-                    border-radius: 40px;
+                    font-size: 16px;
                     background: #FF0000;
+                    box-shadow: 3px 3px 40px #FF0000;
+                    cursor: pointer;
+                    moz-user-select: -moz-none; 
+                    -moz-user-select: none; 
+                    -o-user-select:none; 
+                    -khtml-user-select:none; 
+                    -webkit-user-select:none; 
+                    -ms-user-select:none; 
+                    user-select:none;
                 }
             }
             .play-con-bottom {
                 flex-grow: 1;
-                border-top: 1px solid #4d4b4b;
+                border-left: 1px solid #4d4b4b;
                 display: flex;
+                width: 50%;
                 justify-content: center;
                 align-items: center;
                 flex-direction: column;
-                input {
-                    display: block;
+                .slider-input {
+                    margin-bottom: 30px;
                 }
             }
         }

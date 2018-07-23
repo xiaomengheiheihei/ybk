@@ -182,10 +182,11 @@
                 
             });
             // let data = {
-            //     id: 1,
+            //     id: 5,
             //     url: '',
-            //     title: 'live1',
+            //     title: 'live5',
             //     streamType: '1',
+            //     isPgm: 0,
             // }
             // this.http.post('./biz/ybk/setChannelInfo',data)
             // .then((response) => {
@@ -209,7 +210,7 @@
                 let minutes = date.getMinutes(); // 分
                 let seconds = date.getSeconds() //秒
                 let weekArr = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期天'];
-                let week = weekArr[date.getDay()];
+                let week = weekArr[date.getDay()-1];
                 // 给一位数数据前面加 “0”
                 if (month >= 1 && month <= 9) {
                     month = "0" + month;
@@ -228,7 +229,7 @@
                 }
                 this.date =  {
                     day: year + '年' + month + '月' + day + '日',
-                    week: '星期四',
+                    week: week,
                     time: hour + sign + minutes + sign + seconds,
                 }
             },
@@ -318,10 +319,10 @@
                         width: 50%;
                         box-sizing: border-box;
                         display: flex;
-                        justify-content: space-between;
+                        justify-content: flex-end;
                         align-items: center;
                         .edit-top-save-time {
-                            padding-left: 15%;
+                            margin-right: 30px;
                             font-size: 20px;
                             line-height: 45px;
                         }

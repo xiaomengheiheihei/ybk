@@ -320,6 +320,7 @@
                 this.loadVideo = true;
             },
             upload () {
+                this.$loading();
                 let data = new FormData();
                 let fileType = this.loadVideo ? 1 : 2;
                 data.append('file', this.uploadData);
@@ -328,14 +329,16 @@
                 data.append('fileType', fileType);
                 this.http.post('./biz/ybk/upload', data)
                 .then((res) => {
+                    this.$loading.end();
                     this.dialogVisible = false;
                     this.playerData.url = this.getObjectURL(this.uploadData);
                 })
                 .catch((err)=> {
-
+                    this.$loading.end();
                 });
             },
             deleteVideo () {
+                this.$loading();
                 let data = {
                     id: this.playerData.id,
                     url: '',
@@ -345,6 +348,7 @@
                 this.http.post('./biz/ybk/setChannelInfo',data)
                 .then((response) => {
                     if(response.code === 0) {
+                        this.$loading.end();
                         this.playerData.url = '';
                         this.$alert('删除成功！', '温馨提示', {
                             confirmButtonText: '确定',
@@ -354,6 +358,7 @@
                     }
                 })
                 .catch((error) => {
+                    this.$loading.end();
                     console.error(error + '请求数据有误');
                 });
             }

@@ -130,6 +130,7 @@
             },
             switchVol () {      // 双击切换音频输出
                 if (this.vols.url === '') {return false}        // 如果音频不存在
+                if (this.vols.id === 13) {return false}
                 if (this.changeSync) {      // 音视频同步切换
                     let sync = Number(this.$store.state.playSync);
                     this.http.post('./biz/ybk/switch2PGM', {"id": this.vols.playerId,sync: sync})
@@ -181,7 +182,7 @@
         box-sizing: border-box;
         .tone-btn-top {
             height: 25px;
-            background: #575B60;
+            background: #3B3C3E;
             color: #FFF;
             line-height: 25px;
         }
@@ -204,6 +205,8 @@
                 input[type=range] {
                     -webkit-appearance: none;
                     outline: none;
+                    background:  rgb(139, 145, 150);
+                    border-radius: 5px;
                 }
                 input[type=range]::-webkit-slider-thumb {
                     -webkit-appearance: none;
@@ -211,14 +214,17 @@
                 ::-webkit-slider-runnable-track {
                     background:  rgb(139, 145, 150);
                     height: 4px;
+                    border-radius: 5px;
                 }
                 ::-webkit-slider-thumb {
-                    width: 8px;
-                    height: 8px;
-                    border-radius: 50%;
-                    background-color: rgb(104, 99, 99);
-                    transform: translateY(-25%);
-                    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+                    width: 15px;
+                    height: 15px;
+                    border: 3px solid #BEBCBC;
+                    border-radius: 100%;
+                    background-color: #717070;
+                    transform: translateY(-32%);
+                    margin-top: -1px;
+                    // box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
                 }
             }
             .tone-btn-bottom {

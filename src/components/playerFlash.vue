@@ -1,6 +1,7 @@
 <template>
-    <div class="flash-player-wrap" 
-        :class="playerData.isPgm === 1 && !isPvw ? 'bor-2-r' : '' || playerData.isPvw === 1 ? 'bor-2-g' : ''"
+    <div class="flash-player-wrap"
+        :class="playerData.isPgm === 1 && !isPvw && !isPgm ? 'bor-2-r' : '' || playerData.isPvw === 1 && !isPvw ? 'bor-2-g' : ''
+        || isPgm ? 'bor-2-r-l' : '' || isPvw ? 'bor-2-g-l' : ''"
         :style="isPreview ? {height: '223px'} : {}">
         <div class="video-player-con" 
             :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''">
@@ -263,7 +264,7 @@
                         this.$store.dispatch('changepvwpgm', tempObj);
                     })
                     .catch((error) => {
-
+                        //this.$loading.end();
                     });
                 }, 300)
             },
@@ -279,6 +280,7 @@
                 this.$store.dispatch('addLivePlayerUrl', obj);
             },
             addLivePlay () {
+                this.$loading();
                 let data = {
                     id: this.playerData.id,
                     url: this.pullSteam.value,
@@ -288,6 +290,7 @@
                 this.http.post('./biz/ybk/setChannelInfo',data)
                 .then((response) => {
                     if(response.code === 0) {
+                        this.$loading.end();
                         this.addLivePLayerData = JSON.parse(JSON.stringify(this.playerData ));
                         this.addLivePLayerData.isPvw = 0;
                         this.addLivePLayerData.isPgm = 0;
@@ -295,16 +298,17 @@
                     }
                 })
                 .catch((error) => {
+                    this.$loading.end();
                     console.error(error + '请求数据有误');
                 });
             },
             closePvw () {
                 if (!this.value1) {
-                    this.player.pause();
+                    //this.player.pause();
                     this.player.el_.style.opacity = 0;
                 }
                 if (this.value1) {
-                    this.player.play();
+                    //this.player.play();
                     this.player.el_.style.opacity = 1;
                 }
             },
@@ -320,7 +324,7 @@
                         type: 1,
                         index: this.playerData.seqNo+1,
                     };
-                    this.$store.dispatch('saveTime', this.player.currentTime());
+                    //this.$store.dispatch('saveTime', this.player.currentTime());
                     this.$store.dispatch('changepvwpgm', tempObj);
                 })
                 .catch((error) => {
@@ -348,6 +352,7 @@
                 })
             },
             deleteVideo () {
+                this.$loading();
                 let data = {
                     id: this.playerData.id,
                     url: '',
@@ -357,6 +362,7 @@
                 this.http.post('./biz/ybk/setChannelInfo',data)
                 .then((response) => {
                     if(response.code === 0) {
+                        this.$loading.end();
                         this.playerData.url = '';
                         this.$alert('删除成功！', '温馨提示', {
                             confirmButtonText: '确定',
@@ -366,6 +372,7 @@
                     }
                 })
                 .catch((error) => {
+                    this.$loading.end();
                     console.error(error + '请求数据有误');
                 });
             }
@@ -409,11 +416,31 @@
         top: 0;
         left: 0;
         width: 99.5%;
-        height: 100%;
+        height: 116%;
         border: 1px solid #FF0000;
         pointer-events: none;
     }
     .bor-2-g::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 99.5%;
+        height: 116%;
+        border: 1px solid #00FF00;
+        pointer-events: none;
+    }
+    .bor-2-r-l::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 99.5%;
+        height: 100%;
+        border: 1px solid #FF0000;
+        pointer-events: none;
+    }
+    .bor-2-g-l::after {
         content: '';
         position: absolute;
         top: 0;

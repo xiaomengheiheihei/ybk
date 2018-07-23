@@ -71,9 +71,9 @@ export default new Vuex.Store({
             case 0:
               arr[i].isPvw === 1 ? arr[i].isPvw = 0 : '';
               arr[i].id === obj.index ? arr[i].isPvw = 1 : '';
-              if (arr[i].id === obj.index ) {
-                state.pvw.obj.url = arr[i].url;
-              }
+              // if (arr[i].id === obj.index ) {
+              //   state.pvw.obj.url = arr[i].url;
+              // }
               break;
             case 1:
               arr[i].isPgm === 1 ? arr[i].isPgm = 0 : '';
