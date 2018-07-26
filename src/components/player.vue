@@ -149,7 +149,7 @@
                 value2: true,
                 dialogVisible: false,   // 控制添加对话框显示
                 steamRadio: '1',           // 直播流选择
-                monitor01: true,        // 监控切换
+                monitor01: false,        // 监控切换
                 monitor02: false,
                 isStart: false,
                 timer: null,        // 控件定时器
@@ -261,9 +261,9 @@
                         type: 1,
                         index: this.playerData.seqNo+1,
                     };
-                    if (this.player) {
-                        this.$store.dispatch('saveTime', this.player.currentTime);
-                    }
+                    // if (this.player) {
+                    //     this.$store.dispatch('saveTime', this.player.currentTime);
+                    // }
                     this.$store.dispatch('changepvwpgm', tempObj);
                 })
                 .catch((error) => {
@@ -317,6 +317,9 @@
                 // this.playerData.url = this.getObjectURL(e.target.files[0]);
                 this.playerData.fileType = 1;
                 this.uploadData = e.target.files[0];
+                let reader = new FileReader();
+                reader.readAsArrayBuffer(this.uploadData);
+                console.log(reader);
                 this.loadVideo = true;
             },
             upload () {
@@ -375,7 +378,7 @@
     top: 0;
     left: 0;
     width: 99%;
-    height: 99%;
+    height: 117%;
     border: 1px solid #FF0000;
     pointer-events: none;
     z-index: 100;
@@ -413,7 +416,7 @@
     top: 0;
     left: 0;
     width: 99%;
-    height: 99%;
+    height: 117%;
     border: 1px solid #00FF00;
     pointer-events: none;
     z-index: 100;

@@ -67,7 +67,7 @@
 <style lang="scss" scoped>
     .loading-bg {
         position: fixed;
-        z-index: 2000;
+        z-index: 200000;
         background-color: rgba(0, 0, 0, .8);
         top: 0;
         right: 0;

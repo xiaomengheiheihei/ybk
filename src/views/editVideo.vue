@@ -14,7 +14,7 @@
                         <div class="edit-top-icon-con">
                             <span class="edit-add">续期</span>
                             <span class="edit-lock" :class="{'edit-lock-f' : !isLock}" @click="changeLock"></span>
-                            <span class="edit-setting-ico"></span>
+                            <span class="edit-setting-ico" @click="settingOutput"></span>
                         </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                     </div>
                     <el-row class="windows-con-w">
                         <el-col :span="12">
-                            <Windows></Windows>
+                            <Windows :mutis="mutis"></Windows>
                         </el-col>
                         <el-col :span="12">
                             <Clasp></Clasp>
@@ -100,6 +100,66 @@
                 </el-col>
             </el-row>
         </div>
+         <el-dialog
+            :visible.sync="dialogVisible"
+            width="50%"
+            :show-close="false"
+            >
+            <div slot="title" class="title">
+                输出设置
+                <span @click="dialogVisible = false">关闭</span>
+            </div>
+            <div class="content">
+               <div class="live-setting-wrap">
+                   <h3>直播流设置</h3>
+                   <div class="output-dpi">
+                       <span>输出分辨率：</span>
+                       <span class="dpi" v-if="resData">{{resData.resolution.toUpperCase()}}</span>
+                   </div>
+                   <div><el-radio v-model="pullRadio" label="1">拉流地址</el-radio></div>
+                   <div class="address-wrap" v-if="pullRadio == 1">
+                       <div class="address-con">{{url}}</div><span>复制</span>
+                   </div>
+                   <div :style="{margin: '20px 0'}"><el-radio v-model="pullRadio" label="2">推流地址</el-radio></div>
+                   <div class="push-wrap" v-if="pullRadio==2">
+                       <input type="text" name="" id="" placeholder="请输入推流地址"> <span>添加</span>
+                   </div>
+               </div>
+               <div class="shim-setting clear">
+                   <h3>垫片设置</h3>
+                   <div class="shim-left">
+                        <el-radio v-model="imgRadio" label="1">图片</el-radio>
+                        <div class="shim-img-no">无<img v-if="shimImg" :src="shimImg" ></div>
+                        <span>{{shimImg ? '修改':'上传'}}</span>
+                        <input @input="addImage" type="file" name="" accept="image/png,image/bmp,image/jpg" id="uploadImg">
+                   </div>
+                   <div class="shim-right">
+                        <el-radio v-model="imgRadio" label="2">视频</el-radio>
+                        <div class="shim-img-no">无
+                            <Player v-if="shimPlayerData" :isLive = 0
+                                    :playerData= shimPlayerData
+                                    :isAdd = false
+                                    :isBlank = false>
+                            </Player> 
+                        </div>
+                        <div class="video-info">
+                            <div class="name"><span>名称：</span><span></span></div>
+                            <div class="time"><span>时长：</span><span></span></div>
+                        </div>
+                        <span>上传</span>
+                        <input type="file" accept="video/mp4,video/ogg,video/flv" name="" id="uploadVideo">
+                   </div>
+               </div>
+               <div class="delay-setting">
+                   <h3>延时设置</h3>
+                   <div class="delay-con"><span class="text">延时量：</span><input v-model="delayTime" type="text">秒</div>
+               </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button class="cancel-btn" @click="dialogVisible = false">取 消</el-button>
+                <el-button class="add-btn" type="primary" @click="dialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -124,6 +184,17 @@
                     week: '',
                     time: '',
                 },
+                mutis: [],
+                dialogVisible: false,
+                pullRadio: "1",
+                imgRadio: "1",
+                shimImg: '',    // 垫片图片
+                shimPlayerData: null,       // 垫片视频信息
+                delayTime: 30,          // 延时设置
+                uploadData: null,           // 上传数据
+                loadVideo:false,        // 上传是否为视频
+                resData: null,
+                url: window.location.href,
             }
         },
         components: {
@@ -143,12 +214,7 @@
             }
         },
         beforeCreate () {
-            // this.$loading({
-            //     lock: true,
-            //     text: '玩儿命加载中...',
-            //     spinner: 'el-icon-loading',
-            //     background: 'rgba(255, 255, 255, 1)'
-            // });
+            
         },
         created () {
             this.http.get('/biz/ybkBase/1', {})
@@ -171,6 +237,9 @@
                 this.$store.dispatch('addPvw', response.data.pvw);
                 this.addPgm(response.data.pgm);
                 this.addDubbing();
+                // 保存视窗效果信息
+                this.mutis = this.mutis.concat(response.data.mutis);
+                this.resData = response.data;
             })
             .catch((error) => {
                 console.error(error + '请求数据有误');
@@ -182,9 +251,9 @@
                 
             });
             // let data = {
-            //     id: 5,
+            //     id: 1,
             //     url: '',
-            //     title: 'live5',
+            //     title: 'live1',
             //     streamType: '1',
             //     isPgm: 0,
             // }
@@ -278,12 +347,30 @@
             },
             settingVideo () {           // 修改或删除视频矩阵
                 this.$store.dispatch('changeSettingStatus');
-            }
+            },
+            settingOutput () {          // 设置垫片和输出
+                this.dialogVisible = true;
+            },
+            addImage (e) {          // 上穿垫片图片
+                this.uploadData = e.target.files[0];
+                this.loadVideo = false;
+                let reader = new FileReader();
+                reader.readAsDataURL(this.uploadData);
+                reader.onload = (e) => {
+                    this.shimImg = reader.result;
+                    console.log(this.shimImg);
+                }
+            },
         }
     }
 </script>
 <style lang="scss" scoped>
     .edit-video-wrap {
+        .clear::after {
+            content: '';
+            display: block;
+            clear: both;
+        }
         width: 100%;
         background-color: #332e2e;
         .edit-video-container {
@@ -426,6 +513,226 @@
                     }
                     >div:nth-child(8) {
                         padding-left: 2px;
+                    }
+                }
+            }
+        }
+        .el-dialog__header {
+            .title {
+                color: #fff;
+                font-size: 18px;
+                text-align: left;
+                position: relative;
+                height: 40px;
+                line-height: 40px;
+                padding: 0 30px;
+                span {
+                    position: absolute;
+                    right: 30px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    cursor: pointer;
+                }
+                span::before {
+                    content: '';
+                    height: 40px;
+                    background: #979797;
+                    width: 1px;
+                    position: absolute;
+                    left: -30px;
+                    top: 0;
+                }
+            }
+        }
+        .dialog-footer {
+            .cancel-btn {
+                background: #D8D8D8;
+                border-radius: 50px;
+                height: 50px;
+                width: 120px;
+                font-size: 20px;
+                color: #333333;
+                outline: none;
+            }
+            .add-btn {
+                background: #333333;
+                border-radius: 50px;
+                height: 50px;
+                width: 120px;
+                font-size: 20px;
+                color: #fff;
+                outline: none;
+                border: 0;
+                margin-left: 40px;
+            }
+        }
+        .content {
+            color: #fff;
+            text-align: left;
+            padding: 20px;
+            .live-setting-wrap {
+                position: relative;
+                padding: 20px;
+                padding-top: 10px;
+                border: 1px solid rgb(85, 84, 84);
+                margin-bottom: 30px;
+                h3 {
+                    position: absolute;
+                    top: -6%;
+                    left: 30px;
+                    background-color: #6A6B6D;
+                    margin: 0;
+                    padding: 0 10px;
+                }
+                .output-dpi {
+                    margin: 15px 0;
+                    .dpi {
+                        padding: 2px 10px;
+                        border-radius: 4px;
+                        background-color: rgb(68, 70, 68);
+                    }
+                }
+                .address-wrap {
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    margin: 10px 0 0 0;
+                    .address-con {
+                        width: 70%;
+                        border: 1px solid #ccc;
+                        padding: 10px 20px;
+                        word-break: break-all;
+                    }
+                    span {
+                        padding: 5px 20px;
+                        background-color: #332e2e;
+                        border-radius: 5px;
+                        margin-left: 30px;
+                        cursor: pointer;
+                    }
+                }
+                .el-radio {
+                    color: #fff;
+                }
+                .push-wrap {
+                    input {
+                        appearance: none;
+                        border: 1px solid #ccc;
+                        height: 30px;
+                        padding-left: 10px;
+                        outline: none;
+                        width: 60%;
+                        margin-right: 20px;
+                    }
+                    span {
+                        padding: 3px 10px;
+                        background-color: #332e2e;
+                        border-radius: 4px;
+                        cursor: pointer;
+                    }
+                }
+            }
+            .shim-setting {
+                position: relative;
+                margin: 20px 0;
+                padding: 20px;
+                padding-top: 10px;
+                border: 1px solid rgb(85, 84, 84);
+                margin-bottom: 30px;
+                h3 {
+                    position: absolute;
+                    top: -4%;
+                    left: 30px;
+                    background-color: #6A6B6D;
+                    margin: 0;
+                    padding: 0 10px;
+                    clear: both;
+                }
+                .shim-left {
+                    float: left;
+                    width: 50%;
+                    padding-top: 20px;
+                    span {
+                        position: absolute;
+                        bottom: 20px;
+                        left: 20px;
+                        padding: 5px 20px;
+                        border-radius: 4px;
+                        background-color: #332e2e;
+                        cursor: pointer;
+                    }
+                    #uploadImg {
+                        position: absolute;
+                        bottom: 20px;
+                        opacity: 0;
+                    }
+                }
+                .shim-right {
+                    float: left;
+                    padding-top: 20px;
+                    width: 50%;
+                    >span {
+                        padding: 5px 20px;
+                        border-radius: 4px;
+                        background-color: #332e2e;
+                    }
+                    .video-info {
+                        padding: 10px;
+                        border: 1px solid rgb(94, 92, 92);
+                        margin-bottom: 20px;
+                        width: 240px;
+                        box-sizing: border-box;
+                    }
+                    #uploadVideo {
+                        position: relative;
+                        left: -70px;
+                        opacity: 0;
+                    }
+                }
+                .shim-img-no {
+                    width: 240px;
+                    height: 135px;
+                    line-height: 135px;
+                    margin-top: 15px;
+                    margin-bottom: 20px;
+                    text-align: center;
+                    background-color: rgb(51, 53, 54);
+                    position: relative;
+                    img {
+                        position: absolute;
+                        width: 100%;
+                        height: 100%;
+                        left: 0;
+                        top: 0;
+                        z-index: 1;
+                    }
+                }
+                .el-radio {
+                    color: #fff;
+                }
+            }
+            .delay-setting {
+                position: relative;
+                margin: 20px 0;
+                padding: 20px;
+                padding-top: 10px;
+                border: 1px solid rgb(85, 84, 84);
+                h3 {
+                    position: absolute;
+                    top: -18%;
+                    left: 30px;
+                    background-color: #6A6B6D;
+                    margin: 0;
+                    padding: 0 10px;
+                    clear: both;
+                }
+                .delay-con {
+                    margin-top: 20px;
+                    input {
+                        width: 40px;
+                        appearance: none;
+                        border: 1px solid #ccc;
+                        margin-right: 10px;
                     }
                 }
             }

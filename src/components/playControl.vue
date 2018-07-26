@@ -9,6 +9,7 @@
                 <el-slider class="slider-input"
                 v-model="sliderValue"
                 vertical
+                @change="changeRange"
                 :show-tooltip="false"
                 height="150px">
                 </el-slider>
@@ -45,6 +46,11 @@
                     .catch((err)=> {
                         console.log(err);
                     })
+            },
+            changeRange (num) {
+                if (num > 0) {
+                   this.sliderValue = 0; 
+                }
             }
         },
         watch: {

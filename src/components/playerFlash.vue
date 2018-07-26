@@ -65,7 +65,7 @@
         </el-row>
          <el-dialog
             :visible.sync="dialogVisible"
-            width="70%"
+            width="60%"
             :show-close="false"
             >
             <div slot="title" class="title">
@@ -120,7 +120,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button class="cancel-btn" @click="dialogVisible = false">取 消</el-button>
-                <el-button class="add-btn" type="primary" @click="addLiveList">添 加</el-button>
+                <el-button class="add-btn" type="primary" @click="addLiveList">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -209,7 +209,7 @@
                 value1: true,
                 dialogVisible: false,   // 控制添加对话框显示
                 steamRadio: '1',           // 直播流选择
-                monitor01: true,        // 监控切换
+                monitor01: false,        // 监控切换
                 monitor02: false,
                 addLivePLayerData: null,
                 clickTimer: null,
@@ -236,18 +236,14 @@
         },
         mounted () {
             this.isPgm && this.player && this.player.volume('0.5');
-            if (this.isPgm && this.player) {
-                this.player.onplay = () => {
-                    this.player.currentTime(this.$store.state.currentTime);
-                }
-            }
+            
         },
         methods: {
             onTimeupdate(e) {
-                this.isPgm && this.player && this.player.volume(this.vol.vol); 
-                if (!!this.listening) {
-                    this.listening.isListening ? this.player && this.player.volume(this.listening.vol) : this.player.volume(0);
-                } 
+                // this.isPgm && this.player && this.player.volume(this.vol.vol); 
+                // if (!!this.listening) {
+                //     this.listening.isListening ? this.player && this.player.volume(this.listening.vol) : this.player.volume(0);
+                // } 
             },
             addPvw () {
                 clearTimeout(this.clickTimer);
@@ -656,6 +652,9 @@
                 padding-left: 20px;
                 color: #ddd;
                 font-size: 18px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
             span {
                 background: #333333;
