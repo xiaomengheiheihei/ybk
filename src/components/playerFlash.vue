@@ -240,10 +240,11 @@
         },
         methods: {
             onTimeupdate(e) {
-                // this.isPgm && this.player && this.player.volume(this.vol.vol); 
-                // if (!!this.listening) {
-                //     this.listening.isListening ? this.player && this.player.volume(this.listening.vol) : this.player.volume(0);
-                // } 
+                // this.isPgm && console.log(this.player.currentTime());
+                this.isPgm && this.player && this.player.volume(this.vol.vol); 
+                if (!!this.listening) {
+                    this.listening.isListening ? this.player && this.player.volume(this.listening.vol) : this.player.volume(0);
+                } 
             },
             addPvw () {
                 clearTimeout(this.clickTimer);

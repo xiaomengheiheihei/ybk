@@ -64,7 +64,7 @@
                 <span @click="dialogVisible = false">关闭</span>
             </div>
             <div class="content">
-                <div class="name">名称：<input type="text" :value="uploadTitle" :placeholder="playerData.title"></div>
+                <div class="name">名称：<input type="text" v-model="uploadTitle" :placeholder="playerData.title"></div>
                 <div class="radio-wrap">
                     <template>
                         <div class="radio01">
@@ -90,8 +90,8 @@
                                     :isBlank = false
                                     :height = '133'>
                             </Flash> -->
-                            <player v-if="playerData.url != '' && playerData.fileType === 1" :isLive = 0
-                                    :playerData = this.playerData
+                            <player v-if="previewPlayerData.url != '' && previewPlayerData.fileType === 1" :isLive = 0
+                                    :playerData = previewPlayerData
                                     :isAdd = false
                                     :isBlank = false
                                     >
@@ -113,7 +113,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button class="cancel-btn" @click="dialogVisible = false">取 消</el-button>
-                <el-button class="add-btn" type="primary" @click="upload">添 加</el-button>
+                <el-button class="add-btn" type="primary" @click="updated">添 加</el-button>
             </span>
         </el-dialog>
     </div>
@@ -162,6 +162,12 @@
                 uploadData: null,          // 上传文件
                 uploadImg: '',              // 上传图片地址
                 loadVideo: true,            // true为上传video，false为图片
+                previewPlayerData: {
+                    title: this.playerData.title,
+                    url: '',
+                    seqNo: this.playerData.seqNo,
+                    fileType: 1,
+                },                          // 上传视频预览数据
             }
         },
         components: {
@@ -300,6 +306,7 @@
                     this.uploadImg = reader.result;
                     // this.playerData.url = reader.result;
                 }
+                this.upload();
             },
              getObjectURL(file) {       // 获取blod url地址
                 let url = null;
@@ -317,24 +324,41 @@
                 // this.playerData.url = this.getObjectURL(e.target.files[0]);
                 this.playerData.fileType = 1;
                 this.uploadData = e.target.files[0];
-                let reader = new FileReader();
-                reader.readAsArrayBuffer(this.uploadData);
-                console.log(reader);
                 this.loadVideo = true;
+                this.upload();
             },
             upload () {
                 this.$loading();
                 let data = new FormData();
                 let fileType = this.loadVideo ? 1 : 2;
                 data.append('file', this.uploadData);
-                data.append('title', this.uploadTitle);
-                data.append('id', this.playerData.id);
+                // data.append('title', this.uploadTitle);
+                // data.append('id', this.playerData.id);
                 data.append('fileType', fileType);
                 this.http.post('./biz/ybk/upload', data)
                 .then((res) => {
                     this.$loading.end();
+                   this.loadVideo ? this.previewPlayerData.url = res.data : this.uploadImg = res.data;
+                })
+                .catch((err)=> {
+                    this.$loading.end();
+                });
+            },
+            updated () {
+                this.$loading();
+                let data = {
+                    id: this.playerData.id,
+                    url: this.loadVideo ? this.previewPlayerData.url : this.uploadImg,
+                    title: this.uploadTitle,
+                    streamType: '1',
+                    fileType: this.loadVideo ? 1 : 2,
+                };
+                this.http.post('./biz/ybk/setChannelInfo', data)
+                .then((res) => {
+                    this.$loading.end();
                     this.dialogVisible = false;
-                    this.playerData.url = this.getObjectURL(this.uploadData);
+                    this.playerData.url = this.loadVideo ? this.previewPlayerData.url : this.uploadImg;
+                    this.playerData.title = this.uploadTitle;
                 })
                 .catch((err)=> {
                     this.$loading.end();

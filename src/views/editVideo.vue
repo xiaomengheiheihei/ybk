@@ -120,9 +120,9 @@
                    <div class="address-wrap" v-if="pullRadio == 1">
                        <div class="address-con">{{url}}</div><span>复制</span>
                    </div>
-                   <div :style="{margin: '20px 0'}"><el-radio v-model="pullRadio" label="2">推流地址</el-radio></div>
-                   <div class="push-wrap" v-if="pullRadio==2">
-                       <input type="text" name="" id="" placeholder="请输入推流地址"> <span>添加</span>
+                   <div :style="{margin: '20px 0'}"><el-radio v-model="pullRadio" label="0">推流地址</el-radio></div>
+                   <div class="push-wrap" v-if="pullRadio==0">
+                       <input type="text" name="" v-model="pushUrl" id="" placeholder="请输入推流地址"> <span>添加</span>
                    </div>
                </div>
                <div class="shim-setting clear">
@@ -135,19 +135,19 @@
                    </div>
                    <div class="shim-right">
                         <el-radio v-model="imgRadio" label="2">视频</el-radio>
-                        <div class="shim-img-no">无
-                            <Player v-if="shimPlayerData" :isLive = 0
+                        <div class="shim-img-no"><span v-if="shimPlayerData.url === ''">无</span>
+                            <Player v-if="shimPlayerData.url != ''" :isLive = 0
                                     :playerData= shimPlayerData
                                     :isAdd = false
                                     :isBlank = false>
                             </Player> 
                         </div>
-                        <div class="video-info">
+                        <div class="video-info" :style="shimPlayerData.url != '' ? {visibility: 'visible'} : {visibility: 'hidden'}">
                             <div class="name"><span>名称：</span><span></span></div>
                             <div class="time"><span>时长：</span><span></span></div>
                         </div>
                         <span>上传</span>
-                        <input type="file" accept="video/mp4,video/ogg,video/flv" name="" id="uploadVideo">
+                        <input @input="addVideo" type="file" accept="video/mp4,video/ogg,video/flv" name="" id="uploadVideo">
                    </div>
                </div>
                <div class="delay-setting">
@@ -157,7 +157,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button class="cancel-btn" @click="dialogVisible = false">取 消</el-button>
-                <el-button class="add-btn" type="primary" @click="dialogVisible = false">确 定</el-button>
+                <el-button class="add-btn" type="primary" @click="addShim">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -186,15 +186,21 @@
                 },
                 mutis: [],
                 dialogVisible: false,
-                pullRadio: "1",
+                pullRadio: "0",
                 imgRadio: "1",
                 shimImg: '',    // 垫片图片
-                shimPlayerData: null,       // 垫片视频信息
+                shimPlayerData: {
+                    title: 'test',
+                    url: '',
+                    seqNo: 16,
+                    fileType: 1,
+                },       // 垫片视频信息
                 delayTime: 30,          // 延时设置
                 uploadData: null,           // 上传数据
                 loadVideo:false,        // 上传是否为视频
                 resData: null,
                 url: window.location.href,
+                pushUrl: '',
             }
         },
         components: {
@@ -226,9 +232,10 @@
                 // 组装store所需信息
                 this.createStorePlayList(response.data.lives);
                 this.createStorePlayList(response.data.locals, true);
+                // this.createStorePlayList(response.data.emergencys);
                 this.playerDataList = response.data.lives;
                 this.localPlayerData = response.data.locals;
-                this.$store.dispatch('addplayerdata', this.playerDataList.concat(this.localPlayerData));
+                this.$store.dispatch('addplayerdata', this.playerDataList.concat(this.localPlayerData).concat(response.data.emergencys));
                 // this.pvwData(response.data.lives.concat(response.data.locals), response.data);
                 response.data.pgm.isPgm = 1;
                 response.data.pgm.volume = 0.5;
@@ -240,6 +247,8 @@
                 // 保存视窗效果信息
                 this.mutis = this.mutis.concat(response.data.mutis);
                 this.resData = response.data;
+                this.pullRadio = this.resData.streamType.toString();
+                this.delayTime = this.resData.delay;
             })
             .catch((error) => {
                 console.error(error + '请求数据有误');
@@ -358,9 +367,51 @@
                 reader.readAsDataURL(this.uploadData);
                 reader.onload = (e) => {
                     this.shimImg = reader.result;
-                    console.log(this.shimImg);
                 }
+                this.uploaded();
             },
+            addVideo (e) {          // 上传垫钱视频
+                this.uploadData = e.target.files[0];
+                this.loadVideo = true;
+                this.uploaded();
+            },
+            uploaded () {          // 上传垫钱视频
+                this.$loading();
+                let data = new FormData();
+                data.append('file', this.uploadData);
+                this.http.post('./biz/ybk/upload', data)
+                .then((res) => {
+                    this.$loading.end();
+                    this.loadVideo ? this.shimPlayerData.url = res.data : this.shimImg = res.data;
+                })
+                .catch((err)=> {
+                    this.$loading.end();
+                });
+            },
+            addShim () {
+                this.$loading();
+                let data = {
+                    ybkId: this.resData.id,
+                    streamType: Number(this.pullRadio),
+                    onairUrl: this.pushUrl,
+                    imgChnUrl: this.imgRadio == 1 ? this.shimImg : '',
+                    vedChnUrl: this.imgRadio == 1 ? '' : this.shimPlayerData.url,
+                    emergency: this.imgRadio == 1 ? this.resData.emergencys.find(i => i.fileType === 2 ).id :
+                    this.resData.emergencys.find(i => i.fileType === 1 ).id,
+                    delay: parseInt(this.delayTime),
+                    vedChnId:this.resData.emergencys.find(i => i.fileType === 1 ).id,
+                    imgChnId: this.resData.emergencys.find(i => i.fileType === 2 ).id,
+                }
+                this.http.post('./biz/ybk/setOutputInfo', data)
+                .then((res) => {
+                    this.$loading.end();
+                    this.loadVideo ? this.shimPlayerData.url = res.data : this.shimImg = res.data;
+                    this.dialogVisible = false;
+                })
+                .catch((err)=> {
+                    this.$loading.end();
+                });
+            }
         }
     }
 </script>
@@ -654,7 +705,7 @@
                     padding-top: 20px;
                     span {
                         position: absolute;
-                        bottom: 20px;
+                        bottom: 25px;
                         left: 20px;
                         padding: 5px 20px;
                         border-radius: 4px;
@@ -663,8 +714,11 @@
                     }
                     #uploadImg {
                         position: absolute;
-                        bottom: 20px;
+                        bottom: 25px;
                         opacity: 0;
+                        width: 70px;
+                        height: 30px;
+                        z-index: 1000;
                     }
                 }
                 .shim-right {
@@ -675,6 +729,7 @@
                         padding: 5px 20px;
                         border-radius: 4px;
                         background-color: #332e2e;
+                        cursor: pointer;
                     }
                     .video-info {
                         padding: 10px;
@@ -685,8 +740,12 @@
                     }
                     #uploadVideo {
                         position: relative;
-                        left: -70px;
+                        bottom: 6px;
                         opacity: 0;
+                        width: 70px;
+                        height: 30px;
+                        z-index: 1000;
+                        left: -70px;
                     }
                 }
                 .shim-img-no {

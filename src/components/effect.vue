@@ -69,7 +69,7 @@
         name: 'Effect',
         data () {
             return {
-                effectIndex: 1,     // 控制特效选中 从0-14
+                effectIndex: 0,     // 控制特效选中 从0-14
             }
         },
         methods: {

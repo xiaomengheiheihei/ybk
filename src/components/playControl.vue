@@ -3,7 +3,7 @@
         <div class="edit-video-left-tile">播控区</div>
         <div class="play-container">
             <div class="play-con-top">
-                <div class="bt">应急<br>切换</div>
+                <div class="bt" @click="selectedShim">应急<br>切换</div>
             </div>
             <div class="play-con-bottom">
                 <el-slider class="slider-input"
@@ -49,8 +49,58 @@
             },
             changeRange (num) {
                 if (num > 0) {
-                   this.sliderValue = 0; 
+                   this.sliderValue = 0;
+                   if (num === 100) {
+                        console.log(this.$store.state.playerListStatus)
+                        let id = 0;
+                        let playList = this.$store.state.playerListStatus;
+                        // playList.forEach(e => {
+                        //     console.log(e);
+                        // });
+                        let sync = Number(this.$store.state.playSync);
+                        this.http.post('./biz/ybk/switch2PGM', {"id": id,sync: sync})
+                        .then((response) => {
+                            this.$store.dispatch('changePgm', this.playerData);
+                            this.playerData.isPgm = 1;
+                            let tempObj = {
+                                id: this.playerData.id,
+                                type: 1,
+                                index: this.playerData.seqNo+1,
+                            };
+                            //this.$store.dispatch('saveTime', this.player.currentTime());
+                            this.$store.dispatch('changepvwpgm', tempObj);
+                        })
+                        .catch((error) => {
+
+                        });
+                   }
                 }
+            },
+            selectedShim () {
+                let data = {
+                    id: 1,
+                    opt: "1",
+                };
+                this.http.post('./biz/ybk/switch2EMG', data)
+                .then((res) => {
+                    if (res.code === 0) {
+                        this.$alert('切换成功！', '切换成功', {
+                            confirmButtonText: '确定',
+                            callback: ()=>{}
+                        })
+                    } else {
+                        this.$alert('切换至垫片失败，请稍后重试！', '切换失败', {
+                            confirmButtonText: '确定',
+                            callback: ()=>{}
+                        })
+                    }
+                })
+                .catch((err)=> {
+                    this.$alert('切换至垫片失败，请稍后重试！', '切换失败', {
+                        confirmButtonText: '确定',
+                        callback: ()=>{}
+                    })
+                });
             }
         },
         watch: {
