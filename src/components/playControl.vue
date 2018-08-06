@@ -51,23 +51,30 @@
                 if (num > 0) {
                    this.sliderValue = 0;
                    if (num === 100) {
-                        console.log(this.$store.state.playerListStatus)
-                        let id = 0;
+                        // console.log(this.$store.state.playerListStatus)
+                        let pvwObj = {
+                            id: 0,
+                            title: '',
+                            playerId: 0,
+                        };
                         let playList = this.$store.state.playerListStatus;
-                        // playList.forEach(e => {
-                        //     console.log(e);
-                        // });
+                        playList.forEach(e => {
+                            if (e.isPvw == 1) {
+                                pvwObj.id = e.id;
+                                pvwObj.title = e.title;
+                                pvwObj.playerId = e.playerId;
+                            }
+                        });
                         let sync = Number(this.$store.state.playSync);
-                        this.http.post('./biz/ybk/switch2PGM', {"id": id,sync: sync})
+                        this.http.post('./biz/ybk/switch2PGM', {"id": pvwObj.id,sync: sync})
                         .then((response) => {
-                            this.$store.dispatch('changePgm', this.playerData);
-                            this.playerData.isPgm = 1;
+                            this.$store.dispatch('changePgm', pvwObj);
+                            // this.playerData.isPgm = 1;
                             let tempObj = {
-                                id: this.playerData.id,
+                                id: pvwObj.playerId,
                                 type: 1,
-                                index: this.playerData.seqNo+1,
+                                index: pvwObj.id,
                             };
-                            //this.$store.dispatch('saveTime', this.player.currentTime());
                             this.$store.dispatch('changepvwpgm', tempObj);
                         })
                         .catch((error) => {

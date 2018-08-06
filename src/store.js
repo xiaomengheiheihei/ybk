@@ -10,6 +10,7 @@ export default new Vuex.Store({
       playerListStatus: [],     // 所有播放器数据
       pgm: {},                 
       pvw: {},
+      mutis: [],            // 多视窗界面数据
       playSync: true,       // 音视频是否同步切换
       settingStatus: false,   // 设置视频浮层状态
       currentTime: 0,       // 保存当前时间
@@ -32,7 +33,8 @@ export default new Vuex.Store({
     },
     getPlaySync: state => {
       return state.playSync;
-    }
+    },
+    getMutis: state => state.mutis
   },
   mutations: {
       changePlayStatus (state, id) {        // 改变播放器播放状态
@@ -71,9 +73,6 @@ export default new Vuex.Store({
             case 0:
               arr[i].isPvw === 1 ? arr[i].isPvw = 0 : '';
               arr[i].id === obj.index ? arr[i].isPvw = 1 : '';
-              // if (arr[i].id === obj.index ) {
-              //   state.pvw.obj.url = arr[i].url;
-              // }
               break;
             case 1:
               arr[i].isPgm === 1 ? arr[i].isPgm = 0 : '';
@@ -99,6 +98,14 @@ export default new Vuex.Store({
               arrs[i].isPgm === 1 ? arrs[i].isPgm = 0 : '';
               arrs[i].id === obj.id ? arrs[i].isPgm = 1 : '';
               break;
+          }
+        }
+        // 清楚所有多视窗的pvw和pgm选中
+        for (let item of state.mutis) {
+          if (obj.type === 0) {   // 清除pvw选中
+            item.isPvw === 1 ? item.isPvw = 0 : '';
+          } else {          // 清楚pgm
+            item.isPgm === 1 ? item.isPgm = 0 : '';
           }
         }
       },
@@ -142,7 +149,50 @@ export default new Vuex.Store({
       },
       SAVETIME (state, time) {
         state.currentTime = time;
-      }
+      },
+      ADDMUTIS (state, arr) {   // 添加视窗信息
+        state.mutis = [...arr];
+      },
+      CHANGEMUTIS (state, obj) {
+        let mutis = state.mutis;
+        for (let value of mutis) {
+          if (value.id === obj.id) {
+            value.overlay = JSON.parse(obj.overlay);
+            value.title = obj.title;
+          }
+        }
+        console.log(state.mutis);
+      },
+      CHANGETOPVW (state, id) {
+        for (let value of state.mutis) {
+          if (value.id === id) {
+            value.isPvw = 1;
+          }
+        }
+      },
+      CHANGETOPGM (state, id) {
+        for (let value of state.mutis) {
+          if (value.id === id) {
+            value.isPgm = 1;
+          }
+        }
+      },
+      CHANGEVIDEOPGM (state) {
+        for (let value of state.playerListStatus) {
+          value.isPgm === 1 ? value.isPgm = 0 : '';   
+        }
+        for (let value of state.playerDataList) {
+          value.isPgm === 1 ? value.isPgm = 0 : '';   
+        }
+      },
+      CHANGEVIDEOPVW (state) {
+        for (let value of state.playerListStatus) {
+          value.isPvw === 1 ? value.isPvw = 0 : '';   
+        }
+        for (let value of state.playerDataList) {
+          value.isPvw === 1 ? value.isPvw = 0 : '';   
+        }
+      } 
   },
   actions: {
     changeVol ({commit},obj) {
@@ -186,6 +236,24 @@ export default new Vuex.Store({
     },
     saveTime ({commit}, time) {
       commit('SAVETIME', time)
+    },
+    addMutis ({commit}, arr) {
+      commit('ADDMUTIS', arr);
+    },
+    changeMutis ({commit}, obj) {
+      commit('CHANGEMUTIS', obj)
+    },
+    changeToPvw({commit}, id) {
+      commit('CHANGETOPVW', id)
+    },
+    changeToPgm({commit}, id) {
+      commit('CHANGETOPGM', id)
+    },
+    changeVideoPgm ({commit}) {
+      commit('CHANGEVIDEOPGM')
+    },
+    changeVideoPvw ({commit}) {
+      commit('CHANGEVIDEOPVW')
     }
   }
 })

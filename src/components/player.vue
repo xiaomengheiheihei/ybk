@@ -2,11 +2,13 @@
     <div class="qn-player">
         <div class="video-player-con" :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''
         || playerData.isPgm === 1 ? 'bor-2-r' : '' || playerData.isPvw === 1 ? 'bor-2-g' : ''">
-            <div class="setting-bg" v-if="isSetting && 
-            !playerData.isPgm && !playerData.isPvw && playerData.url != ''">
-                <div class="delete" @click="deleteVideo"><i class="ybk-icon icon-iconfontshanchu"></i></div>
-                <div class="editar"><i class="ybk-icon icon-501"></i></div>
-            </div>
+            <transition name="fade">
+                <div class="setting-bg" v-if="isSetting && 
+                !playerData.isPgm && !playerData.isPvw && playerData.url != ''">
+                    <div class="delete" @click="deleteVideo"><i class="ybk-icon icon-iconfontshanchu"></i></div>
+                    <div class="editar"><i class="ybk-icon icon-501"></i></div>
+                </div>
+            </transition>
             <video ref="player" v-if="playerData.url !== '' && playerData.fileType === 1" v-show="!isAdd" preload="auto" height="100%" width="100%"
             :src="playerData.url" @click.stop="addPvw" @dblclick="addPgm"
             ></video>
@@ -52,7 +54,7 @@
                 <div class="h02" v-show="isStart"></div>
             </div>
             <!-- <input ref="range"  type="range" value="0"> -->
-            <div class="range" @click="changeProgress(player,range,timer,$event)"><span class="range-btn" ref="range"></span></div>
+            <div class="range" ref="slider" @click="changeProgress($event)"><span class="range-btn" ref="range"></span></div>
         </div>
         <el-dialog
             :visible.sync="dialogVisible"
@@ -185,6 +187,9 @@
             },
             vol () {
                 return this.$store.getters.getPlayerListStatus(this.playerData.seqNo+1);
+            },
+            slider () {
+                return this.$refs.slider;
             }
         },
         created () {
@@ -199,12 +204,6 @@
                     // 设置初始声音
                     that.player.volume = 0;
                 };
-                this.player.onplay = function () {                  // 开始播放时
-                    that.timer = setInterval(() => {
-                        that.range ? that.range.style.left =  that.left + that.tempStep + 'px' : '';
-                        that.left = that.left + that.tempStep;
-                    }, 1000);
-                }
                 this.player.ontimeupdate = function () {            // 当目前播放位置更改时
                     // that.player ? that.player.volume = that.vol.vol : '';
                     if (!!that.vol) {
@@ -214,34 +213,39 @@
                             that.player.volume = 0;
                         }  
                     } 
+                    that.changeProgressBar(that.player.currentTime);
                 };
                 this.player.onended = function () {                 // 视频结束清除定时器
                     that.range.style.left = 0+'px';
                     that.player.currentTime = 0;
-                    clearInterval(that.timer);
-                }
-                this.player.onpause = function () {
-                    clearInterval(that.timer);
-                }
-                this.player.onseeked = function () {        // 跳跃到新位置时改变left值
-                    clearInterval(that.timer);
-                    that.left = that.range.offsetLeft;
-                    if(that.player.currentTime == 0 )  return;
-                    that.timer = setInterval(() => {
-                        that.range ? that.range.style.left =  that.left + that.tempStep + 'px' : '';
-                        that.left = that.left + that.tempStep;
-                    }, 1000);
                 }
             }
         },
         methods: {
             // 定义播放暂停按钮
             playBtnHandel () {
-                if (this.playerData.fileType === 2) { return false; }
+                if (this.playerData.fileType === 2 || !this.player) { return false; }
                 this.isStart = !this.isStart;       // 改变播放状态
+                if (!this.playerData.status) {      // 预览窗口
+                    this.isStart ? this.player.play() : this.player.pause();
+                    return;
+                }
                 this.$store.commit('changePlayStatus', this.playerData.seqNo + 1);
                 let index = this.playerData.seqNo + 1;
                 this.$store.getters.getPlayerListStatus(index).status ? this.player.play() : this.player.pause();
+            },
+            changeProgressBar (currentTime) {      // 当播放时间改变时改变进度条
+                this.left = currentTime / this.player.duration * 100;
+                // if (this.left > 0) {
+                //     this.range.style.transform = 'translateX(-2px)';
+                // }
+                if (this.range.offsetLeft <= this.slider.offsetWidth - this.range.offsetWidth+2) {
+                    this.range.style.left = this.left + '%';
+                }
+                if (this.left / 100 * this.slider.offsetWidth <= this.slider.offsetWidth - this.range.offsetWidth+2) {
+                    this.range.style.left = this.left + '%';
+                }
+                // this.sliderLeft.style.width = this.left + '%';
             },
             handleClose () {    // 添加直播源
                 this.$confirm('确认关闭？')
@@ -250,11 +254,13 @@
                     })
                     .catch(_ => {});
             },
-            changeProgress (player,range,timer,event) {
-                let currentProgress = event.offsetX * player.duration / 140;
-                clearInterval(timer);
-                range.style.left = event.offsetX + 'px';
-                player.currentTime = currentProgress;
+            changeProgress (event) {
+                // let currentProgress = event.offsetX * player.duration / 140;
+                // clearInterval(timer);
+                // range.style.left = event.offsetX + 'px';
+                // player.currentTime = currentProgress;
+                let l = event.offsetX * this.player.duration / this.slider.offsetWidth;
+                this.player.currentTime = l;
             },
             addPgm () {
                 clearTimeout(this.clickTimer);

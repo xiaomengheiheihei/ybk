@@ -13,11 +13,11 @@
                     <Tone   :l= l
                             :title = ii.title
                             :index = ii.id
-                            v-for="(ii, vv) in playerList" :key="vv" v-if="vv === 13">
+                            v-for="(ii, vv) in playerList" :key="vv" v-if="ii.id === 14">
                     </Tone>
                     <Tone   :title = pgmTitle
                             :index = ii.id
-                            v-for="(ii, vv) in playerList" :key="vv" v-if="vv === 12">
+                            v-for="(ii, vv) in playerList" :key="vv" v-if="ii.id === 13">
                     </Tone>
                 </el-col>
             </el-row>

@@ -1,29 +1,42 @@
 <template>
     <div class="window-wrap">
         <div class="edit-video-left-con">
-            <div class="edit-video-left-tile">视窗效果<span @click="dialogVisible = true"></span></div>
+            <div class="edit-video-left-tile">视窗效果<span @click="settingVideo"></span></div>
             <el-row class="video-item-live">
-                <el-col :span="12" class="video-item-live-fir" v-if="mutis.length > 0" v-for="(v, i) in mutis" :key="i">
-                    <div class="template01">
+                <el-col :span="12" class="video-item-live-fir" 
+                :class="i === 0 && chooseNum === 0 && v.isPvw ? 'video-item-live-fir-l' : '' 
+                || i === 1 && chooseNum ===1 && v.isPvw ? 'video-item-live-fir-r' : ''
+                || i === 0 && chooseNum === 0 && v.isPgm ? 'video-item-live-fir-l-r' : '' 
+                || i === 1 && chooseNum ===1 && v.isPgm ? 'video-item-live-fir-r-r' : ''" 
+                v-if="mutis.length > 0" 
+                v-for="(v, i) in mutis" :key="i">
+                    <div class="template01" @click="chooseMutisPvw(i,v.id)" @dblclick.stop="chooseMutisPgm(i,v.id)" v-if="v.overlay">
+                        {{v.overlay}}
                         <div class="template01-item" v-if="v.overlay !== ''" v-for="(item, index) in v.overlay" 
                         :key="index"
                         :style="{top: item.y + 'px',left: item.x+ 'px',width: item.w + 'px', height: item.h + 'px',
                         lineHeight: item.h + 'px'}"
                         :class="[item.borLeft ? 'bor-left' : '' , item.borTop ? 'bor-top': '' 
-                        , item.borRight ? 'bor-right' : '', item.borBottom ? 'bor-bottom' : '']">{{Number(item.channel)+1}}</div>
+                        , item.borRight ? 'bor-right' : '', item.borBottom ? 'bor-bottom' : '']">{{item.channel + 1}}</div>
+                        <transition name="fade">
+                            <div class="edit-wrap" v-show="settingStatus">
+                                <div class="delete" @click.stop="deleteVideo"><i class="ybk-icon icon-iconfontshanchu"></i></div>
+                                <div class="editar" @click.stop="editMutis(v)"><i class="ybk-icon icon-501"></i></div>
+                            </div>
+                        </transition>
                     </div>
-                    <div class="template-add" v-if="v.overlay === ''">
-                        <div class="add-video" @click="addNew">
+                    <div class="template-add" v-if="!v.overlay">
+                        <div class="add-video" @click="addNew(v)">
                             <div class="add-h"></div>
                             <div class="add-d"></div>
                         </div>
                     </div>
                     <el-row class="play-bar-wrap">
                         <el-col :span="8">
-                            {{v.id}}
+                            {{v.id ? v.id : i === 0 ? 13 : 14}}
                         </el-col>
                         <el-col :span="8" class="play-item-title">
-                            {{v.title}}
+                            {{v.title ? v.title : i === 0 ? 'MUTI1' : 'MUTI2'}}
                         </el-col>
                         <el-col :span="8" class="btn-wrap">
                             <div class="btn01 btn"></div>
@@ -33,28 +46,6 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <!-- <el-col :span="12">
-                    <div class="template-add">
-                        <div class="add-video" @click="addNew">
-                            <div class="add-h"></div>
-                            <div class="add-d"></div>
-                        </div>
-                    </div>
-                    <el-row class="play-bar-wrap">
-                        <el-col :span="8">
-                            12
-                        </el-col>
-                        <el-col :span="8" class="play-item-title">
-                            win1
-                        </el-col>
-                        <el-col :span="8" class="btn-wrap">
-                            <div class="btn01 btn"></div>
-                            <div class="btn02 btn"></div>
-                            <div class="btn03 btn single-grap"></div>
-                            <div class="btn04 btn"></div>
-                        </el-col>
-                    </el-row>
-                </el-col> -->
             </el-row>
         </div>
         <el-dialog
@@ -76,14 +67,6 @@
                     <select name="" id="" v-model ="itemNum">
                         <option :value="item.name" v-for="(item, index) in optionList" :key="index">{{ item.name }}</option>
                     </select>
-                    <!-- <el-select class="select-wrap" v-model="itemNum" placeholder="请选择">
-                        <el-option
-                        v-for="item in optionList"
-                        :key="item.name"
-                        :label="item.id"
-                        :value="item.name">
-                        </el-option>
-                    </el-select> -->
                 </div>
                 <div class="item-show-wrap">
                     <ul class="list">
@@ -841,10 +824,11 @@
                 radioList: [],
                 radio: 1,
                 selectedList: [],
+                settingStatus: false,       // 是否显示编辑视窗
+                chooseNum: 2,
+                modifyId: 0,                // 等待修改的视窗id        
+                clickTimer: null,     
             }
-        },
-        props: {
-            mutis: Array,
         },
         computed: {
             playerData () {
@@ -852,19 +836,21 @@
             },
             choosedItem () {
                 return this.$refs.modelItem;
+            },
+            mutis () {
+                return this.$store.getters.getMutis;
             }
         },
         components: {
            
         },
         mounted () {
-            setTimeout(()=>{
-                console.log(this.mutis);
-            },5000)
+            
         },
         methods: {
-            addNew () {
+            addNew (v) {
                 this.dialogVisible = !this.dialogVisible;
+                this.modifyId = v.id;
             },
             chooseItem (i) {
                 let list = this.mutisList;
@@ -878,13 +864,13 @@
             },
             updataMutis () {
                 let obj = {
-                    id: 14,
-                    title: '',
+                    id: this.modifyId,
+                    title: this.nameValue,
                     overlay: '',
                 };
                 this.mutisList.forEach((v, i) => {
                     if (v.isChoose) {
-                       obj.title = v.title;
+                       v.title = obj.title;
                        obj.overlay = JSON.stringify(v.mutis);
                     }
                 });
@@ -892,6 +878,9 @@
                 .then((res) => {
                     if (res.code === 0) {
                         this.dialogVisible = false;
+                        // 修改成功后修改本地视窗信息
+                        this.$store.dispatch('changeMutis', obj);
+                        this.settingStatus = false;
                     }
                 })
                 .catch((err) => {
@@ -927,6 +916,38 @@
                         break;
                 }
                 return result;
+            },
+            settingVideo () {           // 修改或删除视频矩阵
+                this.settingStatus = !this.settingStatus;
+            },
+            deleteVideo () {            // 删除多视窗
+                
+            },
+            editMutis (v) {              // 编辑多视窗
+                this.dialogVisible = true;
+                this.modifyId = v.id;
+            },
+            chooseMutisPvw (i,id) {            // 选择多视窗pvw
+                clearTimeout(this.clickTimer);
+                this.clickTimer = setTimeout(() => {
+                    this.chooseNum = i;
+                    this.$store.dispatch('changeToPvw', id);
+                    this.$store.dispatch('changeVideoPvw');
+                    // 当选中多视窗窗口后去除视频频道的选中
+                    // this.http.post('', data)
+                    // .then((res) => {
+                        
+                    // })
+                    // .catch((err) => {
+
+                    // })
+                },300)
+            },
+            chooseMutisPgm (i,id) {         // 选择多视窗pgm
+                clearTimeout(this.clickTimer);
+                this.chooseNum = i;
+                this.$store.dispatch('changeToPgm', id);
+                this.$store.dispatch('changeVideoPgm');
             }
         },
         watch: {
@@ -940,7 +961,7 @@
             },
             mutis () {
                 for(let v of this.mutis) {
-                    v.overlay = JSON.parse(v.overlay);
+                    v.overlay = typeof v.overlay === 'string' ? JSON.parse(v.overlay) : v.overlay;
                 }
             }
         }
@@ -1057,6 +1078,7 @@
                 }
                 .video-item-live-fir {
                     padding-right: 2px;
+                    position: relative;
                     .template01 {
                         // display: flex;
                         // justify-content: center;
@@ -1082,7 +1104,74 @@
                         .bor-bottom{
                             border-bottom: $border1pxfff;
                         }
+                        .edit-wrap {
+                            position: absolute;
+                            width: 100%;
+                            height: 100%;
+                            z-index: 10;
+                            top: 0;
+                            left: 0;
+                            background-color: rgba(247, 66, 66, 0.5);
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            .delete {
+                                margin-right: 40px;
+                                i {
+                                    font-size: 40px;
+                                    color: #fff;
+                                }
+                            }
+                            .editar {
+                                i {
+                                    font-size: 33px;
+                                    color: #fff;
+                                    margin-top: -3px;
+                                    display: block;
+                                }
+                            }
+                        }
                     }
+                }
+                .video-item-live-fir-r::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 98%;
+                    height: 98%;
+                    border: 1px solid #00FF00;
+                    border-bottom-right-radius: 10px;
+                }
+                .video-item-live-fir-l::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 98%;
+                    height: 98%;
+                    border: 1px solid #00FF00;
+                    border-bottom-left-radius: 15px;
+                }
+                .video-item-live-fir-r-r::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 98%;
+                    height: 98%;
+                    border: 1px solid #FF0000;
+                    border-bottom-right-radius: 10px;
+                }
+                .video-item-live-fir-l-r::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 98%;
+                    height: 98%;
+                    border: 1px solid #FF0000;
+                    border-bottom-left-radius: 15px;
                 }
             }
         }

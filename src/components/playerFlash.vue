@@ -321,7 +321,6 @@
                         type: 1,
                         index: this.playerData.seqNo+1,
                     };
-                    //this.$store.dispatch('saveTime', this.player.currentTime());
                     this.$store.dispatch('changepvwpgm', tempObj);
                 })
                 .catch((error) => {
@@ -646,16 +645,13 @@
             margin: 15px 0;
             .detail-con {
                 width: 70%;
-                height: 50px;
                 border: 1px solid #4A4848;
                 margin-right: 30px;
-                line-height: 50px;
-                padding-left: 20px;
+                line-height: 1.5em;
                 color: #ddd;
                 font-size: 18px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+                word-break: break-all;
+                padding: 10px;
             }
             span {
                 background: #333333;

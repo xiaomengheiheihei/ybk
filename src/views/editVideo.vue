@@ -71,7 +71,7 @@
                     </div>
                     <el-row class="windows-con-w">
                         <el-col :span="12">
-                            <Windows :mutis="mutis"></Windows>
+                            <Windows></Windows>
                         </el-col>
                         <el-col :span="12">
                             <Clasp></Clasp>
@@ -184,7 +184,6 @@
                     week: '',
                     time: '',
                 },
-                mutis: [],
                 dialogVisible: false,
                 pullRadio: "0",
                 imgRadio: "1",
@@ -232,10 +231,11 @@
                 // 组装store所需信息
                 this.createStorePlayList(response.data.lives);
                 this.createStorePlayList(response.data.locals, true);
-                // this.createStorePlayList(response.data.emergencys);
+                this.createStorePlayList(response.data.emergencys);
                 this.playerDataList = response.data.lives;
                 this.localPlayerData = response.data.locals;
                 this.$store.dispatch('addplayerdata', this.playerDataList.concat(this.localPlayerData).concat(response.data.emergencys));
+                this.$store.dispatch('addMutis', response.data.mutis);
                 // this.pvwData(response.data.lives.concat(response.data.locals), response.data);
                 response.data.pgm.isPgm = 1;
                 response.data.pgm.volume = 0.5;
@@ -245,7 +245,7 @@
                 this.addPgm(response.data.pgm);
                 this.addDubbing();
                 // 保存视窗效果信息
-                this.mutis = this.mutis.concat(response.data.mutis);
+                // this.mutis = this.mutis.concat(response.data.mutis);
                 this.resData = response.data;
                 this.pullRadio = this.resData.streamType.toString();
                 this.delayTime = this.resData.delay;
@@ -257,22 +257,7 @@
         mounted () {
             this.$nextTick(() => {
                 setInterval(this.getNowDate, 1000);
-                
             });
-            // let data = {
-            //     id: 1,
-            //     url: '',
-            //     title: 'live1',
-            //     streamType: '1',
-            //     isPgm: 0,
-            // }
-            // this.http.post('./biz/ybk/setChannelInfo',data)
-            // .then((response) => {
-                
-            // })
-            // .catch((error) => {
-            //     console.error(error + '请求数据有误');
-            // });
         },
         methods: {
             changeLock (event) {
@@ -314,7 +299,11 @@
             createStorePlayList (original, islocal = false) {
                 for (let i = 0; i < original.length; i++) {
                     let obj = {};
-                    obj.id = original[i].seqNo + 1;
+                    if (original[i].seqNo > 11) {
+                        obj.id = original[i].seqNo + 3;
+                    } else if (original[i].seqNo <= 11) {
+                        obj.id = original[i].seqNo + 1;
+                    }
                     islocal ? obj.status = false : obj.status = true;
                     obj.isListening = false;
                     obj.playerId = original[i].id;
@@ -360,7 +349,7 @@
             settingOutput () {          // 设置垫片和输出
                 this.dialogVisible = true;
             },
-            addImage (e) {          // 上穿垫片图片
+            addImage (e) {          // 上传垫片图片
                 this.uploadData = e.target.files[0];
                 this.loadVideo = false;
                 let reader = new FileReader();
@@ -798,6 +787,15 @@
         }
     }
 </style>
+<style>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>
+
 
 
 
