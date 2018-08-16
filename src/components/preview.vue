@@ -67,7 +67,7 @@
     .preview-wrap {
         overflow: hidden;
         border-radius: 15px;
-        margin-top: 5px;
+        margin-top: 2px;
         background: #1E2124;
         .edit-video-left-tile {
             position: relative;
@@ -75,6 +75,7 @@
             line-height: 35px;
             color: #fff;
             font-size: 18px;
+            background-image: linear-gradient(-180deg, #393737 0%, #1E1C1C 100%);
         }
         .preview-player-con {
             .play-left {

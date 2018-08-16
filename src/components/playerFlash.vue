@@ -27,10 +27,10 @@
                 :isPlayBar = 'true'
                 :height = '110'>
             </Flash>
-            <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
+            <!-- <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
                 <div class="add-h"></div>
                 <div class="add-d"></div>
-            </div>
+            </div> -->
         </div>
         <el-row v-if="(showBar || playerData.url != '') && !isPlayBar" class="play-bar-wrap" :class="isPreview &&  !isRed ? 'play-bar-wrap-h' : '' || isPreview &&  isRed ? 'play-bar-wrap-r' : ''">
             <el-col :span="8" v-if="!isPreview">
@@ -452,7 +452,7 @@
         .video-player-con {
             position: relative;
             min-height: 110px;
-            background-color: #5D5D5D;
+            background-color: #2b2b2b;
             .bg {
                 position: absolute;
                 left: 0;
@@ -499,7 +499,7 @@
     height: 20px;
     line-height: 20px;
     padding: 0 5px;
-    background-color: #686F76;
+    background: #353535;
     >.el-col-8 {
         position: relative;
         overflow: hidden;
@@ -537,7 +537,7 @@
     }
 }
 .video-player-con-n {
-    background-color: #5D5D5D;
+    background-color: #2b2b2b;
 }
 .video-player-con-l {
     height: 223px;
@@ -548,7 +548,9 @@
     padding: 0 5px;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
-    background: #00FF00;
+    background: #15D315;
+    font-size: 20px;
+    font-weight: bold;
 }
 .play-bar-wrap-r {
     height: 40px;
@@ -557,6 +559,8 @@
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
     background: #FF0000;
+    font-size: 20px;
+    font-weight: bold;
 }
 .el-dialog__header {
     .title {

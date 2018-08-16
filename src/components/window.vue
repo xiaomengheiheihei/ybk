@@ -1,7 +1,7 @@
 <template>
     <div class="window-wrap">
         <div class="edit-video-left-con">
-            <div class="edit-video-left-tile">视窗效果<span @click="settingVideo"></span></div>
+            <div class="edit-video-left-tile">视窗效果<span class="add"></span><span class="setting" @click="settingVideo"></span></div>
             <el-row class="video-item-live">
                 <el-col :span="12" class="video-item-live-fir" 
                 :class="i === 0 && chooseNum === 0 && v.isPvw ? 'video-item-live-fir-l' : '' 
@@ -980,12 +980,12 @@
                 position: relative;
                 height: 35px;
                 line-height: 35px;
-                background-color: #1E2124;
+                background-image: linear-gradient(-180deg, #393737 0%, #1E1C1C 100%);
                 color: #fff;
                 font-size: 18px;
                 border-top-left-radius: 15px;
                 border-top-right-radius: 15px;
-                span {
+                .setting {
                     position: absolute;
                     right: 10px;
                     top: 50%;
@@ -993,6 +993,15 @@
                     width: 22px;
                     height: 22px;
                     background: url('../assets/setting02.png') no-repeat center 100%;
+                }
+                .add {
+                    position: absolute;
+                    right: 35px;
+                    top: 50%;
+                    transform: translate3d(0, -60%, 0);
+                    width: 22px;
+                    height: 22px;
+                    background: url('../assets/add.png') no-repeat center 100%; 
                 }
             }
             .video-item-live {
@@ -1006,7 +1015,7 @@
                     height: 20px;
                     line-height: 20px;
                     padding: 0 5px;
-                    background-color: #686F76;
+                    background: #353535;
                     >.el-col-8 {
                         position: relative;
                         overflow: hidden;

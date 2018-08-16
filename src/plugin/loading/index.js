@@ -1,7 +1,7 @@
 /* 
     将loading作为插件载入
 */
-import Loading from './loading'
+import Loading from './loading.vue'
 
 export default {
     install (Vue, pluginOptions = {}) {

@@ -1,33 +1,47 @@
 <template>
-    <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : '' || vols.isMute === 0 || settingMute? 'bor-1-r': ''" @dblclick="switchVol" >
-        <div class="tone-btn-top">{{ title }}</div>
+    <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : ''" @dblclick="switchVol" >
+        <div class="tone-btn-top" :class="vols.isMute === 0 || settingMute? 'bor-1-r': ''">{{ title }}</div>
         <div class="tone-btn-con">
+            <div class="scale-bg"></div>
             <div class="tone-btn-container">
-                <input v-if="index < 13 || index == 14" ref="volRange" 
-                type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="isMuted" :disabled = disabled>
-                <input v-if="index == 13" ref="volRange" type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="vols.vol">
+                <!-- <input v-if="index < 13 || index == 14" ref="volRange" 
+                type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="isMuted" :disabled = disabled> -->
+                <range v-if="index < 13 || index == 14" ref="volRange" @change="changeVol" :rangeObj="rangeOpation" v-model="isMuted" :ischoosed="ischoosed" :disabled="disabled"></range>
+                <!-- <input v-if="index == 13" ref="volRange" type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="vols.vol"> -->
+                <range v-if="index == 13" ref="volRange" @change="changeVol" :ischoosed="ischoosed" :rangeObj="rangeOpation" v-model="vols.vol"></range>
             </div>
             <div class="tone-btn-bottom">
-                <p class="void-icon" v-if="index < 13 || index == 14" :class="(isMuted === 0 || vols.vol == 0) ? 'void-icon-ss' : ''" @click="isMute"></p>
+                <p class="void-icon" v-if="index < 13 || index == 14" :class="((isMuted === 0 || vols.vol == 0) && !ischoosed) ? 'void-icon-ss' : '' || ((isMuted === 0 || vols.vol == 0) && ischoosed) ? 'void-icon-red': '' || ((isMuted !== 0 || vols.vol != 0) && ischoosed ? 'void-icon-red-s' : '')" @click="isMute"></p>
                 <p class="void-icon" v-if="index == 13" :class="vols.vol == 0 ? 'void-icon-ss' : ''" @click="isMute"></p>
-                <p v-if="index != 13" class="void-icon-s" :class="vols.isListening ? 'void-icon-star' : '' " @click="tryListen"></p>
+                <p v-if="index != 13" class="void-icon-s" :class="vols.isListening ? 'void-icon-star' : '' || ischoosed ? 'vois-icon-s-red' : '' || (vols.isListening && ischoosed) ? 'vois-icon-star-red' : '' " @click="tryListen"></p>
             </div>
         </div>
     </div>
 </template>
 <script>
+    import range from '@/components/range.vue'
     export default {
         name: 'Mixer',
         data () {
             return {
                 lastVol: 0,
                 settingMute: false,
+                rangeOpation: {
+                    direction: 'ver',
+                    isPlayBar: false,
+                    isScale: true,
+                    height: '100px',
+                },
+                volValue: 0,
             }
         },
         props: {
             l: Boolean,
             title: String,
             index: Number,
+        },
+        components: {
+            range
         },
         computed: {
            volRange () {
@@ -49,19 +63,24 @@
                return (this.isPgm === 1 && this.changeSync ? false : true) &&
                (this.vols.isMute === 0 && !this.changeSync ? false : true);
            },
+           ischoosed () {
+               return this.vols.isMute === 0 || this.settingMute ? true : false;
+           }
         },
         mounted () {
            
         },
         methods: {
-            changeVol () {
+            changeVol (value) {
+                console.log(value);
+                this.volValue = value;
                 if (this.index === 13) {
-                    let obj = {index: this.index, vol: this.volRange.value};
+                    let obj = {index: this.index, vol: this.volValue};
                     this.$store.dispatch("changeVol", obj);
                 } else if(!this.vols.isListening) {
                     let req = {
                         id: this.vols.playerId,
-                        volume: this.volRange.value
+                        volume: this.volValue
                     }
                     this.http.post('./biz/ybk/setVolume', req)
                     .then((res)=> {
@@ -71,7 +90,7 @@
                                 type: 'success'
                             });
                         }
-                        let obj = {index: this.index, vol: this.volRange.value};
+                        let obj = {index: this.index, vol: this.volValue};
                     this.$store.dispatch("changeVol", obj);
                     })
                     .catch((err) => {
@@ -169,65 +188,72 @@
 </script>
 <style lang="scss" scoped>
     .bor-1-r {
-        border: 1px solid red;
+        color: red !important;
     }
     .tone-btn-wrap {
         position: relative;
         width: 35px;
-        height: 160px;
-        background: #D8D8D8;
+        height: 180px;
         border-radius: 10px;
         margin-left: 10px;
-        overflow: hidden;
         box-sizing: border-box;
         .tone-btn-top {
             height: 25px;
-            background: #3B3C3E;
             color: #FFF;
             line-height: 25px;
         }
         float: left;
         .tone-btn-con {
-            .tone-btn-container {
+            position: relative;
+            .scale-bg {
+                position: absolute;
+                left: -10px;
+                bottom: 45px;
+                height: 100px;
+                width: 100%;
                 background: url('../assets/scale.png') no-repeat left center;
                 background-size: contain;
-                height: 80px;
+            }
+            .tone-btn-container {
+                height: 100px;
                 margin-top: 15px;
                 input {
                     transform: rotate(-90deg) translateY(-50%);
                     transform-origin: 0 0;
-                    width: 82px;
+                    width: 100px;
                     position: absolute;
-                    bottom: 35px;
+                    bottom: 32px;
                     left: 50%;
                     margin: auto;
                 }
                 input[type=range] {
                     -webkit-appearance: none;
                     outline: none;
-                    background:  rgb(139, 145, 150);
+                    background:  rgba(0,0,0,0.2);
                     border-radius: 5px;
                 }
                 input[type=range]::-webkit-slider-thumb {
                     -webkit-appearance: none;
                 }  
                 ::-webkit-slider-runnable-track {
-                    background:  rgb(139, 145, 150);
+                    background:  rgba(0,0,0,0.2);
                     height: 4px;
                     border-radius: 5px;
                 }
                 ::-webkit-slider-thumb {
                     width: 15px;
                     height: 15px;
-                    border: 3px solid #BEBCBC;
+                    // border: 8px solid rgba(41,162,41,0.3);
                     border-radius: 100%;
-                    background-color: #717070;
+                    background-color:#00FF00;
                     transform: translateY(-32%);
                     margin-top: -1px;
-                    // box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
+                    box-shadow: 3px 3px 10px rgba(41,162,41,0.3);
                 }
             }
             .tone-btn-bottom {
+                height: 30px;
+                padding-top: 10px;
                 p {
                     position: absolute;
                     bottom: 7px;
@@ -242,7 +268,15 @@
                 }
                 .void-icon-ss {
                     background: url('../assets/void-end.png') no-repeat left center;
-                    background-size: 70%;
+                    background-size: 90%;
+                }
+                .void-icon-red {
+                   background: url('../assets/red_vol_n.png') no-repeat left center;
+                    background-size: 90%; 
+                }
+                .void-icon-red-s {
+                    background: url('../assets/red_vol.png') no-repeat left center;
+                    background-size: 90%; 
                 }    
                 .void-icon-s {
                     bottom: -7px;
@@ -251,6 +285,14 @@
                 }
                 .void-icon-star {
                     background: url('../assets/er-s.png') no-repeat center; 
+                    background-size: contain; 
+                }
+                .vois-icon-s-red {
+                    background: url('../assets/test_vol_n.png') no-repeat center; 
+                    background-size: contain; 
+                }
+                .vois-icon-star-red {
+                    background: url('../assets/test_vol.png') no-repeat center; 
                     background-size: contain; 
                 }
             }

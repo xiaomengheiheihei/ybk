@@ -9,14 +9,14 @@
                     <div class="editar"><i class="ybk-icon icon-501"></i></div>
                 </div>
             </transition>
-            <video ref="player" v-if="playerData.url !== '' && playerData.fileType === 1" v-show="!isAdd" preload="auto" height="100%" width="100%"
+            <video ref="player" loop="true" v-if="playerData.url !== '' && playerData.fileType === 1" v-show="!isAdd" preload="auto" height="100%" width="100%"
             :src="playerData.url" @click.stop="addPvw" @dblclick="addPgm"
             ></video>
             <img :src="playerData.url" v-if="playerData.url !== '' && playerData.fileType === 2" @click.stop="addPvw" @dblclick="addPgm" width="100%" height="100%" alt="">
-            <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
+            <!-- <div v-if="isAdd && !isBlank" class="add-video" @click="dialogVisible = !dialogVisible">
                 <div class="add-h"></div>
                 <div class="add-d"></div>
-            </div>
+            </div> -->
         </div>
         <el-row class="play-bar-wrap" :class="isPreview &&  !isRed ? 'play-bar-wrap-h' : '' || isPreview &&  isRed ? 'play-bar-wrap-r' : ''">
             <el-col :span="8" v-if="!isPreview">
@@ -203,9 +203,8 @@
                     that.tempStep = 140 / duration;
                     // 设置初始声音
                     that.player.volume = 0;
-                };
+                }
                 this.player.ontimeupdate = function () {            // 当目前播放位置更改时
-                    // that.player ? that.player.volume = that.vol.vol : '';
                     if (!!that.vol) {
                         if (that.vol.isListening && that.player) {
                             that.player.volume = that.vol.vol
@@ -214,10 +213,10 @@
                         }  
                     } 
                     that.changeProgressBar(that.player.currentTime);
-                };
-                this.player.onended = function () {                 // 视频结束清除定时器
-                    that.range.style.left = 0+'px';
-                    that.player.currentTime = 0;
+                }
+                this.player.onended = () => {
+                    this.player.currentTime = 0;
+                    this.isStart = !this.isStart; 
                 }
             }
         },
@@ -452,7 +451,7 @@
     z-index: 100;
 }
 .video-player-con {
-    background-color: #5D5D5D;
+    background-color: #2b2b2b;
     .none {
         display: none;
     }
@@ -463,7 +462,7 @@
         object-fit: fill;
         width: 100%;
         height: 100%;
-        background-color: #5D5D5D;
+        background-color: #2b2b2b;
     }
     .add-video {
         position: absolute;
@@ -495,7 +494,7 @@
     }
 }
 .video-player-con-n {
-    background-color: #5D5D5D;
+    background-color: #2b2b2b;
 }
 .video-player-con-l {
     height: 223px;
@@ -507,7 +506,7 @@
     height: 20px;
     line-height: 20px;
     padding: 0 5px;
-    background-color: #686F76;
+    background: #353535;
     >.el-col-8 {
         position: relative;
         overflow: hidden;
@@ -561,9 +560,9 @@
     background: #FF0000;
 }
 .slider-bar-wrap {
-    background: #1C2F43;
-    height: 20px;
-    line-height: 20px;
+    background-image: linear-gradient(-1deg, rgba(28,48, 83, 0.5) 0%, rgba(45,83,132,0.5) 60%);
+    height: 30px;
+    line-height: 30px;
     position: relative;
     .contral-wrap {
         position: absolute;
@@ -602,8 +601,8 @@
             position: absolute;
             left: 0;
             top: 50%;
-            width: 5px;
-            height: 5px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background-color: #f4f6fa;
             transform: translateY(-50%);

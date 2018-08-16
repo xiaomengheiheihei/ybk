@@ -46,6 +46,7 @@
                     .catch((err)=> {
                         console.log(err);
                     })
+                    document.querySelector('.play-con-bottom .el-checkbox__inner').style.backgroundColor = '#fff'
             },
             changeRange (num) {
                 if (num > 0) {
@@ -127,6 +128,7 @@
             position: relative;
             height: 35px;
             line-height: 35px;
+            background-image: linear-gradient(-180deg, #393737 0%, #1E1C1C 100%);
             color: #fff;
             font-size: 18px;
         }
@@ -137,8 +139,7 @@
             align-content: center;
             flex-grow: 1;
             flex-direction: row;
-            height: 278px;
-            background: rgb(34, 37, 41);
+            height: 287px;
             .play-con-top {
                 position: relative;
                 width: 55%;
@@ -146,6 +147,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                background-color: rgba(56,57,57,0.9);
                 .bt {
                     width: 50px;
                     height: 50px;
@@ -155,8 +157,6 @@
                     overflow: hidden;
                     color: #fff;
                     font-size: 16px;
-                    background: #FF0000;
-                    box-shadow: 3px 3px 40px #FF0000;
                     cursor: pointer;
                     moz-user-select: -moz-none; 
                     -moz-user-select: none; 
@@ -165,16 +165,19 @@
                     -webkit-user-select:none; 
                     -ms-user-select:none; 
                     user-select:none;
+                    background: url('../assets/select.png') no-repeat center;
+                    background-size: contain;
                 }
             }
             .play-con-bottom {
                 flex-grow: 1;
-                border-left: 1px solid #4d4b4b;
+                margin-left: 2px;
                 display: flex;
                 width: 50%;
                 justify-content: center;
                 align-items: center;
                 flex-direction: column;
+                background-color: rgba(56,57,57,0.8);
                 .slider-input {
                     margin-bottom: 30px;
                 }
@@ -182,5 +185,28 @@
         }
     }
 </style>
+<style>
+    .play-con-bottom .el-checkbox__input .el-checkbox__inner {
+        background-color: #6ADD24 !important;
+        border-color: #6ADD24 !important;
+    }
+    .play-con-bottom .el-checkbox__label {
+        color: #fff !important;
+    } 
+    .play-con-bottom .el-slider__button {
+        border: 0 !important;
+        border-radius: 3px !important;
+        width: 28px !important;
+        height: 18px !important;
+        background: url('../assets/slider.png') no-repeat center !important;
+    }
+    .play-con-bottom .el-slider__runway {
+        background: rgba(0,0,0,0.5) !important;
+    }
+    .play-con-bottom .el-slider__bar {
+        background: #6ADD24 !important;
+    }
+</style>
+
 
 

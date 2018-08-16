@@ -89,14 +89,15 @@
             position: relative;
             height: 35px;
             line-height: 35px;
+            background-image: linear-gradient(-180deg, #393737 0%, #1E1C1C 100%);
             color: #fff;
             font-size: 18px;
         }
         .effect-container {
             padding: 15px 0;
             box-sizing: border-box;
-            height: 278px;
-            background: rgb(42, 46, 49);
+            height: 287px;
+            background: rgba(43,43,43,0.6);
             ul {
                 list-style: none;
                 margin: 0;

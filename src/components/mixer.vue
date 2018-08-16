@@ -51,18 +51,17 @@
         border-radius: 15px;
         margin-top: 3px;
         overflow: hidden;
-        margin-right: 5px;
         .edit-video-left-tile {
             position: relative;
             height: 35px;
             line-height: 35px;
-            background-color: #1E2124;
+            background-image: linear-gradient(-180deg, #393737 0%, #1E1C1C 100%);
             color: #fff;
             font-size: 18px;
         }
         .mixer-container {
             height: 200px;
-            background-color:#5D5D5D;
+            background-color: #2B2B2B;;
             display: flex;
             align-items: center;
             .con-tt {

@@ -8,10 +8,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import VueClipboard from 'vue-clipboard2'
 import {loadStyle} from '@/utils/util'
 import VueLoading from '@/plugin/loading'
- 
-Vue.use(VueClipboard)
 
-// require('./utils/mock')
+Vue.use(VueClipboard)
 
 Vue.config.productionTip = false
 
@@ -19,7 +17,7 @@ Vue.config.productionTip = false
 Vue.prototype.http = Http
 
 /* iconfont字体图标 */
-loadStyle('//at.alicdn.com/t/font_753438_46qzgkk36w8.css');
+loadStyle('//at.alicdn.com/t/font_753438_46qzgkk36w8.css')
 
 Vue.use(Element)
 

@@ -5,9 +5,9 @@
                 <div class="edit-video-top-con">
                     <div class="edit-top-left">
                         <div class="qn-logo">
-                            <a href="#"><img src="../assets/logo.png" alt="七牛云"></a>
+                            <a class="clear" href="#"><img src="../assets/logo.png" alt="七牛云"></a>
                         </div>
-                        <span class="edit-title">云播控1.0</span>
+                        <span class="edit-title clear">云播控1.0</span>
                     </div>
                     <div class="edit-top-right">
                         <div class="edit-top-save-time">剩余时长：<span>01:30:45</span></div>
@@ -26,7 +26,7 @@
             <el-row class="edit-video-con">
                 <el-col :span="12">
                     <div class="edit-video-left-con">
-                        <div class="edit-video-left-tile">视频矩阵<span @click="settingVideo"></span></div>
+                        <div class="edit-video-left-tile">视频矩阵<span class="add"></span><span class="setting" @click="settingVideo"></span></div>
                         <el-row class="video-item-live">
                             <el-col :span="6" v-for="(item, index) in playerDataList" :key="index" 
                                     :style="index < 4 ? {marginBottom: '1px'} : {}"
@@ -77,7 +77,8 @@
                             <Clasp></Clasp>
                         </el-col>
                     </el-row>
-                    <Mixer></Mixer>
+                    <!-- <Mixer></Mixer> -->
+                    <ResourceCenter></ResourceCenter>
                 </el-col>
                 <el-col :span="12">
                     <div class="edit-video-right-con">
@@ -91,11 +92,11 @@
                                 <PlayControl></PlayControl>
                             </el-col> 
                         </el-row>
-                        <el-row>
+                        <!-- <el-row>
                             <el-col :span="24">
-                                <ResourceCenter></ResourceCenter>
                             </el-col>
-                        </el-row>
+                        </el-row> -->
+                        <Mixer></Mixer>
                     </div>
                 </el-col>
             </el-row>
@@ -416,7 +417,7 @@
         .edit-video-container {
             position: relative;
             .edit-video-top {
-                background-color: #1E2124;
+                background-image: linear-gradient(-180deg, #393737 0%, #1E1C1C 100%);
                 // margin: 0 10px;
                 color: #fff;
                 .edit-video-top-con {
@@ -430,11 +431,16 @@
                         width: 50%;
                         a {
                             float: left;
+                            height: 45px;
+                            img {
+                                height: 80%;
+                                margin-top: 4px;
+                            }
                         }
                         span {
                             float: left;
-                            line-height: 45px;
-                            margin-left: 20px;
+                            line-height: 60px;
+                            margin-left: 10px;
                             font-size: 24px;
                             box-sizing: border-box;
                         }
@@ -469,7 +475,7 @@
                                 background-image: url('../assets/lock.png');
                                 background-repeat: no-repeat;
                                 background-size: 100%;
-                                margin: 0 30px 0 27px;
+                                margin: 3px 30px 0 27px;
                             }
                             .edit-lock-f {
                                 background-image: url('../assets/unlock.png');
@@ -482,6 +488,7 @@
                                 background-repeat: no-repeat;
                                 background-size: 100%;
                                 margin-right: 20px;
+                                margin-top: 3px;
                             }
                         }
                     }
@@ -492,8 +499,9 @@
                     height: 45px;
                     line-height: 45px;
                     color: #0BE235;
-                    background-color: #2E3741;
+                    background-image: linear-gradient(-180deg, rgba(57,55,55,0.7) 0%, rgba(30,28,28,0.7) 100%);
                     font-size: 24px;
+                    font-weight: bold;
                     .week {
                         padding: 0 10px;
                     }
@@ -502,9 +510,9 @@
                         right: 20px;
                         top: 50%;
                         transform: translate3d(0, -50%, 0);
-                        width: 20px;
-                        height: 20px;
-                        background: url('../assets/play.png') no-repeat center 100%;
+                        width: 36px;
+                        height: 36px;
+                        background: url('../assets/play_btn.png') no-repeat center 100%;
                         background-size: contain;
                     }
                 }
@@ -514,8 +522,8 @@
             // margin: 0 10px;
             .edit-video-left-con {
                 background-color: #1E2124;
-                border-radius: 15px;
-                margin-top: 5px;
+                border-radius: 20px;
+                margin-top: 2px;
                 overflow: hidden;
                 margin-right: 5px;
                 .edit-video-left-tile {
@@ -524,7 +532,8 @@
                     color: #fff;
                     height: 35px;
                     line-height: 35px;
-                    span {
+                    background-image: linear-gradient(-180deg, #393737 0%, #1E1C1C 100%);
+                    .setting {
                         position: absolute;
                         right: 10px;
                         top: 50%;
@@ -532,6 +541,15 @@
                         width: 22px;
                         height: 22px;
                         background: url('../assets/setting02.png') no-repeat center 100%;
+                    }
+                    .add {
+                       position: absolute;
+                        right: 35px;
+                        top: 50%;
+                        transform: translate3d(0, -60%, 0);
+                        width: 22px;
+                        height: 22px;
+                        background: url('../assets/add.png') no-repeat center 100%; 
                     }
                 }
                 .video-item-live {
