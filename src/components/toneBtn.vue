@@ -2,18 +2,19 @@
     <div class="tone-btn-wrap" :class="l ? 'tone-btn-wrap-s' : ''" @dblclick="switchVol" >
         <div class="tone-btn-top" :class="vols.isMute === 0 || settingMute? 'bor-1-r': ''">{{ title }}</div>
         <div class="tone-btn-con">
-            <div class="scale-bg"></div>
+            <!-- <div class="scale-bg"></div> -->
             <div class="tone-btn-container">
+                <!-- {{ischoose}} -->
                 <!-- <input v-if="index < 13 || index == 14" ref="volRange" 
                 type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="isMuted" :disabled = disabled> -->
-                <range v-if="index < 13 || index == 14" ref="volRange" @change="changeVol" :rangeObj="rangeOpation" v-model="isMuted" :ischoosed="ischoosed" :disabled="disabled"></range>
+                <range v-if="index < 13 || index == 14" ref="volRange" @change="changeVol" :rangeObj="rangeOpation" v-model="isMuted" :ischoosed="ischoose" :disabled="disabled"></range>
                 <!-- <input v-if="index == 13" ref="volRange" type="range" @input="changeVol" max="1" min="0" step="0.1" name="" id="" :value="vols.vol"> -->
-                <range v-if="index == 13" ref="volRange" @change="changeVol" :ischoosed="ischoosed" :rangeObj="rangeOpation" v-model="vols.vol"></range>
+                <range v-if="index == 13" ref="volRange" @change="changeVol" :ischoosed="ischoose" :rangeObj="rangeOpation" v-model="vols.vol"></range>
             </div>
             <div class="tone-btn-bottom">
-                <p class="void-icon" v-if="index < 13 || index == 14" :class="((isMuted === 0 || vols.vol == 0) && !ischoosed) ? 'void-icon-ss' : '' || ((isMuted === 0 || vols.vol == 0) && ischoosed) ? 'void-icon-red': '' || ((isMuted !== 0 || vols.vol != 0) && ischoosed ? 'void-icon-red-s' : '')" @click="isMute"></p>
+                <p class="void-icon" v-if="index < 13 || index == 14" :class="((isMuted === 0 || vols.vol == 0) && !ischoose) ? 'void-icon-ss' : '' || ((isMuted === 0 || vols.vol == 0) && ischoose) ? 'void-icon-red': '' || ((isMuted !== 0 || vols.vol != 0) && ischoose ? 'void-icon-red-s' : '')" @click="isMute"></p>
                 <p class="void-icon" v-if="index == 13" :class="vols.vol == 0 ? 'void-icon-ss' : ''" @click="isMute"></p>
-                <p v-if="index != 13" class="void-icon-s" :class="vols.isListening ? 'void-icon-star' : '' || ischoosed ? 'vois-icon-s-red' : '' || (vols.isListening && ischoosed) ? 'vois-icon-star-red' : '' " @click="tryListen"></p>
+                <p v-if="index != 13" class="void-icon-s" :class="vols.isListening ? 'void-icon-star' : '' || ischoose ? 'vois-icon-s-red' : '' || (vols.isListening && ischoose) ? 'vois-icon-star-red' : '' " @click="tryListen"></p>
             </div>
         </div>
     </div>
@@ -60,10 +61,10 @@
                return this.$store.getters.getPlaySync;
            },
            disabled () {
-               return (this.isPgm === 1 && this.changeSync ? false : true) &&
-               (this.vols.isMute === 0 && !this.changeSync ? false : true);
+               return (this.isPgm === 1 ? false : true) &&
+               (this.vols.isMute === 0 ? false : true);
            },
-           ischoosed () {
+           ischoose () {
                return this.vols.isMute === 0 || this.settingMute ? true : false;
            }
         },
@@ -72,7 +73,6 @@
         },
         methods: {
             changeVol (value) {
-                console.log(value);
                 this.volValue = value;
                 if (this.index === 13) {
                     let obj = {index: this.index, vol: this.volValue};
@@ -150,23 +150,23 @@
             switchVol () {      // 双击切换音频输出
                 if (this.vols.url === '') {return false}        // 如果音频不存在
                 if (this.vols.id === 13) {return false}
-                if (this.changeSync) {      // 音视频同步切换
-                    let sync = Number(this.$store.state.playSync);
-                    this.http.post('./biz/ybk/switch2PGM', {"id": this.vols.playerId,sync: sync})
-                    .then((response) => {
-                        this.$store.dispatch('changePgm', this.vols);
-                        this.vols.isPgm = 1;
-                        let tempObj = {
-                            id: this.vols.playerId,
-                            type: 1,
-                            index: this.vols.id,
-                        };
-                        this.$store.dispatch('changepvwpgm', tempObj);
-                    })
-                    .catch((error) => {
+                // if (this.changeSync) {      // 音视频同步切换
+                //     let sync = Number(this.$store.state.playSync);
+                //     this.http.post('./biz/ybk/switch2PGM', {"id": this.vols.playerId,sync: sync})
+                //     .then((response) => {
+                //         this.$store.dispatch('changePgm', this.vols);
+                //         this.vols.isPgm = 1;
+                //         let tempObj = {
+                //             id: this.vols.playerId,
+                //             type: 1,
+                //             index: this.vols.id,
+                //         };
+                //         this.$store.dispatch('changepvwpgm', tempObj);
+                //     })
+                //     .catch((error) => {
 
-                    });
-                } else {                    // 音视频可不同步切换，选中后其他路静音
+                //     });
+                // } else {                    // 音视频可不同步切换，选中后其他路静音
                     let sync = Number(this.$store.state.playSync);
                     this.http.post('./biz/ybk/setMute', {id:this.vols.playerId,mute: 0,sync: sync})
                     .then((res)=> {
@@ -176,12 +176,14 @@
                                 type: 'switch'
                             }
                             this.$store.dispatch('changemute', obj);
+                            console.log(this.ischoose)
+                            console.log(this.$refs.volRange.ischoosed);
                         }
                     })
                     .catch((err)=> {
                         console.log(err);
                     })
-                }
+                //}
             }
         },
     }
@@ -253,14 +255,14 @@
             }
             .tone-btn-bottom {
                 height: 30px;
-                padding-top: 10px;
+                padding-top: 20px;
                 p {
                     position: absolute;
-                    bottom: 7px;
+                    bottom: 12px;
                     left: 50%;
-                    width: 10px;
-                    height: 12px;
-                    transform: translateX(-50%);
+                    width: 15px;
+                    height: 15px;
+                    transform: translateX(-55%);
                 }
                 .void-icon {
                     background: url('../assets/void-start.png') no-repeat center;

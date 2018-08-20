@@ -9,6 +9,7 @@
 </template>
 
 <style lang="scss">
+$--color-primary: rgb(66, 206, 37);
 html, body {
   padding: 0;
   box-sizing: border-box;
@@ -16,7 +17,12 @@ html, body {
   width: 1600px;
   height: 900px;
   margin: 0 auto;
-  background-color: #332e2e;
+  background-color: #505050;
+  position: relative;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

@@ -26,7 +26,10 @@
             <el-row class="edit-video-con">
                 <el-col :span="12">
                     <div class="edit-video-left-con">
-                        <div class="edit-video-left-tile">视频矩阵<span class="add"></span><span class="setting" @click="settingVideo"></span></div>
+                        <div class="edit-video-left-tile">视频矩阵
+                            <span class="add01" @click="addH5Video"></span>
+                            <span class="add" @click="addFlashVideo"></span>
+                            <span class="setting" @click="settingVideo"></span></div>
                         <el-row class="video-item-live">
                             <el-col :span="6" v-for="(item, index) in playerDataList" :key="index" 
                                     :style="index < 4 ? {marginBottom: '1px'} : {}"
@@ -37,6 +40,7 @@
                                         :isBlank = false
                                         :isSetting = "settingStatus"
                                         :height = '110'
+                                        ref="flashPlayer"
                                         v-if="(playerDataList.find(i => i.url === '')) ? playerDataList.find(i => i.url === '').id === item.id : ''">
                                 </Flash>
                                 <Flash  :isLive= 1
@@ -44,6 +48,7 @@
                                         :isAdd = false
                                         :isBlank = false
                                         :height = '110'
+                                        ref="flashPlayer"
                                         :isSetting = "settingStatus"
                                         v-else>
                                 </Flash>
@@ -57,6 +62,7 @@
                                         :isAdd = true
                                         :isBlank = false
                                         :isSetting = "settingStatus"
+                                        ref="h5Player"
                                         v-if="(localPlayerData.find(i => i.url === '')) ? localPlayerData.find(i => i.url === '').id === item.id : ''">
                                 </Player>
                                 <Player :isLive = 0
@@ -64,6 +70,7 @@
                                         :isAdd = false
                                         :isSetting = "settingStatus"
                                         :isBlank = false
+                                        ref="h5Player"
                                         v-else>
                                 </Player>  
                             </el-col>
@@ -217,6 +224,12 @@
         computed: {
             settingStatus () {
                 return this.$store.state.settingStatus;
+            },
+            flashPlayer () {
+                return this.$refs.flashPlayer;
+            },
+            h5Player () {
+                return this.$refs.h5Player;
             }
         },
         beforeCreate () {
@@ -259,6 +272,7 @@
             this.$nextTick(() => {
                 setInterval(this.getNowDate, 1000);
             });
+            
         },
         methods: {
             changeLock (event) {
@@ -401,6 +415,23 @@
                 .catch((err)=> {
                     this.$loading.end();
                 });
+            },
+            addFlashVideo () {
+                let id = 0;
+                for (let item of this.flashPlayer) {
+                    if (item.playerData.url === '') {
+                        item.dialogVisible = true;
+                        break;
+                    }
+                }
+            },
+            addH5Video () {
+               for (let item of this.h5Player) {
+                    if (item.playerData.url === '') {
+                        item.dialogVisible = true;
+                        break;
+                    }
+                } 
             }
         }
     }
@@ -413,7 +444,7 @@
             clear: both;
         }
         width: 100%;
-        background-color: #332e2e;
+        background-color: #505050;
         .edit-video-container {
             position: relative;
             .edit-video-top {
@@ -544,12 +575,24 @@
                     }
                     .add {
                        position: absolute;
-                        right: 35px;
+                        right: 37px;
                         top: 50%;
-                        transform: translate3d(0, -60%, 0);
+                        transform: translate3d(0, -50%, 0);
                         width: 22px;
                         height: 22px;
-                        background: url('../assets/add.png') no-repeat center 100%; 
+                        background: url('../assets/addVideo.png') no-repeat center 100%; 
+                    }
+                    .add01 {
+                        position: absolute;
+                        right: 67px;
+                        top: 50%;
+                        transform: translate3d(0, -50%, 0);
+                        width: 22px;
+                        height: 22px;
+                        background: url('../assets/addFile.png') no-repeat center 100%;  
+                    }
+                    span {
+                        cursor: pointer;
                     }
                 }
                 .video-item-live {

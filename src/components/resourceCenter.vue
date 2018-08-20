@@ -1,6 +1,6 @@
 <template>
     <div class="resource-wrap">
-        <div class="edit-video-left-tile">图文控制台<span class="add"></span><span class="setting"></span></div>
+        <div class="edit-video-left-tile">图文控制台<span class="history-icon"></span><span class="add"></span><span class="setting"></span></div>
         <div class="resource-cationer">
 
         </div>
@@ -44,6 +44,18 @@
                 width: 22px;
                 height: 22px;
                 background: url('../assets/add.png') no-repeat center 100%; 
+            }
+            .history-icon {
+                position: absolute;
+                right: 62px;
+                top: 50%;
+                transform: translate3d(0, -60%, 0);
+                width: 22px;
+                height: 22px;
+                background: url('../assets/history_icon.png') no-repeat center 100%; 
+            }
+            span {
+                cursor: pointer;
             }
         }
         .resource-cationer {

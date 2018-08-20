@@ -10,7 +10,7 @@
             <div class="setting-bg" v-if="isSetting && !isPreview && 
             !playerData.isPgm && !playerData.isPvw && playerData.url != ''">
                 <div class="delete" @click="deleteVideo"><i class="ybk-icon icon-iconfontshanchu"></i></div>
-                <div class="editar"><i class="ybk-icon icon-501"></i></div>
+                <div class="editar" @click="dialogVisible = !dialogVisible"><i class="ybk-icon icon-501"></i></div>
             </div>
             <video-player v-if="playerData.url != '' && addLivePLayerData === null" v-show="!isAdd" class="vjs-custom-skin" 
                     ref="videoPlayer" 
@@ -236,13 +236,13 @@
         },
         mounted () {
             this.isPgm && this.player && this.player.volume('0.5');
-            
+            !this.isPgm && this.player && this.player.volume(0);
         },
         methods: {
             onTimeupdate(e) {
                 // this.isPgm && console.log(this.player.currentTime());
-                this.isPgm && this.player && this.player.volume(this.vol.vol); 
-                if (!!this.listening) {
+                this.isPgm && this.player && this.player.volume(this.vol.vol);
+                if (this.listening && !this.isPgm) {
                     this.listening.isListening ? this.player && this.player.volume(this.listening.vol) : this.player.volume(0);
                 } 
             },
@@ -266,6 +266,7 @@
                 }, 300)
             },
             addLiveList () {    // 添加直播源
+                if (this.addLivePLayerData === null) return;
                 this.playerData.url = this.addLivePLayerData.url;
                 this.dialogVisible = false;
                 this.showBar = !this.showBar;
@@ -274,6 +275,7 @@
                     title: this.addLivePLayerData.title,
                     url: this.addLivePLayerData.url,
                 }
+                this.$store.dispatch('changeSettingStatus');
                 this.$store.dispatch('addLivePlayerUrl', obj);
             },
             addLivePlay () {

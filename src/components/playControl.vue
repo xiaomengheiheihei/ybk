@@ -46,7 +46,7 @@
                     .catch((err)=> {
                         console.log(err);
                     })
-                    document.querySelector('.play-con-bottom .el-checkbox__inner').style.backgroundColor = '#fff'
+                    // document.querySelector('.play-con-bottom .el-checkbox__inner').style.backgroundColor = '#fff'
             },
             changeRange (num) {
                 if (num > 0) {
@@ -186,19 +186,22 @@
     }
 </style>
 <style>
-    .play-con-bottom .el-checkbox__input .el-checkbox__inner {
+    /* .play-con-bottom .el-checkbox__input .el-checkbox__inner {
         background-color: #6ADD24 !important;
         border-color: #6ADD24 !important;
-    }
+    } */
     .play-con-bottom .el-checkbox__label {
         color: #fff !important;
     } 
     .play-con-bottom .el-slider__button {
         border: 0 !important;
         border-radius: 3px !important;
-        width: 28px !important;
-        height: 18px !important;
+        width: 41px !important;
+        height: 26px !important;
         background: url('../assets/slider.png') no-repeat center !important;
+    }
+    .play-con-bottom .el-slider__button.dragging, .el-slider__button.hover, .el-slider__button:hover {
+        transform: scale(1.1) !important;
     }
     .play-con-bottom .el-slider__runway {
         background: rgba(0,0,0,0.5) !important;

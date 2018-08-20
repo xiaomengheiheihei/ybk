@@ -79,6 +79,9 @@
                 height: 22px;
                 background: url('../assets/add.png') no-repeat center 100%; 
             }
+            span {
+                cursor: pointer;
+            }
         }
         .clasp-container {
             height: 130px;

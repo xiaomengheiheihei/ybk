@@ -930,24 +930,29 @@
             chooseMutisPvw (i,id) {            // 选择多视窗pvw
                 clearTimeout(this.clickTimer);
                 this.clickTimer = setTimeout(() => {
-                    this.chooseNum = i;
-                    this.$store.dispatch('changeToPvw', id);
-                    this.$store.dispatch('changeVideoPvw');
-                    // 当选中多视窗窗口后去除视频频道的选中
-                    // this.http.post('', data)
-                    // .then((res) => {
-                        
-                    // })
-                    // .catch((err) => {
-
-                    // })
+                    this.http.post('./biz/ybk/switch2PVW', {id:id})
+                    .then((response) => {
+                        this.chooseNum = i;
+                        this.$store.dispatch('changeToPvw', id);
+                        this.$store.dispatch('changeVideoPvw');
+                        // 当选中多视窗窗口后去除视频频道的选中
+                    })
+                    .catch((error) => {
+                        //this.$loading.end();
+                    });
                 },300)
             },
             chooseMutisPgm (i,id) {         // 选择多视窗pgm
                 clearTimeout(this.clickTimer);
-                this.chooseNum = i;
-                this.$store.dispatch('changeToPgm', id);
-                this.$store.dispatch('changeVideoPgm');
+                let sync = Number(this.$store.state.playSync);
+                this.http.post('./biz/ybk/switch2PGM', {"id":id,sync: sync})
+                .then((response) => {
+                    this.chooseNum = i;
+                    this.$store.dispatch('changeToPgm', id);
+                    this.$store.dispatch('changeVideoPgm');
+                }).catch((error) => {
+
+                });
             }
         },
         watch: {
@@ -1002,6 +1007,9 @@
                     width: 22px;
                     height: 22px;
                     background: url('../assets/add.png') no-repeat center 100%; 
+                }
+                span {
+                    cursor: pointer;
                 }
             }
             .video-item-live {

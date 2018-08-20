@@ -2,6 +2,9 @@
     <div class="mixer-wrap">
         <div class="edit-video-left-tile">调音台</div>
         <div class="mixer-container">
+            <div class="line01"></div>
+            <div class="line02"></div>
+            <div class="line03"></div>
             <el-row align="middle" class="con-tt">
                 <el-col :span="19" class="left">
                     <Tone   :title = v.title
@@ -21,6 +24,7 @@
                     </Tone>
                 </el-col>
             </el-row>
+            <div class="scal"></div>
         </div>
     </div> 
 </template>
@@ -64,6 +68,31 @@
             background-color: #2B2B2B;;
             display: flex;
             align-items: center;
+            position: relative;
+            .line01,.line02,.line03 {
+                position: absolute;
+                top: 49px;
+                left: 0;
+                height: 1px;
+                width: 100%;
+                border-top: 1px dashed #595959;
+                opacity: 0.2;
+            }
+            .line02 {
+                top: 99px;
+            }
+            .line03 {
+                top: 149px;
+            }
+            .scal {
+                position: absolute;
+                right: 128px;
+                top: 0px;
+                width: 20px;
+                height: 100%;
+                background: url('../assets/scale.png') no-repeat left center;
+                background-size: 70%;
+            }
             .con-tt {
                 width: 100%;
                 .left {

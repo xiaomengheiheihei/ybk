@@ -73,18 +73,28 @@
                 }
             },
             changeDistanceToValue () {
-                let value = 0;
+                let tempValue = 0;
                 let temp = (this.distance / 88).toFixed(1);
                 if (temp <= 0.1 & temp > 0) {
                     temp = 0.1;
                 }
-                value  = 1 - temp;
-                if (value < 0.1 && value > 0) {
-                    value = 0.1;
+                tempValue  = 1 - temp;
+                if (tempValue < 0.1 && tempValue > 0) {
+                    tempValue = 0.1;
                 }
-                return value == 0 ? value : value.toFixed(1);
+                return tempValue == 0 ? tempValue :  tempValue.toFixed(1);
             }
         },
+        watch: {
+            value () {
+                this.sliderBar.style.top = this.distances + '%';
+                if (this.value != 0) {      
+                    this.silderProgress.style.height = 100 - this.distances - this.sliderBar.offsetWidth / 2 + '%';
+                } else {
+                     this.silderProgress.style.height = '0%';
+                }
+            }
+        }
     }
 </script>
 <style lang="scss" scoped>
