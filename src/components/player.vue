@@ -386,7 +386,7 @@
                             confirmButtonText: '确定',
                             callback: ()=>{}
                         })
-                        this.$store.dispatch('changeSettingStatus');
+                        this.$store.dispatch('changeSettingStatus', 0);
                     }
                 })
                 .catch((error) => {

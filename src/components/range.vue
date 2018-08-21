@@ -58,19 +58,26 @@
         },
         methods: {
             change (e) {
-                let diffY = e.clientY - this.sliderBar.offsetTop;
+                let diffY = e.clientY - this.getPoint(this.sliderBar);
                 document.onmousemove = (e) => {
-                    this.distance = e.clientY - diffY - this.sliderBar.offsetWidth;
+                    this.distance = e.clientY - diffY - this.sliderBar.offsetWidth + 35;
                     this.distance < 0 ? this.distance = 0 : '';
                     this.distance > 88 ? this.distance = 88 : '';
                     this.sliderBar.style.top = this.distance + '%';
-                    this.silderProgress.style.height = 100 - this.distance - this.sliderBar.offsetWidth / 2 + '%';
+                    this.silderProgress.style.height = 100 - this.distance - this.sliderBar.offsetWidth + 45 / 2 + '%';
                 };
                 document.onmouseup = (e)=> {
                     document.onmousemove = null;
                     document.onmouseup = null;
                     this.$emit('change', this.changeDistanceToValue());
                 }
+            },
+            getPoint (obj) {  
+                let t = obj.offsetTop;  
+                while (obj == obj.offsetParent) { 
+                    t += obj.offsetTop;
+                }
+                return t;
             },
             changeDistanceToValue () {
                 let tempValue = 0;
@@ -146,7 +153,7 @@
                 left: 50%;
                 transform: translateX(-50%);
                 background: #29A229;
-                transition: height .2s linear;
+                // transition: height .2s linear;
                 border-radius: 50px;
             }
             .progress-red {
@@ -160,7 +167,7 @@
             border-radius: 50px;
             margin: 0 auto;
             border-radius: 50px;
-            transition: height .2s linear;
+            transition: height .1s linear;
         }
     }
 </style>

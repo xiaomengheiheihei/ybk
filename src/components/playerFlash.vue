@@ -21,7 +21,7 @@
             </video-player>
             <Flash v-if="addLivePLayerData != null && playerData.url != ''"  
                 :isLive= 1
-                :playerData= addLivePLayerData
+                :playerData= playerData
                 :isAdd = false
                 :isBlank = false
                 :isPlayBar = 'true'
@@ -275,7 +275,7 @@
                     title: this.addLivePLayerData.title,
                     url: this.addLivePLayerData.url,
                 }
-                this.$store.dispatch('changeSettingStatus');
+                this.$store.dispatch('changeSettingStatus', 0);
                 this.$store.dispatch('addLivePlayerUrl', obj);
             },
             addLivePlay () {
@@ -366,7 +366,7 @@
                             confirmButtonText: '确定',
                             callback: ()=>{}
                         })
-                        this.$store.dispatch('changeSettingStatus');
+                        this.$store.dispatch('changeSettingStatus', 0);
                     }
                 })
                 .catch((error) => {
@@ -413,7 +413,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 99.5%;
+        width: 99%;
         height: 116%;
         border: 1px solid #FF0000;
         pointer-events: none;
@@ -423,7 +423,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 99.5%;
+        width: 99%;
         height: 116%;
         border: 1px solid #00FF00;
         pointer-events: none;

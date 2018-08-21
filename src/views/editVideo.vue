@@ -27,8 +27,8 @@
                 <el-col :span="12">
                     <div class="edit-video-left-con">
                         <div class="edit-video-left-tile">视频矩阵
-                            <span class="add01" @click="addH5Video"></span>
                             <span class="add" @click="addFlashVideo"></span>
+                            <span class="add01" @click="addH5Video"></span>
                             <span class="setting" @click="settingVideo"></span></div>
                         <el-row class="video-item-live">
                             <el-col :span="6" v-for="(item, index) in playerDataList" :key="index" 
@@ -359,7 +359,7 @@
                 this.$store.dispatch('addPlayList', obj);
             },
             settingVideo () {           // 修改或删除视频矩阵
-                this.$store.dispatch('changeSettingStatus');
+                this.$store.dispatch('changeSettingStatus', 1);
             },
             settingOutput () {          // 设置垫片和输出
                 this.dialogVisible = true;
@@ -571,25 +571,26 @@
                         transform: translate3d(0, -50%, 0);
                         width: 22px;
                         height: 22px;
-                        background: url('../assets/setting02.png') no-repeat center 100%;
+                        background: url('../assets/setting02.png') no-repeat center;
+                        background-size: contain;
                     }
-                    .add {
-                       position: absolute;
-                        right: 37px;
-                        top: 50%;
-                        transform: translate3d(0, -50%, 0);
-                        width: 22px;
-                        height: 22px;
-                        background: url('../assets/addVideo.png') no-repeat center 100%; 
-                    }
-                    .add01 {
+                    .add { 
                         position: absolute;
                         right: 67px;
                         top: 50%;
                         transform: translate3d(0, -50%, 0);
                         width: 22px;
                         height: 22px;
-                        background: url('../assets/addFile.png') no-repeat center 100%;  
+                        background: url('../assets/addVideo.png') no-repeat center 100%;  
+                    }
+                    .add01 {
+                        position: absolute;
+                        right: 37px;
+                        top: 50%;
+                        transform: translate3d(0, -50%, 0);
+                        width: 22px;
+                        height: 22px;
+                        background: url('../assets/addFile.png') no-repeat center 100%;
                     }
                     span {
                         cursor: pointer;

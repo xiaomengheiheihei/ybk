@@ -1,7 +1,7 @@
 <template>
     <div class="window-wrap">
         <div class="edit-video-left-con">
-            <div class="edit-video-left-tile">视窗效果<span class="add"></span><span class="setting" @click="settingVideo"></span></div>
+            <div class="edit-video-left-tile">视窗效果<span class="add" @click="addNew()"></span><span class="setting" @click="settingVideo"></span></div>
             <el-row class="video-item-live">
                 <el-col :span="12" class="video-item-live-fir" 
                 :class="
@@ -22,16 +22,16 @@
                         , item.borRight ? 'bor-right' : '', item.borBottom ? 'bor-bottom' : '']">{{item.channel + 1}}</div>
                         <transition name="fade">
                             <div class="edit-wrap" v-show="settingStatus">
-                                <div class="delete" @click.stop="deleteVideo"><i class="ybk-icon icon-iconfontshanchu"></i></div>
+                                <div class="delete" @click.stop="deleteVideo(v)"><i class="ybk-icon icon-iconfontshanchu"></i></div>
                                 <div class="editar" @click.stop="editMutis(v)"><i class="ybk-icon icon-501"></i></div>
                             </div>
                         </transition>
                     </div>
                     <div class="template-add" v-if="!v.overlay">
-                        <div class="add-video" @click="addNew(v)">
+                        <!-- <div class="add-video" @click="addNew(v)">
                             <div class="add-h"></div>
                             <div class="add-d"></div>
-                        </div>
+                        </div> -->
                     </div>
                     <el-row class="play-bar-wrap">
                         <el-col :span="8">
@@ -849,9 +849,14 @@
             
         },
         methods: {
-            addNew (v) {
+            addNew () {
                 this.dialogVisible = !this.dialogVisible;
-                this.modifyId = v.id;
+                for (let item of this.mutis) {
+                    if (item.overlay === '') {
+                        this.modifyId = item.id;
+                        break;
+                    }
+                }
             },
             chooseItem (i) {
                 let list = this.mutisList;
@@ -869,7 +874,6 @@
                     title: this.nameValue,
                     overlay: '',
                 };
-                console.log(this.radio);
                 this.mutisList.forEach((v, i) => {
                     if (v.isChoose) {
                        v.title = obj.title;
@@ -922,8 +926,25 @@
             settingVideo () {           // 修改或删除视频矩阵
                 this.settingStatus = !this.settingStatus;
             },
-            deleteVideo () {            // 删除多视窗
-                
+            deleteVideo (v) {            // 删除多视窗
+                this.modifyId = v.id;
+                let obj = {
+                    id: this.modifyId,
+                    title: this.nameValue,
+                    overlay: '',
+                };
+                this.http.post('./biz/ybk/setMutiInfo',obj)
+                .then((res) => {
+                    if (res.code === 0) {
+                        this.dialogVisible = false;
+                        // 修改成功后修改本地视窗信息
+                        this.$store.dispatch('changeMutis', obj);
+                        this.settingStatus = false;
+                    }
+                })
+                .catch((err) => {
+
+                });
             },
             editMutis (v) {              // 编辑多视窗
                 this.dialogVisible = true;

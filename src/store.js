@@ -144,8 +144,13 @@ export default new Vuex.Store({
       ADDYBKID (state, id) {
         state.ybkId = id;
       },
-      CHANGESETTINGSTATUS (state) {
-        state.settingStatus = !state.settingStatus;
+      CHANGESETTINGSTATUS (state, type) {
+        console.log(type);
+        if (type === 1) {
+          state.settingStatus = true;
+        } else {
+          state.settingStatus = false;
+        }
       },
       SAVETIME (state, time) {
         state.currentTime = time;
@@ -232,8 +237,8 @@ export default new Vuex.Store({
     addYbkId ({commit}, id) {
       commit('ADDYBKID', id)
     },
-    changeSettingStatus ({commit}) {
-      commit('CHANGESETTINGSTATUS');
+    changeSettingStatus ({commit},type) {
+      commit('CHANGESETTINGSTATUS', type);
     },
     saveTime ({commit}, time) {
       commit('SAVETIME', time)
