@@ -146,7 +146,7 @@
                 left: 50%;
                 transform: translateX(-50%);
                 background: #29A229;
-                transition: height .1s linear;
+                transition: height .2s linear;
                 border-radius: 50px;
             }
             .progress-red {
@@ -160,6 +160,7 @@
             border-radius: 50px;
             margin: 0 auto;
             border-radius: 50px;
+            transition: height .2s linear;
         }
     }
 </style>

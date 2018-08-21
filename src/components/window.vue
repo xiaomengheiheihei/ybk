@@ -4,14 +4,16 @@
             <div class="edit-video-left-tile">视窗效果<span class="add"></span><span class="setting" @click="settingVideo"></span></div>
             <el-row class="video-item-live">
                 <el-col :span="12" class="video-item-live-fir" 
-                :class="i === 0 && chooseNum === 0 && v.isPvw ? 'video-item-live-fir-l' : '' 
-                || i === 1 && chooseNum ===1 && v.isPvw ? 'video-item-live-fir-r' : ''
-                || i === 0 && chooseNum === 0 && v.isPgm ? 'video-item-live-fir-l-r' : '' 
-                || i === 1 && chooseNum ===1 && v.isPgm ? 'video-item-live-fir-r-r' : ''" 
+                :class="
+                i === 0 && v.isPvw && v.isPgm ? 'video-item-live-fir-l-r' : '' 
+                || i === 1 && v.isPvw && v.isPgm ? 'video-item-live-fir-r-r' : ''
+                || i === 0  && v.isPvw ? 'video-item-live-fir-l' : '' 
+                || i === 1  && v.isPvw ? 'video-item-live-fir-r' : ''
+                || i === 0  && v.isPgm ? 'video-item-live-fir-l-r' : '' 
+                || i === 1  && v.isPgm ? 'video-item-live-fir-r-r' : ''" 
                 v-if="mutis.length > 0" 
                 v-for="(v, i) in mutis" :key="i">
                     <div class="template01" @click="chooseMutisPvw(i,v.id)" @dblclick.stop="chooseMutisPgm(i,v.id)" v-if="v.overlay">
-                        {{v.overlay}}
                         <div class="template01-item" v-if="v.overlay !== ''" v-for="(item, index) in v.overlay" 
                         :key="index"
                         :style="{top: item.y + 'px',left: item.x+ 'px',width: item.w + 'px', height: item.h + 'px',
@@ -825,7 +827,6 @@
                 radio: 1,
                 selectedList: [],
                 settingStatus: false,       // 是否显示编辑视窗
-                chooseNum: 2,
                 modifyId: 0,                // 等待修改的视窗id        
                 clickTimer: null,     
             }
@@ -868,6 +869,7 @@
                     title: this.nameValue,
                     overlay: '',
                 };
+                console.log(this.radio);
                 this.mutisList.forEach((v, i) => {
                     if (v.isChoose) {
                        v.title = obj.title;
@@ -932,7 +934,6 @@
                 this.clickTimer = setTimeout(() => {
                     this.http.post('./biz/ybk/switch2PVW', {id:id})
                     .then((response) => {
-                        this.chooseNum = i;
                         this.$store.dispatch('changeToPvw', id);
                         this.$store.dispatch('changeVideoPvw');
                         // 当选中多视窗窗口后去除视频频道的选中
@@ -947,7 +948,6 @@
                 let sync = Number(this.$store.state.playSync);
                 this.http.post('./biz/ybk/switch2PGM', {"id":id,sync: sync})
                 .then((response) => {
-                    this.chooseNum = i;
                     this.$store.dispatch('changeToPgm', id);
                     this.$store.dispatch('changeVideoPgm');
                 }).catch((error) => {
@@ -1159,6 +1159,7 @@
                     height: 98%;
                     border: 1px solid #00FF00;
                     border-bottom-right-radius: 10px;
+                    pointer-events: none;
                 }
                 .video-item-live-fir-l::after {
                     content: '';
@@ -1169,6 +1170,7 @@
                     height: 98%;
                     border: 1px solid #00FF00;
                     border-bottom-left-radius: 15px;
+                    pointer-events: none;
                 }
                 .video-item-live-fir-r-r::after {
                     content: '';
@@ -1179,6 +1181,7 @@
                     height: 98%;
                     border: 1px solid #FF0000;
                     border-bottom-right-radius: 10px;
+                    pointer-events: none;
                 }
                 .video-item-live-fir-l-r::after {
                     content: '';
@@ -1189,6 +1192,7 @@
                     height: 98%;
                     border: 1px solid #FF0000;
                     border-bottom-left-radius: 15px;
+                    pointer-events: none;
                 }
             }
         }

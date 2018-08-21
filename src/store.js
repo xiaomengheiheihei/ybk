@@ -161,10 +161,10 @@ export default new Vuex.Store({
             value.title = obj.title;
           }
         }
-        console.log(state.mutis);
       },
       CHANGETOPVW (state, id) {
         for (let value of state.mutis) {
+          value.isPvw = 0;
           if (value.id === id) {
             value.isPvw = 1;
           }
@@ -172,6 +172,7 @@ export default new Vuex.Store({
       },
       CHANGETOPGM (state, id) {
         for (let value of state.mutis) {
+          value.isPgm = 0;
           if (value.id === id) {
             value.isPgm = 1;
           }
