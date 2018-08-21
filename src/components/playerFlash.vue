@@ -235,7 +235,7 @@
             videoPlayer
         },
         mounted () {
-            this.isPgm && this.player && this.player.volume('0.5');
+            this.isPgm && this.player && this.player.volume(0.5);
             !this.isPgm && this.player && this.player.volume(0);
         },
         methods: {

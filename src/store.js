@@ -145,7 +145,6 @@ export default new Vuex.Store({
         state.ybkId = id;
       },
       CHANGESETTINGSTATUS (state, type) {
-        console.log(type);
         if (type === 1) {
           state.settingStatus = true;
         } else {
@@ -162,7 +161,7 @@ export default new Vuex.Store({
         let mutis = state.mutis;
         for (let value of mutis) {
           if (value.id === obj.id) {
-            value.overlay = JSON.parse(obj.overlay);
+            value.overlay = obj.overlay == "" ? obj.overlay : JSON.parse(obj.overlay);
             value.title = obj.title;
           }
         }

@@ -931,12 +931,11 @@
                 let obj = {
                     id: this.modifyId,
                     title: this.nameValue,
-                    overlay: '',
+                    overlay: "",
                 };
                 this.http.post('./biz/ybk/setMutiInfo',obj)
                 .then((res) => {
                     if (res.code === 0) {
-                        this.dialogVisible = false;
                         // 修改成功后修改本地视窗信息
                         this.$store.dispatch('changeMutis', obj);
                         this.settingStatus = false;
@@ -987,7 +986,7 @@
             },
             mutis () {
                 for(let v of this.mutis) {
-                    v.overlay = typeof v.overlay === 'string' ? JSON.parse(v.overlay) : v.overlay;
+                    v.overlay = typeof v.overlay === 'string' && v.overlay  ? JSON.parse(v.overlay) : v.overlay;
                 }
             }
         }
