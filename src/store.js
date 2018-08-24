@@ -146,7 +146,7 @@ export default new Vuex.Store({
       },
       CHANGESETTINGSTATUS (state, type) {
         if (type === 1) {
-          state.settingStatus = true;
+          state.settingStatus = !state.settingStatus;
         } else {
           state.settingStatus = false;
         }

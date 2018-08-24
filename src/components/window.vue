@@ -14,14 +14,14 @@
                 v-if="mutis.length > 0" 
                 v-for="(v, i) in mutis" :key="i">
                     <div class="template01" @click="chooseMutisPvw(i,v.id)" @dblclick.stop="chooseMutisPgm(i,v.id)" v-if="v.overlay">
-                        <div class="template01-item" v-if="v.overlay !== ''" v-for="(item, index) in v.overlay" 
+                        <div class="template01-item" v-if="v.overlay !== ''" v-for="(item, index) in JSON.parse(v.overlay)" 
                         :key="index"
                         :style="{top: item.y + 'px',left: item.x+ 'px',width: item.w + 'px', height: item.h + 'px',
                         lineHeight: item.h + 'px'}"
                         :class="[item.borLeft ? 'bor-left' : '' , item.borTop ? 'bor-top': '' 
                         , item.borRight ? 'bor-right' : '', item.borBottom ? 'bor-bottom' : '']">{{item.channel + 1}}</div>
                         <transition name="fade">
-                            <div class="edit-wrap" v-show="settingStatus">
+                            <div class="edit-wrap" v-show="settingStatus && v.isPgm === 0 && v.isPvw === 0">
                                 <div class="delete" @click.stop="deleteVideo(v)"><i class="ybk-icon icon-iconfontshanchu"></i></div>
                                 <div class="editar" @click.stop="editMutis(v)"><i class="ybk-icon icon-501"></i></div>
                             </div>
@@ -1082,7 +1082,7 @@
                 }
                 .template-add {
                     height: 110px;
-                    background-color: #5D5D5D;
+                    background-color: #2B2B2B;
                     position: relative;
                     .add-video {
                         position: absolute;
@@ -1114,8 +1114,8 @@
                     }
                 }
                 .video-item-live-fir {
-                    padding-right: 2px;
                     position: relative;
+                    box-sizing: border-box;
                     .template01 {
                         // display: flex;
                         // justify-content: center;

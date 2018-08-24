@@ -1,5 +1,5 @@
 <template>
-    <div class="edit-video-wrap">
+    <div class="edit-video-wrap" v-if="resData !== null">
         <div class="edit-video-container">
             <div class="edit-video-top">
                 <div class="edit-video-top-con">
@@ -233,7 +233,7 @@
             }
         },
         beforeCreate () {
-            
+            this.resData === null ? this.$loading() : this.$loading.end();
         },
         created () {
             this.http.get('/biz/ybkBase/1', {})

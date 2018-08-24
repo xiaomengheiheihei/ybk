@@ -14,7 +14,7 @@
             <div class="tone-btn-bottom">
                 <p class="void-icon" v-if="index < 13 || index == 14" :class="((isMuted === 0 || vols.vol == 0) && !ischoose) ? 'void-icon-ss' : '' || ((isMuted === 0 || vols.vol == 0) && ischoose) ? 'void-icon-red': '' || ((isMuted !== 0 || vols.vol != 0) && ischoose ? 'void-icon-red-s' : '')" @click="isMute"></p>
                 <p class="void-icon" v-if="index == 13" :class="vols.vol == 0 ? 'void-icon-ss' : ''" @click="isMute"></p>
-                <p v-if="index != 13" class="void-icon-s" :class="vols.isListening ? 'void-icon-star' : '' || ischoose ? 'vois-icon-s-red' : '' || (vols.isListening && ischoose) ? 'vois-icon-star-red' : '' " @click="tryListen"></p>
+                <p v-if="index != 13" class="void-icon-s" :class="(vols.isListening && ischoose) ? 'vois-icon-star-red' : '' || vols.isListening ? 'void-icon-star' : '' || ischoose ? 'vois-icon-s-red' : '' " @click="tryListen"></p>
             </div>
         </div>
     </div>
