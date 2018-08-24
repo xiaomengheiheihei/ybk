@@ -242,7 +242,7 @@
             onTimeupdate(e) {
                 // this.isPgm && console.log(this.player.currentTime());
                 this.isPgm && this.player && this.player.volume(this.vol.vol);
-                if (this.listening && !this.isPgm) {
+                if (this.listening) {
                     this.listening.isListening ? this.player && this.player.volume(this.listening.vol) : this.player.volume(0);
                 } 
             },
