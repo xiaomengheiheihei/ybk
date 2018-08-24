@@ -161,7 +161,7 @@ export default new Vuex.Store({
         let mutis = state.mutis;
         for (let value of mutis) {
           if (value.id === obj.id) {
-            value.overlay = obj.overlay == "" ? obj.overlay : JSON.parse(obj.overlay);
+            value.overlay = obj.overlay //== "" ? obj.overlay : JSON.parse(obj.overlay);
             value.title = obj.title;
           }
         }

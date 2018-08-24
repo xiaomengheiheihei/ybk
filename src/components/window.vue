@@ -12,6 +12,7 @@
                 || i === 0  && v.isPgm ? 'video-item-live-fir-l-r' : '' 
                 || i === 1  && v.isPgm ? 'video-item-live-fir-r-r' : ''" 
                 v-if="mutis.length > 0" 
+                :style="i === 0 ? {'border-right': '1px solid #000'} : ''"
                 v-for="(v, i) in mutis" :key="i">
                     <div class="template01" @click="chooseMutisPvw(i,v.id)" @dblclick.stop="chooseMutisPgm(i,v.id)" v-if="v.overlay">
                         <div class="template01-item" v-if="v.overlay !== ''" v-for="(item, index) in JSON.parse(v.overlay)" 
@@ -90,7 +91,12 @@
                         <div class="input-audio-item" v-for="(v, i) in Number(itemNum)" :key="i">
                             <span class="index">{{changeNum(i)}}</span>
                             <select name="" id="" v-model ="selectedList[i]">
-                                <option v-for="(item, index) in playerData" :key="index" v-if="index < 12" :value="item.title">{{ item.title }}</option>
+                                <option v-for="(item, index) in playerData" 
+                                    :key="index" 
+                                    v-if="index < 12" 
+                                    :value="item.title">
+                                    {{ item.title }}
+                                </option>
                             </select>
                             <el-radio v-model="radio" :label="radioList[i]">音频</el-radio>
                         </div>
@@ -846,7 +852,7 @@
            
         },
         mounted () {
-            
+            this.changePlayerData();
         },
         methods: {
             addNew () {
@@ -973,16 +979,19 @@
                 }).catch((error) => {
 
                 });
-            }
-        },
-        watch: {
-            playerData () {
+            },
+            changePlayerData () {
                 for (let value of this.playerData) {
                     if (value.id < 13) {
                         this.selectedList.push(value.title);
                         this.radioList.push(value.id);
                     }
                 }
+            }
+        },
+        watch: {
+            playerData () {
+                this.changePlayerData();
             },
             mutis () {
                 for(let v of this.mutis) {
