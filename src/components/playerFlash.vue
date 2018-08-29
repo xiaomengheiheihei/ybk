@@ -201,7 +201,7 @@
                     language: 'zh-CN',
                     overNative: true,
                     sourceOrder: true,
-                    autoplay: false,
+                    autoplay: true,
                     controls: false,
                     poster: "",
                 },

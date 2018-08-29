@@ -22,12 +22,23 @@
                     </div>
                 </div>
             </div>
-            <div class="resource-bottom">
-                <div class="resource-bottom-item" v-for="(v,i) in 8" :key="i">
-                    <div class="item-content"></div>
-                    <div class="item-bottom">
-                        <div class="title">CLOCK1</div>
-                        <span class="item-icon"><i class="ybk-icon icon-xunhuan_xian"></i>180s</span>  
+            <div class="resource-bottom-wrap">
+                <div class="resource-bottom-top">
+                    <div class="resource-bottom-item" v-for="(v,i) in 4" :key="i">
+                        <div class="item-content"></div>
+                        <div class="item-bottom">
+                            <div class="title">CLOCK1</div>
+                            <span class="item-icon"><i class="ybk-icon icon-xunhuan_xian"></i>180s</span>  
+                        </div>
+                    </div>
+                </div>
+                <div class="resource-bottom-content">
+                    <div class="resource-bottom-item" v-for="(v,i) in 8" :key="i">
+                        <div class="item-content"></div>
+                        <div class="item-bottom">
+                            <div class="title">CLOCK1</div>
+                            <span class="item-icon"><i class="ybk-icon icon-xunhuan_xian"></i>180s</span>  
+                        </div>
                     </div>
                 </div>
             </div>
@@ -115,7 +126,7 @@
             height: 530px;
             background: #2b2b2b;
             transition: height .3s linear;
-            .resource-top, .resource-bottom {
+            .resource-top, .resource-bottom-wrap {
                 overflow-x: scroll;
                 overflow-y: hidden;
                 width: 100%;
@@ -168,17 +179,20 @@
                     }
                 }
             }
-            .resource-top::-webkit-scrollbar, .resource-bottom::-webkit-scrollbar {
+            .resource-top::-webkit-scrollbar, .resource-bottom-wrap::-webkit-scrollbar {
                 width: 6px;
                 height: 6px;
                 background-color: #ACACAC;;
                 border-radius: 4px;
             }
-            .resource-top::-webkit-scrollbar-thumb, .resource-bottom::-webkit-scrollbar-thumb {
+            .resource-top::-webkit-scrollbar-thumb, .resource-bottom-wrap::-webkit-scrollbar-thumb {
                 background-color: #696666;
                 border-radius: 4px;
             }
-            
+            .resource-bottom-wrap {
+                margin-top: 10px;
+                padding-bottom: 25px;
+            }
         }
     }
     .resource-more-wrap {
