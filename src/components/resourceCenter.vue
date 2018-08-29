@@ -1,8 +1,36 @@
 <template>
     <div class="resource-wrap" :class="isMore ? 'resource-more-wrap' : ''">
         <div class="edit-video-left-tile"><span @click="showMore" class="more" :class="isMore ? 'more-tran' : ''"></span>图文控制台<span class="history-icon"></span><span class="add"></span><span class="setting"></span></div>
-        <div class="resource-cationer" :class="isMore ? 'resource-cationer-more' : ''">
-
+        <div class="resource-cationer">
+            <div class="resource-top">
+                <div class="resource-top-item">
+                    <div class="item-content">
+                        <span class="length">20:31:24</span>
+                    </div>
+                    <div class="item-bottom">
+                        <div class="title">CLOCK1</div>
+                        <span class="item-icon"><i class="ybk-icon icon-xunhuan_xian"></i>180s</span>  
+                    </div>
+                </div>
+                <div class="resource-top-item">
+                    <div class="item-content">
+                        <span class="length">20:31:24</span>
+                    </div>
+                    <div class="item-bottom">
+                        <div class="title">CLOCK2</div>
+                        <span class="item-icon"><i class="ybk-icon icon-xiangyou"></i></span>  
+                    </div>
+                </div>
+            </div>
+            <div class="resource-bottom">
+                <div class="resource-bottom-item" v-for="(v,i) in 8" :key="i">
+                    <div class="item-content"></div>
+                    <div class="item-bottom">
+                        <div class="title">CLOCK1</div>
+                        <span class="item-icon"><i class="ybk-icon icon-xunhuan_xian"></i>180s</span>  
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -28,6 +56,9 @@
         margin-right: 5px;
         transition: transform .5s linear;
         overflow: hidden;
+        height: 235px;
+        position: relative;
+        z-index: 100;
         .edit-video-left-tile {
             position: relative;
             height: 35px;
@@ -80,18 +111,80 @@
             }
         }
         .resource-cationer {
-            height: 200px;
+            text-align: left;
+            height: 530px;
             background: #2b2b2b;
             transition: height .3s linear;
-        }
-        .resource-cationer-more {
-            height: 530px;
+            .resource-top, .resource-bottom {
+                overflow-x: scroll;
+                overflow-y: hidden;
+                width: 100%;
+                white-space: nowrap;
+                padding-bottom: 8px;
+                .resource-top-item, .resource-bottom-item{
+                    display: inline-block;
+                    width: 25%;
+                    height: 150px;
+                    margin-right: 1px;
+                    .item-content {
+                        position: relative;
+                        height: 125px;
+                        background-color: #000;
+                        .length {
+                            position: absolute;
+                            top: 10px;
+                            left: 10px;
+                            width: 70px;
+                            height: 25px;
+                            background-image: linear-gradient(-180deg, #9152EF 0%, #7452D3 97%);
+                            border-radius: 50px;
+                            color: #fff;
+                            text-align: center;
+                            line-height: 25px;
+                        }
+                    }
+                    .item-bottom {
+                        position: relative;
+                        height: 25px;
+                        line-height: 25px;
+                        background: #353535;
+                        color: #fff;
+                        text-align: center;
+                        .item-icon {
+                            position: absolute;
+                            right: 5px;
+                            top: 0;
+                            height: 25px;
+                            line-height: 25px;
+                            i {
+                                font-size: 12px;
+                                display: inline-block;
+                                padding-right: 5px;
+                            }
+                            .icon-xiangyou {
+                                font-size: 16px;
+                            }
+                        }
+                    }
+                }
+            }
+            .resource-top::-webkit-scrollbar, .resource-bottom::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+                background-color: #ACACAC;;
+                border-radius: 4px;
+            }
+            .resource-top::-webkit-scrollbar-thumb, .resource-bottom::-webkit-scrollbar-thumb {
+                background-color: #696666;
+                border-radius: 4px;
+            }
+            
         }
     }
     .resource-more-wrap {
-        position: relative;
-        z-index: 100;
         transform: translateY(-332px);
+        overflow: auto;
+        height: 100%;
     }
 </style>
 

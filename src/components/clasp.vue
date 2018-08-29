@@ -99,6 +99,7 @@
                 box-sizing: border-box;
                 .clasp-content {
                     height: 110px;
+                    
                 }
                 .play-bar-wrap {
                     text-align: left;
@@ -143,6 +144,11 @@
                         transform: rotateX(180deg) rotateY(-360deg);
                         margin-top: 2px;
                     }
+                }
+            }
+            .clasp-item:first-child {
+                .clasp-content {
+                    background: url('../assets/crsp.png') no-repeat center 100%; 
                 }
             }
             .clasp-item:first-child {

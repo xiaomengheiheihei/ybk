@@ -6,6 +6,7 @@
                 <div class="bt" @click="selectedShim">应急<br>切换</div>
             </div>
             <div class="play-con-bottom">
+                <span class="tips" :class="showTips ? 'tips-active' : ''">切换成功</span>
                 <el-slider class="slider-input"
                 v-model="sliderValue"
                 vertical
@@ -25,6 +26,7 @@
             return {
                 isSync: true,
                 sliderValue: 0,
+                showTips: false,
             }
         },
         mounted () {
@@ -46,18 +48,16 @@
                     .catch((err)=> {
                         console.log(err);
                     })
-                    // document.querySelector('.play-con-bottom .el-checkbox__inner').style.backgroundColor = '#fff'
             },
             changeRange (num) {
                 if (num > 0) {
-                   this.sliderValue = 0;
                    if (num === 100) {
-                        // console.log(this.$store.state.playerListStatus)
                         let pvwObj = {
                             id: 0,
                             title: '',
                             playerId: 0,
                         };
+                        this.showTips = true;
                         let playList = this.$store.state.playerListStatus;
                         playList.forEach(e => {
                             if (e.isPvw == 1) {
@@ -77,6 +77,10 @@
                                 index: pvwObj.id,
                             };
                             this.$store.dispatch('changepvwpgm', tempObj);
+                            this.sliderValue = 0;
+                            setTimeout(()=>{
+                                this.showTips = false;
+                            },2000);
                         })
                         .catch((error) => {
 
@@ -178,6 +182,17 @@
                 align-items: center;
                 flex-direction: column;
                 background-color: rgba(56,57,57,0.8);
+                position: relative;
+                .tips {
+                    position: absolute;
+                    right: -100%;
+                    top: 12px;
+                    color: #fff;
+                    transition: right .2s ease;
+                }
+                .tips-active {
+                    right: 20px;
+                }
                 .slider-input {
                     margin-bottom: 30px;
                 }

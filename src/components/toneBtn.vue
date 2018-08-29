@@ -14,9 +14,25 @@
             <div class="tone-btn-bottom">
                 <p class="void-icon" v-if="index < 13 || index == 14" :class="((isMuted === 0 || vols.vol == 0) && !ischoose) ? 'void-icon-ss' : '' || ((isMuted === 0 || vols.vol == 0) && ischoose) ? 'void-icon-red': '' || ((isMuted !== 0 || vols.vol != 0) && ischoose ? 'void-icon-red-s' : '')" @click="isMute"></p>
                 <p class="void-icon" v-if="index == 13" :class="vols.vol == 0 ? 'void-icon-ss' : ''" @click="isMute"></p>
-                <p v-if="index != 13" class="void-icon-s" :class="(vols.isListening && ischoose) ? 'vois-icon-star-red' : '' || vols.isListening ? 'void-icon-star' : '' || ischoose ? 'vois-icon-s-red' : '' " @click="tryListen"></p>
+                <p 
+                    v-if="index != 13" 
+                    class="void-icon-s" 
+                    :class="(vols.isListening && ischoose) ? 'vois-icon-star-red' : '' 
+                    || vols.isListening ? 'void-icon-star' : '' 
+                    || ischoose ? 'vois-icon-s-red' : '' " 
+                    @click="tryListen">
+                </p>
             </div>
         </div>
+        <el-dialog
+            title="试听"
+            :style="{'color': '#fff'}"
+            :visible.sync="dialogVisible"
+            :before-close="tryListen"
+            width="30%">
+            <i class="ybk-icon icon-shiting"></i>
+            <span>试听中...</span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -34,6 +50,7 @@
                     height: '100px',
                 },
                 volValue: 0,
+                dialogVisible:false
             }
         },
         props: {
@@ -107,6 +124,7 @@
                     this.vols.vol = this.lastVol;
                     this.vols.isListening = !this.vols.isListening;
                 }
+                this.dialogVisible = !this.dialogVisible;
             },
             isMute () {
                 if (this.isMuted === 0) {   // 取消静音
@@ -193,7 +211,6 @@
         color: red !important;
     }
     .tone-btn-wrap {
-        position: relative;
         width: 35px;
         height: 180px;
         border-radius: 10px;
@@ -304,5 +321,26 @@
         width: 35px;
     }
 </style>
+<style>
+    .tone-btn-wrap .el-dialog__header {
+        padding: 10px 10px 10px;
+    }
+    .tone-btn-wrap .el-dialog__header .el-dialog__title {
+        color: #fff;
+    }
+    .tone-btn-wrap .el-dialog__body {
+        padding: 20px 10px !important;
+    }
+    .tone-btn-wrap .el-dialog__body i{
+        color: #fff;
+        font-size: 30px;
+    }
+    .tone-btn-wrap .el-dialog__body span {
+        color: #fff;
+        display: inline-block;
+        margin-left: 10px;
+    }
+</style>
+
 
 

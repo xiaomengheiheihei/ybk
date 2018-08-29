@@ -879,6 +879,8 @@
                     id: this.modifyId,
                     title: this.nameValue,
                     overlay: '',
+                    width: 197,
+                    height: 110
                 };
                 this.mutisList.forEach((v, i) => {
                     if (v.isChoose) {
