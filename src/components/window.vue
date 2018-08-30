@@ -42,10 +42,10 @@
                             {{v.title ? v.title : i === 0 ? 'MUTI1' : 'MUTI2'}}
                         </el-col>
                         <el-col :span="8" class="btn-wrap">
-                            <div class="btn01 btn"></div>
-                            <div class="btn02 btn"></div>
-                            <div class="btn03 btn"></div>
-                            <div class="btn04 btn"></div>
+                            <div class="btn01 btn" :class="v.overlay === '' ? 'single-grap' : ''"></div>
+                            <div class="btn02 btn" :class="v.overlay === '' ? 'single-grap' : ''"></div>
+                            <div class="btn03 btn" :class="v.overlay === '' ? 'single-grap' : ''"></div>
+                            <div class="btn04 btn" :class="v.overlay === '' ? 'single-grap' : ''"></div>
                         </el-col>
                     </el-row>
                 </el-col>
@@ -1077,7 +1077,7 @@
                             height: 14px;
                         }
                         .single-grap {
-                            background-color: #332e2e;
+                            background-color: #0a0a0a;
                         }
                     }
                     .play-item-title {

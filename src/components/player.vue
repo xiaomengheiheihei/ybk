@@ -49,12 +49,15 @@
             </el-col>
         </el-row>
         <div v-if="isLive != 1" class="slider-bar-wrap">
-            <div class="contral-wrap" @click="playBtnHandel()" :class="!isStart ? 'contral-wrap-start' : '' ">
+            <div class="contral-wrap" 
+                @click="playBtnHandel()" 
+                :class="!isStart ? 'contral-wrap-start' : '' "
+                v-if="playerData.fileType === 1">
                 <div class="h01" v-show="isStart"></div>
                 <div class="h02" v-show="isStart"></div>
             </div>
             <!-- <input ref="range"  type="range" value="0"> -->
-            <div class="range" ref="slider" @click="changeProgress($event)"><span class="range-btn" ref="range"></span></div>
+            <div v-if="playerData.fileType === 1" class="range" ref="slider" @click="changeProgress($event)"><span class="range-btn" ref="range"></span></div>
         </div>
         <el-dialog
             :visible.sync="dialogVisible"

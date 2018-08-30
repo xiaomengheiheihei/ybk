@@ -124,11 +124,17 @@
                        <span>输出分辨率：</span>
                        <span class="dpi" v-if="resData">{{resData.resolution.toUpperCase()}}</span>
                    </div>
-                   <div><el-radio v-model="pullRadio" label="1">拉流地址</el-radio></div>
+                   <div><el-radio v-model="pullRadio" label="1">固定地址</el-radio></div>
                    <div class="address-wrap" v-if="pullRadio == 1">
-                       <div class="address-con">{{url}}</div><span>复制</span>
+                        <div class="address-con" :copyData = "resData.pgm.url">{{resData.pgm.url}}</div>
+                        <span class="copy-btn" 
+                            v-clipboard:copy="resData.pgm.url" 
+                            v-clipboard:success="onCopy" 
+                            v-clipboard:error="onError">
+                            复制
+                        </span>
                    </div>
-                   <div :style="{margin: '20px 0'}"><el-radio v-model="pullRadio" label="0">推流地址</el-radio></div>
+                   <div :style="{margin: '20px 0'}"><el-radio v-model="pullRadio" label="0">自定义地址</el-radio></div>
                    <div class="push-wrap" v-if="pullRadio==0">
                        <input type="text" name="" v-model="pushUrl" id="" placeholder="请输入推流地址"> <span>添加</span>
                    </div>
@@ -440,6 +446,18 @@
                         break;
                     }
                 } 
+            },
+            onCopy: function (e) {
+                this.$alert('地址已复制到您的剪切板！', '复制成功', {
+                    confirmButtonText: '确定',
+                    callback: ()=>{}
+                })
+            },
+            onError: function (e) {
+                this.$alert('复制到剪切板失败，请稍后重试！', '复制失败', {
+                    confirmButtonText: '确定',
+                    callback: ()=>{}
+                })
             }
         }
     }

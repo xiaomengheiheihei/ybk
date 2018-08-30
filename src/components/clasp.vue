@@ -30,10 +30,10 @@
                         FX2
                     </el-col>
                     <el-col :span="8" class="btn-wrap">
-                        <div class="btn01 btn"></div>
-                        <div class="btn02 btn"></div>
-                        <div class="btn03 btn"></div>
-                        <div class="btn04 btn"></div>
+                        <div class="btn01 btn single-grap"></div>
+                        <div class="btn02 btn single-grap"></div>
+                        <div class="btn03 btn single-grap"></div>
+                        <div class="btn04 btn single-grap"></div>
                     </el-col>
                 </el-row>
             </div>
@@ -131,7 +131,7 @@
                             height: 14px;
                         }
                         .single-grap {
-                            background-color: #332e2e;
+                            background-color: #0a0a0a;
                         }
                     }
                     .play-item-title {
