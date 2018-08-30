@@ -31,7 +31,7 @@
             :before-close="tryListen"
             width="30%">
             <i class="ybk-icon icon-shiting"></i>
-            <span>试听中...</span>
+            <span>试听{{title}}中...</span>
         </el-dialog>
     </div>
 </template>
@@ -116,13 +116,21 @@
                 }
             },
             tryListen () {  // 试听
+                let obj = {
+                    id: 13,
+                    type: 'mute'
+                };
                 if (this. vols.status && !this.vols.isListening) {
                     this.lastVol = this.volRange.value;
                     this.vols.vol = 1;
                     this.vols.isListening = !this.vols.isListening;
+                    // 静音pgm
+                    this.$store.dispatch('changePGMmute', true);
                 } else if (this. vols.status) {
                     this.vols.vol = this.lastVol;
                     this.vols.isListening = !this.vols.isListening;
+                    // 取消pgm静音
+                    this.$store.dispatch('changePGMmute', false);
                 }
                 this.dialogVisible = !this.dialogVisible;
             },

@@ -197,7 +197,16 @@ export default new Vuex.Store({
         for (let value of state.playerDataList) {
           value.isPvw === 1 ? value.isPvw = 0 : '';   
         }
-      } 
+      },
+      CHANGEPGMMUTE (state,bol) {   // 静音pgm
+        for (let item of state.playerListStatus) {
+          if (bol && item.id === 13) {
+            item.vol = 0;
+          } else if (!bol && item.id === 13) {
+            item.vol = 0.5;
+          }
+        }
+      }
   },
   actions: {
     changeVol ({commit},obj) {
@@ -259,6 +268,9 @@ export default new Vuex.Store({
     },
     changeVideoPvw ({commit}) {
       commit('CHANGEVIDEOPVW')
+    },
+    changePGMmute ({commit}, bol) {
+      commit('CHANGEPGMMUTE', bol)
     }
   }
 })
