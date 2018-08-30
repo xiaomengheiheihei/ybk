@@ -35,10 +35,10 @@
                 PGM
             </el-col>
             <el-col :span="8" class="btn-wrap" v-if="!isPreview">
-                <div class="btn01 btn" :class="playerData.signalIntensity <= 3 ? 'single-grap' : ''"></div>
-                <div class="btn02 btn" :class="playerData.signalIntensity <= 2 ? 'single-grap' : ''"></div>
-                <div class="btn03 btn" :class="playerData.signalIntensity <= 1 ? 'single-grap' : ''"></div>
-                <div class="btn04 btn"></div>
+                <div class="btn01 btn" :class="playerData.url === '' ? 'single-grap' : ''"></div>
+                <div class="btn02 btn" :class="playerData.url === '' ? 'single-grap' : ''"></div>
+                <div class="btn03 btn" :class="playerData.url === '' ? 'single-grap' : ''"></div>
+                <div class="btn04 btn" :class="playerData.url === '' ? 'single-grap' : ''"></div>
             </el-col>
             <el-col :span="8" class="start-btn" v-if="isPreview && !isRed">
                 <el-switch
@@ -529,7 +529,7 @@
             height: 14px;
         }
         .single-grap {
-            background-color: #332e2e;
+            background-color: #0a0a0a;
         }
     }
     .play-item-title {

@@ -263,6 +263,14 @@
                 this.resData = response.data;
                 this.pullRadio = this.resData.streamType.toString();
                 this.delayTime = this.resData.delay;
+                // 垫片信息有则回显
+                for (let item of response.data.emergencys) {
+                    if (item.fileType === 2) {
+                        this.shimImg = item.url;
+                    } else {
+                        this.shimPlayerData.url = item.url;
+                    }
+                }
             })
             .catch((error) => {
                 console.error(error + '请求数据有误');
