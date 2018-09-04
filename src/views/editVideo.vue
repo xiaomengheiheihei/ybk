@@ -7,7 +7,7 @@
                         <div class="qn-logo">
                             <a class="clear" href="#"><img src="../assets/logo.png" alt="七牛云"></a>
                         </div>
-                        <span class="edit-title clear">云播控系统</span>
+                        <span class="edit-title clear">智能播控</span>
                     </div>
                     <div class="edit-top-right">
                         <div class="edit-top-save-time">剩余时长：<span>01:30:45</span></div>

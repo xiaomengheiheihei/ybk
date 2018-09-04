@@ -6,7 +6,7 @@
                 <div class="setting-bg" v-if="isSetting && 
                 !playerData.isPgm && !playerData.isPvw && playerData.url != ''">
                     <div class="delete" @click="deleteVideo"><i class="ybk-icon icon-iconfontshanchu"></i></div>
-                    <div class="editar"><i class="ybk-icon icon-501"></i></div>
+                    <div class="editar" @click="dialogVisible = !dialogVisible"><i class="ybk-icon icon-501"></i></div>
                 </div>
             </transition>
             <video ref="player" loop="true" v-if="playerData.url !== '' && playerData.fileType === 1" v-show="!isAdd" preload="auto" height="100%" width="100%"
@@ -367,6 +367,7 @@
                     this.dialogVisible = false;
                     this.playerData.url = this.loadVideo ? this.previewPlayerData.url : this.uploadImg;
                     this.playerData.title = this.uploadTitle;
+                    this.$store.dispatch('changeSettingStatus', 0);
                 })
                 .catch((err)=> {
                     this.$loading.end();
