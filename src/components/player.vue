@@ -308,12 +308,12 @@
                 this.uploadData = e.target.files[0];
                 this.loadVideo = false;
                 this.playerData.fileType = 2;
-                let reader = new FileReader();
-                reader.readAsDataURL(this.uploadData);
-                reader.onload = (e) => {
-                    this.uploadImg = reader.result;
-                    // this.playerData.url = reader.result;
-                }
+                // let reader = new FileReader();
+                // reader.readAsDataURL(this.uploadData);
+                // reader.onload = (e) => {
+                //     this.uploadImg = reader.result;
+                //     // this.playerData.url = reader.result;
+                // }
                 this.upload();
             },
              getObjectURL(file) {       // 获取blod url地址
@@ -346,7 +346,7 @@
                 this.http.post('./biz/ybk/upload', data)
                 .then((res) => {
                     this.$loading.end();
-                   this.loadVideo ? this.previewPlayerData.url = res.data : this.uploadImg = res.data;
+                    this.loadVideo ? this.previewPlayerData.url = res.data : this.uploadImg = res.data;
                 })
                 .catch((err)=> {
                     this.$loading.end();
@@ -354,6 +354,7 @@
             },
             updated () {
                 this.$loading();
+                console.log(this.uploadImg);
                 let data = {
                     id: this.playerData.id,
                     url: this.loadVideo ? this.previewPlayerData.url : this.uploadImg,
@@ -361,6 +362,7 @@
                     streamType: '1',
                     fileType: this.loadVideo ? 1 : 2,
                 };
+                console.log(data)
                 this.http.post('./biz/ybk/setChannelInfo', data)
                 .then((res) => {
                     this.$loading.end();
