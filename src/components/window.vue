@@ -90,15 +90,16 @@
                     <div class="select-audios-content">
                         <div class="input-audio-item" v-for="(v, i) in Number(itemNum)" :key="i">
                             <span class="index">{{changeNum(i)}}</span>
-                            <select name="" id="" v-model ="selectedList[i]">
+                            <select name="" :id="i" v-if="selectedList.length > 0" v-model="selectedList[i].id" @change="fn(i, $event)">
                                 <option v-for="(item, index) in playerData" 
                                     :key="index" 
                                     v-if="index < 12" 
-                                    :value="item.title">
+                                    :name = "item.id"
+                                    :value="item.id">
                                     {{ item.title }}
                                 </option>
                             </select>
-                            <el-radio v-model="radio" :label="radioList[i]">音频</el-radio>
+                            <el-radio v-model="radio" :label="radioList[i]" @change="changeVol">音频</el-radio>
                         </div>
                     </div>
                 </div>
@@ -835,6 +836,7 @@
                 settingStatus: false,       // 是否显示编辑视窗
                 modifyId: 0,                // 等待修改的视窗id        
                 clickTimer: null,     
+                choosedItemObj: null,       // 当前选中的
             }
         },
         computed: {
@@ -869,10 +871,14 @@
                 list.forEach((value, index) => {
                     if (index === i) {
                         value.isChoose = true;
+                        this.choosedItemObj = value.mutis;
                     } else {
                        value.isChoose = false; 
                     }
                 });
+                for (let i = 0; i < this.choosedItemObj.length; i++) {
+                    this.choosedItemObj[i].channel = this.selectedList[i].id;
+                }
             },
             updataMutis () {
                 let obj = {
@@ -885,9 +891,9 @@
                 this.mutisList.forEach((v, i) => {
                     if (v.isChoose) {
                        v.title = obj.title;
-                       obj.overlay = JSON.stringify(v.mutis);
                     }
                 });
+                obj.overlay = JSON.stringify(this.choosedItemObj);
                 this.http.post('./biz/ybk/setMutiInfo',obj)
                 .then((res) => {
                     if (res.code === 0) {
@@ -927,6 +933,18 @@
                         break;
                     case 7:
                         result = 'H'
+                        break;
+                    case 8:
+                        result = 'I'
+                        break;
+                    case 9:
+                        result = 'G'
+                        break;
+                    case 10:
+                        result = 'K'
+                        break;
+                    case 11:
+                        result = 'L'
                         break;
                 }
                 return result;
@@ -985,10 +1003,20 @@
             changePlayerData () {
                 for (let value of this.playerData) {
                     if (value.id < 13) {
-                        this.selectedList.push(value.title);
+                        let obj = {
+                            title: value.title,
+                            id: value.id
+                        }
+                        this.selectedList.push(obj);
                         this.radioList.push(value.id);
                     }
                 }
+            },
+            fn (i, ele) {
+                this.choosedItemObj[i].channel = parseInt(ele.target.value) - 1;
+            },
+            changeVol () {
+                console.log(this.radio);
             }
         },
         watch: {
