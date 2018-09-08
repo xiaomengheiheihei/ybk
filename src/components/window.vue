@@ -876,8 +876,9 @@
                        value.isChoose = false; 
                     }
                 });
-                for (let i = 0; i < this.choosedItemObj.length; i++) {
-                    this.choosedItemObj[i].channel = this.selectedList[i].id;
+
+                for (let j = 0; j < this.choosedItemObj.length; j++) {
+                    this.choosedItemObj[j].channel = this.selectedList[j].id-1;
                 }
             },
             updataMutis () {
