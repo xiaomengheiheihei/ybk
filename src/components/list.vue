@@ -98,6 +98,11 @@ export default {
     .set-wrap {
       max-width: 1200px;
       margin: 0 auto;
+      background: #fff;
+      padding: 0 20px;
+      margin-top: 15vh;
+      padding-bottom: 30px;
+      min-height: 400px;
       .set-top {
         height: 50px;
         line-height: 50px;

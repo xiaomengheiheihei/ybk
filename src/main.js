@@ -18,7 +18,7 @@ Vue.config.productionTip = false
 Vue.prototype.http = Http
 
 /* iconfont字体图标 */
-loadStyle('//at.alicdn.com/t/font_753438_ohvn7g7xg8k.css')
+loadStyle('//at.alicdn.com/t/font_753438_q8avjbwxg1n.css')
 
 Vue.use(Element)
 

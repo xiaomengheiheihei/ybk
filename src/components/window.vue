@@ -876,7 +876,6 @@
                        value.isChoose = false; 
                     }
                 });
-
                 for (let j = 0; j < this.choosedItemObj.length; j++) {
                     this.choosedItemObj[j].channel = this.selectedList[j].id-1;
                 }
@@ -894,6 +893,11 @@
                        v.title = obj.title;
                     }
                 });
+                for (let j = 0; j < this.choosedItemObj.length; j++) {
+                    if (j + 1 == this.radio) {
+                        this.choosedItemObj[j].is_mute = false;
+                    }
+                }
                 obj.overlay = JSON.stringify(this.choosedItemObj);
                 this.http.post('./biz/ybk/setMutiInfo',obj)
                 .then((res) => {
