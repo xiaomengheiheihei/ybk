@@ -33,7 +33,7 @@ export default {
     return {
       loginForm: {
         username: "tester",
-        password: "qiniu",
+        password: "",
         code: "",
         randomStr: ""
       },

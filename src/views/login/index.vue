@@ -11,7 +11,7 @@
     <div class="login-border  animated fadeInRight">
       <div class="login-main">
         <el-tabs v-model="activeName">
-          <el-tab-pane label="用户密码" name="user">
+          <el-tab-pane label="用户登陆" name="user">
             <userLogin></userLogin>
           </el-tab-pane>
           <!-- <el-tab-pane label="短信验证码" name="code">
@@ -49,18 +49,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  position: relative;
-  margin-top: 20vh;
-}
-.login-container::before {
-  z-index: -999;
-  content: "";
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-image: url("../../assets/login.png");
+  background-image: url("../../assets/body_bg.jpg");
   background-size: cover;
 }
 .login-info {
@@ -76,7 +70,9 @@ export default {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  padding: 30px 40px 25px 40px;
+  position: absolute;
+  right: 200px;
+  padding: 40px;
   background-color: #fff;
   border-radius: 6px;
   box-shadow: 1px 1px 2px #eee;
@@ -98,6 +94,9 @@ export default {
   color: #409eff;
   letter-spacing: 3px;
 }
+.login-main .el-tabs__content {
+  margin-top: 20px;
+}
 .login-submit {
   margin-top: 20px;
   width: 100%;
@@ -110,7 +109,7 @@ export default {
     width: 270px;
   }
   .el-form-item {
-    margin-bottom: 12px;
+    margin-bottom: 20px;
   }
   .el-input {
     input {
@@ -144,5 +143,24 @@ export default {
   line-height: 32px;
   text-indent: 5px;
   text-align: center;
+}
+.fadeInRight {
+    -webkit-animation-name: fadeInRight;
+    animation-name: fadeInRight;
+    animation-duration: 1s;
+}
+
+@-webkit-keyframes fadeInRight {
+    0% {
+        opacity: 0;
+        -webkit-transform: translate3d(100%,0,0);
+        transform: translate3d(100%,0,0)
+    }
+
+    to {
+        opacity: 1;
+        -webkit-transform: none;
+        transform: none
+    }
 }
 </style>

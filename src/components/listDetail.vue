@@ -53,7 +53,7 @@
                 tableData: [{
                     time: '2小时',
                     name: '试用播控台',
-                    type: '适用',
+                    type: '试用',
                     startTime: '',
                     expressTime: '',
                     status: '已开启',
