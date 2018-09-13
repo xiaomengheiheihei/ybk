@@ -1,22 +1,12 @@
 <template>
   <div class="login-container pull-height" @keyup.enter.native="handleLogin">
-    <!-- <div class="login-info text-white animated fadeInLeft">
-      <h2 class="login-info-title">{{website.info.title}}</h2>
-      <ul class="login-info-list">
-        <li class="login-info-item" v-for="(item,index) in website.info.list" :key="index">
-          <i class="el-icon-check"></i>&nbsp;{{item}}
-        </li>
-      </ul>
-    </div> -->
     <div class="login-border  animated fadeInRight">
       <div class="login-main">
+        <h3 class="login-title"> 七牛云智能播控</h3>
         <el-tabs v-model="activeName">
           <el-tab-pane label="用户登陆" name="user">
             <userLogin></userLogin>
           </el-tab-pane>
-          <!-- <el-tab-pane label="短信验证码" name="code">
-            <codeLogin></codeLogin>
-          </el-tab-pane> -->
         </el-tabs>
       </div>
     </div>
@@ -56,6 +46,7 @@ export default {
   height: 100%;
   background-image: url("../../assets/body_bg.jpg");
   background-size: cover;
+  overflow: hidden;
 }
 .login-info {
   padding-left: 60px;
