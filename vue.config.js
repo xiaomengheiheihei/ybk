@@ -62,13 +62,13 @@ module.exports = {
         hotOnly: false,
         proxy: {
             '/biz': {
-                target: 'http://bmmqcrhhtgv6.kegate-xq.cloudappl.com/',
+                target: 'http://bmn9g116if8h.kegate-xq.cloudappl.com/',
                 changeOrigin:true,
-                pathRewrite:{
-                    '^/biz':''
-                }
+                // pathRewrite:{
+                //     '^/biz':''
+                // }
             }
         },
         before: app => {}
-    },
+    }
 }

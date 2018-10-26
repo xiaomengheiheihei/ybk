@@ -15,3 +15,13 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+    .settingh-wrap {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+    }
+</style>

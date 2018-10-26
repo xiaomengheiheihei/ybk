@@ -26,6 +26,7 @@
     "mockjs": "^1.0.1-beta3",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
+    "vue-particles": "^1.0.9",
     "vue-template-compiler": "^2.5.16"
   },
   "eslintConfig": {

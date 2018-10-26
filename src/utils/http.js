@@ -4,7 +4,7 @@ axios.defaults.baseURL = ''
 axios.defaults.headers = {
     appversion:"1.1.4",
     uuid:"21712201756195fw5ci3jmtarrmxk0000000",
-    platform:"miniapp"
+    platform:"ybk"
 };
 
 export default {

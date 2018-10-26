@@ -1,92 +1,90 @@
 <template>
   <div class="set-wrap">
     <el-row class="set-top">
-      <el-col :span="12">
-        <div class="nav-top">互动直播/云播控</div>
-      </el-col>
-      <el-col :span="12">
-        <div class="help"><router-link to="/about">使用帮助</router-link></div>
-      </el-col>
-    </el-row>
-    <el-row class="set-start">
       <el-col :span="24">
-          <div><span @click="dialogVisible = true">创建云播控</span></div>
+        <div class="nav-top">
+          <img src="../assets/logo1.png" alt="">智能播控平台
+        </div>
       </el-col>
     </el-row>
-    <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
-      <el-tab-pane label="时长控制台" name="first">
-        <ListDetail/>
-      </el-tab-pane>
-      <el-tab-pane label="包月控制台" name="second">
-        <ListDetail/>
-      </el-tab-pane>
-    </el-tabs>
-    <el-dialog
-      title=""
-      :visible.sync="dialogVisible"
-      width="40%"
-      :before-close="handleClose">
-      <div class="start-content">
-        <div class="start-top-tabs">
-          <div class="tabs-item">试用云播控</div>
-          <div class="tabs-item tabs-item-m">时长云播控</div>
-          <div class="tabs-item">包月云播控</div>
-        </div>
-        <div class="start-content-c">
-          <div class="content-item01">
-              <table>
-                <tr>
-                  <td class="tr-title">输入路数：</td>
-                  <td>4路</td>
-                </tr>
-                <tr>
-                  <td class="tr-title">输出分辨率：</td>
-                  <td>720p</td>
-                </tr>
-                <tr>
-                  <td class="tr-title">使用时长：</td>
-                  <td>2小时</td>
-                </tr>
-                <tr>
-                  <td class="tr-title">费用：</td>
-                  <td>0.00元</td>
-                </tr>
-              </table>
-          </div>
-          <div class="content-item02"></div>
-          <div class="content-item03"></div>
-        </div>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">创建</el-button>
-      </span>
-    </el-dialog>
+    <div class="slider-wrap">
+        <slider></slider>
+    </div>
+    <div class="list-wrap">
+      <h3>系统信息</h3>
+      <template>
+        <el-table
+          :data="tableData"
+          stripe
+          style="width: 100%">
+          <el-table-column
+            prop="name"
+            label="使用者">
+          </el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="开始时间">
+          </el-table-column>
+          <el-table-column
+            prop="endTime"
+            label="预计关闭时间">
+          </el-table-column>
+          <el-table-column
+            prop="resolving"
+            label="输出分辨率">
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="danger"
+                @click="stop(scope.$index, scope.row)">结束任务</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </div>
   </div>
 </template>
 
 <script>
-import ListDetail from './listDetail.vue'
+import slider from './slider.vue'
 
 export default {
   name: 'List',
   data () {
     return {
-      activeName2: 'first',
-      dialogVisible: false,
+      tableData: [{
+          createTime: '2016-05-02',
+          name: '王小虎',
+          resolving: '1080P',
+          endTime: '2016-05-02'
+        }, {
+          createTime: '2016-05-04',
+          name: '王小虎',
+          resolving: '1080P',
+          endTime: '2016-05-02'
+        }, {
+          createTime: '2016-05-01',
+          name: '王小虎',
+          resolving: '1080P',
+          endTime: '2016-05-02'
+        }, {
+          createTime: '2016-05-03',
+          name: '王小虎',
+          resolving: '1080P',
+          endTime: '2016-05-02'
+        }]
     }
   },
   props: {
     msg: String
   },
   components: {
-    ListDetail,
+    slider,
   },
   methods: {
-    handleClick(tab, event) {
-      console.log(tab, event);
-    },
-    handleClose () {
+    stop () {
 
     }
   }
@@ -96,19 +94,30 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
     .set-wrap {
-      max-width: 1200px;
+      width: 100%;
       margin: 0 auto;
       background: #fff;
-      padding: 0 20px;
-      margin-top: 15vh;
-      padding-bottom: 30px;
-      min-height: 400px;
+      overflow: hidden;
+      box-sizing: border-box;
+      height: 100%;
       .set-top {
         height: 50px;
         line-height: 50px;
-        border-bottom: 1px solid #ccc;
+        padding: 0 20px;
+        background: #F7F7F7;
         .nav-top {
           text-align: left;
+          font-family: 'PingFangSC-Regular';
+          font-size: 14px;
+          color: #343434;
+          letter-spacing: 0.13px;
+          img {
+            width: 41px;
+            height: 27px;
+            vertical-align: middle;
+            margin-top: -6px;
+            margin-right: 5px;
+          }
         }
         .help {
           text-align: right;
@@ -121,77 +130,44 @@ export default {
           }
         }
       }
-      .set-start {
-        text-align: right;
-        height: 50px;
-        line-height: 50px;
-        span {
-          color: #fff;
-          padding: 8px;
-          background-color: rgb(173, 201, 233);
-          border-radius: 3px;
-          cursor: pointer;
-        }
+      .slider-wrap {
+        position: fixed;
+        left: 0;
+        top: 50px;
+        height: 100%;
+        width: 260px;
+        background: #fff;
+        border-right: 1px solid #F7F7F7;
       }
-      .el-dialog__wrapper {
-        .el-dialog {
-          .el-dialog__body {
-            .start-content { 
-              .start-top-tabs {
-                border-bottom: 1px solid #ccc;
-                padding-bottom: 20px;
-                overflow: hidden;
-                .tabs-item {
-                  float: left;
-                  height: 40px;
-                  line-height: 40px;
-                  text-align: center;
-                  word-wrap: break-word;
-                  width: 20%;
-                  border: 1px solid #ccc;
-                  border-radius: 3px;
-                }
-                .tabs-item-m {
-                  margin: 0 18%;
-                }
-              }
-            }
-            .start-content-c {
-              .content-item01 {
-                table {
-                  text-align: left;
-                  margin-top: 20px;
-                }
-              }
-            }
-          }
+      .list-wrap {
+        margin-left: 261px;
+        text-align: left;
+        h3 {
+          height: 35px;
+          line-height: 35px;
+          font-family: 'PingFangSC-Regular';
+          font-size: 14px;
+          color: #343434;
+          letter-spacing: 0.13px;
+          margin: 0;
+          padding-left: 22px;
         }
       }
     }
 </style>
 <style>
-  .el-tabs__header {
-    margin-bottom: 0 !important;
-  }
-  .el-dialog__header {
-    background-color: rgb(48, 166, 221);
-  }
-  .el-dialog__headerbtn {
-    top: 5px !important;
-  }
-  .el-dialog__body {
-    padding: 20px !important;
-  }
-  .el-table .cell {
-    text-align: left !important;
-  }
-  .cell>a {
-    color: rgb(92, 172, 247);
+ .list-wrap .el-table__header {
+   text-indent: 10px;
+ }
+.list-wrap .el-table__body {
+  text-indent: 20px;
+}
+ .list-wrap .el-table__header tr th {
+    background: #F7F7F7;
+    font-family: 'PingFangSC-Regular';
     font-size: 12px;
-    cursor: pointer;
-  }
-  .cell>a:first-child {
-    margin-right: 10px;
-  }
+    color: #000000;
+    letter-spacing: 0.15px;
+ }
 </style>
 

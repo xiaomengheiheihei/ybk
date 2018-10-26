@@ -1,14 +1,14 @@
 <template>
   <el-form class="login-form" status-icon :rules="loginRules" ref="loginForm" :model="loginForm" label-width="0">
     <el-form-item prop="username">
+      <span class="login-icon"><i slot="prefix" class="ybk-icon icon-xingmingyonghumingnicheng"></i></span>
       <el-input size="small" @keyup.enter.native="handleLogin" v-model="loginForm.username" auto-complete="off" placeholder="请输入用户名">
-        <i slot="prefix" class="ybk-icon icon-yonghu"></i>
       </el-input>
     </el-form-item>
     <el-form-item prop="password">
+      <span class="login-icon"><i slot="prefix" class="ybk-icon icon-password"></i></span>
       <el-input size="small" @keyup.enter.native="handleLogin" :type="passwordType" v-model="loginForm.password" auto-complete="off" placeholder="请输入密码">
         <i class="el-icon-view el-input__icon" slot="suffix" @click="showPassword"></i>
-        <i slot="prefix" class="ybk-icon icon-mima"></i>
       </el-input>
     </el-form-item>
     <el-form-item>
@@ -77,11 +77,21 @@ export default {
         : (this.passwordType = "");
     },
     handleLogin() {
-      if (this.loginForm.username === 'tester' && this.loginForm.password === 'qiniu') {
-        let time = new Date().getTime();
-        window.localStorage.setItem('startTime', time);
-        this.$router.push({path: '/setting'})
-      }
+      // if (this.loginForm.username === 'tester' && this.loginForm.password === 'qiniu') {
+      //   let time = new Date().getTime();
+      //   window.localStorage.setItem('startTime', time);
+      //   this.$router.push({path: '/setting'})
+      // }
+      let req = new FormData();
+      req.append('username', this.loginForm.username);
+      req.append('password', this.loginForm.password);
+      this.http.post('/biz/auth', req)
+      .then((res)=> {
+          this.$router.push({path: '/setting'})
+      })
+      .catch((err) => {
+          this.$message.error('登陆失败，请重试！');
+      })
     }
   }
 };
