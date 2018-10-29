@@ -31,14 +31,24 @@
             <span class="tips">(必填)</span>
         </section>
         <section class="register-btn">
-            <span class="cancel">关闭</span>
+            <span @click="cancel" class="cancel">关闭</span>
             <span class="reginster">注册</span>
         </section>
     </div>
 </template>
 <script>
     export default {
-        
+        name: 'register',
+        data () {
+            return {
+
+            }
+        },
+        methods: {
+            cancel () {
+                document.querySelector('#tab-user').click();
+            }
+        }
     }
 </script>
 <style lang="scss" scoped>

@@ -24,7 +24,14 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: login
+    component: login,
+    redirect: (to) => {
+      if (!!token) {
+        return '/setting'
+      } else {
+        return '/login'
+      }
+    }
   },
   {
     path: '/setting',
@@ -45,6 +52,7 @@ const routes = [
   }
 ]
 const router = new Router({
+  mode: 'history',
   routes: routes
 })
 

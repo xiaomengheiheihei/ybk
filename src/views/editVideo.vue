@@ -470,6 +470,14 @@
             clear: both;
         }
         width: 100%;
+        width: 1600px;
+        height: 900px;
+        position: relative;
+        -webkit-user-select:none;
+        -moz-user-select:none;
+        -ms-user-select:none;
+        user-select:none;
+        margin: 0 auto;
         background-color: #505050;
         .edit-video-container {
             position: relative;
