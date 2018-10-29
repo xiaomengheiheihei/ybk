@@ -37,6 +37,9 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
+                type="success">进入系统</el-button>
+              <el-button
+                size="mini"
                 type="danger"
                 @click="stop(scope.$index, scope.row)">结束任务</el-button>
             </template>

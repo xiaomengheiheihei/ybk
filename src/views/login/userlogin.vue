@@ -87,7 +87,11 @@ export default {
       req.append('password', this.loginForm.password);
       this.http.post('/biz/auth', req)
       .then((res)=> {
-          this.$router.push({path: '/setting'})
+          if (this.$router.history.current.query.redirect) {
+            this.$router.push({path: this.$router.history.current.query.redirect})
+          } else {
+            this.$router.push({path: '/setting'})
+          }
       })
       .catch((err) => {
           this.$message.error('登陆失败，请重试！');

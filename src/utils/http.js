@@ -1,11 +1,19 @@
 import axios from 'axios'
+import Cookies from 'js-cookie'
 
 axios.defaults.baseURL = ''
 axios.defaults.headers = {
     appversion:"1.1.4",
-    uuid:"21712201756195fw5ci3jmtarrmxk0000000",
+    Authorization: Cookies.get('Authorization'),
     platform:"ybk"
 };
+
+axios.interceptors.response.use(
+    response => {
+        // console.log(response)
+        return response;
+    }
+)
 
 export default {
     post: (url,params = {}) => {
