@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 export default {
   name: "userlogin",
   data() {
@@ -87,10 +88,12 @@ export default {
       req.append('password', this.loginForm.password);
       this.http.post('/biz/auth', req)
       .then((res)=> {
-          if (this.$router.history.current.query.redirect) {
-            this.$router.push({path: this.$router.history.current.query.redirect})
-          } else {
-            this.$router.push({path: '/setting'})
+          if (!!Cookies.get('Authorization')) {
+            if (this.$router.history.current.query.redirect) {
+              this.$router.push({path: this.$router.history.current.query.redirect})
+            } else {
+              this.$router.push({path: '/setting'})
+            }
           }
       })
       .catch((err) => {

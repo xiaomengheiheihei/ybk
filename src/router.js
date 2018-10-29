@@ -24,14 +24,7 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: login,
-    redirect: (to) => {
-      if (!!token) {
-        return '/setting'
-      } else {
-        return '/login'
-      }
-    }
+    component: login
   },
   {
     path: '/setting',
@@ -57,6 +50,15 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+    // if (to.path === "/login") {     // 如果是登陆先判断状态
+    //   if (!!token) {
+    //     next({
+    //       path: '/setting'
+    //      })
+    //   } else {
+    //     next()
+    //   }
+    // }
     if (to.matched.some(record => record.meta.requiresAuth) && (!token || token === null)) {
       next({
            path: '/login',
@@ -65,14 +67,6 @@ router.beforeEach((to, from, next) => {
     } else {
       next()
     }
-    // if (to.matched.some(record => record.meta.requiresAuth) && (!token || token === null)) {
-    //   next({
-    //    path: '/login',
-    //    query: { redirect: to.fullPath }
-    //   })
-    // } else {
-    //   next()
-    // }
 });
 
 export default router;
