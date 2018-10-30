@@ -8,18 +8,10 @@ import Cookies from 'js-cookie'
 
 Vue.use(Router)
 
-const token = Cookies.get('Authorization');
-
 const routes = [
   {
     path: '/',
-    redirect: (to) => {
-      if (!!token) {
-        return '/setting'
-      } else {
-        return '/login'
-      }
-    }
+    redirect: '/login'
   },
   {
     path: '/login',
@@ -46,26 +38,28 @@ const routes = [
 ]
 const router = new Router({
   mode: 'history',
+  saveScrollPosition: true, 
   routes: routes
 })
 
 router.beforeEach((to, from, next) => {
-    // if (to.path === "/login") {     // 如果是登陆先判断状态
-    //   if (!!token) {
-    //     next({
-    //       path: '/setting'
-    //      })
-    //   } else {
-    //     next()
-    //   }
-    // }
+    let token = Cookies.get('Authorization');
+    console.log(token)
     if (to.matched.some(record => record.meta.requiresAuth) && (!token || token === null)) {
       next({
            path: '/login',
            query: { redirect: to.fullPath }
           })
     } else {
-      next()
+      if (to.path === '/login' && !!token) {
+          next(
+            {
+              path: '/setting'
+            }
+          )
+      } else {
+        next()
+      }
     }
 });
 

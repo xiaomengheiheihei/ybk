@@ -90,6 +90,7 @@ export default {
       .then((res)=> {
           if (!!Cookies.get('Authorization')) {
             if (this.$router.history.current.query.redirect) {
+              console.log(this.$router.history.current.query.redirect);
               this.$router.push({path: this.$router.history.current.query.redirect})
             } else {
               this.$router.push({path: '/setting'})
