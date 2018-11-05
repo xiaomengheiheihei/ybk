@@ -8,7 +8,7 @@
       </el-col>
     </el-row>
     <div class="slider-wrap">
-        <slider></slider>
+        <slider :sliderData="sliderData"></slider>
     </div>
     <div class="list-wrap">
       <h3>系统信息</h3>
@@ -18,25 +18,26 @@
           stripe
           style="width: 100%">
           <el-table-column
-            prop="name"
+            prop="username"
             label="使用者">
           </el-table-column>
           <el-table-column
-            prop="createTime"
+            prop="startTime"
             label="开始时间">
           </el-table-column>
           <el-table-column
-            prop="endTime"
+            prop="expireTime"
             label="预计关闭时间">
           </el-table-column>
           <el-table-column
-            prop="resolving"
+            prop="resolution"
             label="输出分辨率">
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button
                 size="mini"
+                @click="start(scope.$index, scope.row)"
                 type="success">进入系统</el-button>
               <el-button
                 size="mini"
@@ -52,36 +53,36 @@
 
 <script>
 import slider from './slider.vue'
-
+import { Base64 } from 'js-base64';
+import Cookies from 'js-cookie'
 export default {
   name: 'List',
   data () {
     return {
-      tableData: [{
-          createTime: '2016-05-02',
-          name: '王小虎',
-          resolving: '1080P',
-          endTime: '2016-05-02'
-        }, {
-          createTime: '2016-05-04',
-          name: '王小虎',
-          resolving: '1080P',
-          endTime: '2016-05-02'
-        }, {
-          createTime: '2016-05-01',
-          name: '王小虎',
-          resolving: '1080P',
-          endTime: '2016-05-02'
-        }, {
-          createTime: '2016-05-03',
-          name: '王小虎',
-          resolving: '1080P',
-          endTime: '2016-05-02'
-        }]
+      tableData: [],
+      sliderData: ''
     }
   },
   props: {
     msg: String
+  },
+  created () {
+    this.http.get('./biz/manager/ybk/list', {})
+    .then(res => {
+      this.tableData = res.data;
+    })
+    .catch(error => {
+      this.$message.error('请求数据失败');
+    })
+
+   let uid = JSON.parse(Base64.decode(Cookies.get('Authorization').split('.')[1])).sub;
+   this.http.get('./biz/manager/user/single', {userId: uid})
+   .then(res => {
+     this.sliderData = res.data;
+   })
+   .catch(error => {
+
+   })
   },
   components: {
     slider,
@@ -89,6 +90,9 @@ export default {
   methods: {
     stop () {
 
+    },
+    start () {
+      this.$router.push('/editVideo')
     }
   }
 }

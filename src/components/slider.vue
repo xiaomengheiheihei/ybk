@@ -1,16 +1,22 @@
 <template>
     <div class="slider">
        <h3>用户信息</h3>
-       <div class="user-detial">
-           <p>姓名：李晓明飞</p>
-           <p>部门：播出组</p>
-           <p>累计使用时长：10小时10分10秒</p>
+       <div class="user-detial" v-if="sliderData.username">
+           <p>姓名：{{sliderData.username}}</p>
+           <p>部门：{{sliderData.deptname}}</p>
+           <p>累计使用时长：{{sliderData.sumUseTime}}</p>
        </div>
     </div>
 </template>
 <script>
     export default {
-        name: 'slider'
+        name: 'slider',
+        props: {
+            sliderData: ''
+        },
+        mounted() {
+
+        }
     }
 </script>
 <style lang="scss" scoped>

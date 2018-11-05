@@ -44,7 +44,6 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
     let token = Cookies.get('Authorization');
-    console.log(token)
     if (to.matched.some(record => record.meta.requiresAuth) && (!token || token === null)) {
       next({
            path: '/login',
@@ -52,11 +51,7 @@ router.beforeEach((to, from, next) => {
           })
     } else {
       if (to.path === '/login' && !!token) {
-          next(
-            {
-              path: '/setting'
-            }
-          )
+          next({path: '/setting'})
       } else {
         next()
       }

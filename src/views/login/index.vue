@@ -14,8 +14,7 @@
         :moveSpeed="4"
         :hoverEffect="true"
         hoverMode="grab"
-        :clickEffect="true"
-        clickMode="push"
+        :clickEffect="false"
       >
     </vue-particles>
     <div class="login-border  animated fadeInRight">
