@@ -48,6 +48,36 @@
         </el-table>
       </template>
     </div>
+    <div class="btn-wrap">
+      <el-button plain @click="outSys">退出</el-button>
+      <el-button type="primary" @click="dialogVisible = true">创建播控任务</el-button>
+    </div>
+    <el-dialog
+      class="setting-wrap-dialog"
+      title="创建播控任务"
+      width="300px"
+      :visible.sync="dialogVisible"
+      append-to-body>
+      <div class="wrap">
+        <section>
+          输出格式：<el-select v-model="sloution" placeholder="请选择">
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+        </section>
+        <section class="time-wrap">
+          使用时长：<el-input v-model="timelength" placeholder="请输入内容"></el-input>
+        </section>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="dialogVisible = false">关闭</el-button>
+        <el-button size="mini" type="primary" @click="createdYbk">创建</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -60,7 +90,20 @@ export default {
   data () {
     return {
       tableData: [],
-      sliderData: ''
+      sliderData: '',
+      dialogVisible: false,
+      sloution: '1080P',
+      timelength: '02:00:00',
+      options: [
+        {
+          value: '1080P',
+          label: '1080P'
+        },
+        {
+          value: '720P',
+          label: '720P'
+        },
+      ]
     }
   },
   props: {
@@ -88,11 +131,40 @@ export default {
     slider,
   },
   methods: {
-    stop () {
-
+    stop (i, v) {
+      let params = {
+        id: v.id
+      }
+      this.http.post('/biz/ybkBase/stop', params)
+      .then(res => {
+        console.log(res)
+      })
+      .catch(error => {
+        console.log(error)
+      })
     },
-    start () {
-      this.$router.push('/editVideo')
+    start (i, v) {
+      this.$router.push({path: '/editVideo', query:{id: v.id}})
+    },
+    outSys () {
+      Cookies.remove('Authorization');
+      window.location.reload();
+    },
+    createdYbk () {
+      let params = {
+        resolution: this.sloution,
+        useTime: this.timelength
+      }
+      this.http.post('/biz/ybkBase', params)
+      .then(res => {
+        if (res.code === 0) {
+          this.$message.success('创建成功！');
+          this.dialogVisible = false;
+        }
+      })
+      .catch(error => {
+
+      })
     }
   }
 }
@@ -160,6 +232,10 @@ export default {
           padding-left: 22px;
         }
       }
+      .btn-wrap {
+        text-align: right;
+        margin: 30px;
+      }
     }
 </style>
 <style>
@@ -176,5 +252,28 @@ export default {
     color: #000000;
     letter-spacing: 0.15px;
  }
+ .setting-wrap-dialog .el-dialog__header,  .setting-wrap-dialog .el-dialog__body, .setting-wrap-dialog .el-dialog__footer {
+   background: #fff;
+ }
+  .setting-wrap-dialog .el-dialog__header .el-dialog__title {
+    font-size: 14px;
+    font-weight: normal;
+  }
+.setting-wrap-dialog .el-dialog__body .wrap {
+  padding: 10px 20px;
+}
+.setting-wrap-dialog .el-dialog__body .el-select, .setting-wrap-dialog .el-dialog__body .el-input {
+    width: 110px;
+}
+.setting-wrap-dialog .el-dialog__body .el-select .el-input__inner, .setting-wrap-dialog .el-dialog__body .el-input .el-input__inner {
+     height: 30px;
+    line-height: 30px;
+}
+.setting-wrap-dialog .el-dialog__body .el-select .el-input__icon {
+  line-height: 30px;
+}
+.setting-wrap-dialog .el-dialog__body  .time-wrap {
+  margin-top: 20px;
+}
 </style>
 

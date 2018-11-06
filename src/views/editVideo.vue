@@ -242,7 +242,7 @@
             this.resData === null ? this.$loading() : this.$loading.end();
         },
         created () {
-            this.http.get('/biz/ybkBase/18', {})
+            this.http.get('/biz/ybkBase/' + this.$router.history.current.query.id , {})
             .then((response) => {
                 // 保存音视频同步与否状态
                 let isSync = response.data.isSync === 1 ? true : false;  

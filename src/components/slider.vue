@@ -1,7 +1,7 @@
 <template>
     <div class="slider">
        <h3>用户信息</h3>
-       <div class="user-detial" v-if="sliderData.username">
+       <div class="user-detial" v-if="sliderData !== ''">
            <p>姓名：{{sliderData.username}}</p>
            <p>部门：{{sliderData.deptname}}</p>
            <p>累计使用时长：{{sliderData.sumUseTime}}</p>
