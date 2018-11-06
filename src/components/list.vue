@@ -8,7 +8,7 @@
       </el-col>
     </el-row>
     <div class="slider-wrap">
-        <slider :sliderData="sliderData"></slider>
+        <slider v-if="sliderData !== null && sliderData != undefined" :sliderData = sliderData></slider>
     </div>
     <div class="list-wrap">
       <h3>系统信息</h3>
@@ -90,7 +90,7 @@ export default {
   data () {
     return {
       tableData: [],
-      sliderData: '',
+      sliderData: null,
       dialogVisible: false,
       sloution: '1080P',
       timelength: '02:00:00',
@@ -110,14 +110,7 @@ export default {
     msg: String
   },
   created () {
-    this.http.get('./biz/manager/ybk/list', {})
-    .then(res => {
-      this.tableData = res.data;
-    })
-    .catch(error => {
-      this.$message.error('请求数据失败');
-    })
-
+    this.getTableList();
    let uid = JSON.parse(Base64.decode(Cookies.get('Authorization').split('.')[1])).sub;
    this.http.get('./biz/manager/user/single', {userId: uid})
    .then(res => {
@@ -132,12 +125,12 @@ export default {
   },
   methods: {
     stop (i, v) {
-      let params = {
-        id: v.id
-      }
-      this.http.post('/biz/ybkBase/stop', params)
+      this.http.post('/biz/ybkBase/stop/' + v.id, {})
       .then(res => {
-        console.log(res)
+        if (res.code === 0) {
+          this.$message.success('任务已结束！');
+          this.getTableList();
+        }
       })
       .catch(error => {
         console.log(error)
@@ -159,11 +152,21 @@ export default {
       .then(res => {
         if (res.code === 0) {
           this.$message.success('创建成功！');
+          this.getTableList();
           this.dialogVisible = false;
         }
       })
       .catch(error => {
 
+      })
+    },
+    getTableList() {
+      this.http.get('./biz/manager/ybk/list', {})
+      .then(res => {
+        this.tableData = res.data;
+      })
+      .catch(error => {
+        this.$message.error('请求数据失败');
       })
     }
   }
@@ -252,8 +255,9 @@ export default {
     color: #000000;
     letter-spacing: 0.15px;
  }
- .setting-wrap-dialog .el-dialog__header,  .setting-wrap-dialog .el-dialog__body, .setting-wrap-dialog .el-dialog__footer {
+.setting-wrap-dialog .el-dialog__header,  .setting-wrap-dialog .el-dialog__body, .setting-wrap-dialog .el-dialog__footer {
    background: #fff;
+   padding: 20px;
  }
   .setting-wrap-dialog .el-dialog__header .el-dialog__title {
     font-size: 14px;
