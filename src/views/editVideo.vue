@@ -27,9 +27,16 @@
                 <el-col :span="12">
                     <div class="edit-video-left-con">
                         <div class="edit-video-left-tile">视频矩阵
-                            <span class="add" @click="addFlashVideo"></span>
-                            <span class="add01" @click="addH5Video"></span>
-                            <span class="setting" @click="settingVideo"></span></div>
+                            <span class="add" @click="addFlashVideo">
+                                <a href="javascript:;" style="display: block;width:100%;height:100%" title="添加直播源"></a>
+                            </span>
+                            <span class="add01" @click="addH5Video">
+                                <a href="javascript:;" style="display: block;width:100%;height:100%" title="添加本地视频"></a>
+                            </span>
+                            <span class="setting" @click="settingVideo">
+                                <a href="javascript:;" style="display: block;width:100%;height:100%" title="编辑视频"></a>
+                            </span>
+                        </div>
                         <el-row class="video-item-live">
                             <el-col :span="6" v-for="(item, index) in playerDataList" :key="index" 
                                     :style="index < 4 ? {marginBottom: '1px'} : {}"
