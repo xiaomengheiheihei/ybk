@@ -80,15 +80,21 @@
                 item.value === '' ? item.showRequired = true : item.showRequired = false;
             },
             reginster () {
-                let params = new FormData();
+                let params = {
+                    username: '',
+                    password: '',
+                    deptname: '',
+                    phone: '',
+                    employeeId: ''
+                };
                 let password = '';
                 for (let item of this.inputList) {
                     switch (item.id) {
                         case 'name':
-                            params.append('username', item.value);
+                            params.username = item.value;
                             break;
                         case 'password':
-                            params.append('password', item.value);
+                            params.password = item.value;
                             password = item.value;
                             break;
                         case 'repassword':
@@ -96,13 +102,13 @@
                                 this.$message.error('两次输入密码不一致，请重新输入！');
                             }
                         case 'dep':
-                            params.append('deptname', item.value);
+                            params.deptname = item.value;
                             break;
                         case 'tel':
-                            params.append('phone', item.value);
+                            params.phone = item.value;
                             break;
                         case 'num':
-                            params.append('employeeId', item.value);
+                            params.employeeId = item.value;
                             break;
                         default:
                             break;
@@ -110,7 +116,10 @@
                 }
                 this.http.post('/biz/adduser', params)
                 .then(res => {
-                    console.log(res);
+                    if (res.code === 200) {
+                        this.$message.success('注册成功！');
+                        document.querySelector('#tab-user').click();
+                    }
                 })
                 .catch(err => {
 

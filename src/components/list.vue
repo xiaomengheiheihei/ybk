@@ -161,7 +161,7 @@ export default {
       })
     },
     getTableList() {
-      this.http.get('./biz/manager/ybk/list', {})
+      this.http.get('./biz/manager/ybk/ownerlist', {})
       .then(res => {
         this.tableData = res.data;
       })
