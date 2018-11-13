@@ -127,7 +127,7 @@ export default {
     stop (i, v) {
       this.http.post('/biz/ybkBase/stop/' + v.id, {})
       .then(res => {
-        if (res.code === 0) {
+        if (res.code === 200) {
           this.$message.success('任务已结束！');
           this.getTableList();
         }
@@ -150,14 +150,18 @@ export default {
       }
       this.http.post('/biz/ybkBase', params)
       .then(res => {
-        if (res.code === 0) {
+        if (res.code === 200) {
           this.$message.success('创建成功！');
           this.getTableList();
+          this.dialogVisible = false;
+        } else {
+          this.$message.error('创建失败，请稍后重试！');
           this.dialogVisible = false;
         }
       })
       .catch(error => {
-
+        this.$message.error('创建失败，请稍后重试！');
+        this.dialogVisible = false;
       })
     },
     getTableList() {

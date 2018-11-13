@@ -901,7 +901,7 @@
                 obj.overlay = JSON.stringify(this.choosedItemObj);
                 this.http.post('./biz/ybk/setMutiInfo',obj)
                 .then((res) => {
-                    if (res.code === 0) {
+                    if (res.code === 200) {
                         this.dialogVisible = false;
                         // 修改成功后修改本地视窗信息
                         this.$store.dispatch('changeMutis', obj);
@@ -966,7 +966,7 @@
                 };
                 this.http.post('./biz/ybk/setMutiInfo',obj)
                 .then((res) => {
-                    if (res.code === 0) {
+                    if (res.code === 200) {
                         // 修改成功后修改本地视窗信息
                         this.$store.dispatch('changeMutis', obj);
                         this.settingStatus = false;

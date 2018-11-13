@@ -27,6 +27,7 @@
                 isSync: true,
                 sliderValue: 0,
                 showTips: false,
+                ybkId: this.$router.history.current.query.id
             }
         },
         mounted () {
@@ -41,7 +42,7 @@
             changeSync (sync) {
                 this.http.post('./biz/ybk/setAudioVedioSync', {id:this.$store.state.ybkId,sync: Number(this.isSync)})
                     .then((res)=> {
-                        if(res.code == 0) {
+                        if(res.code == 200) {
                             this.$store.dispatch('changePlaySync', this.isSync);
                         }
                     })
@@ -90,12 +91,12 @@
             },
             selectedShim () {
                 let data = {
-                    id: 1,
+                    id: this.ybkId,
                     opt: "1",
                 };
                 this.http.post('./biz/ybk/switch2EMG', data)
                 .then((res) => {
-                    if (res.code === 0) {
+                    if (res.code === 200) {
                         this.$alert('切换成功！', '切换成功', {
                             confirmButtonText: '确定',
                             callback: ()=>{}

@@ -12,7 +12,16 @@
                 <range v-if="index == 13" ref="volRange" @change="changeVol" :ischoosed="ischoose" :rangeObj="rangeOpation" v-model="vols.vol"></range>
             </div>
             <div class="tone-btn-bottom">
-                <p class="void-icon" v-if="index < 13 || index == 14" :class="((isMuted === 0 || vols.vol == 0) && !ischoose) ? 'void-icon-ss' : '' || ((isMuted === 0 || vols.vol == 0) && ischoose) ? 'void-icon-red': '' || ((isMuted !== 0 || vols.vol != 0) && ischoose ? 'void-icon-red-s' : '')" @click="isMute"></p>
+                <p class="void-icon" 
+                    v-if="index < 13 || index == 14" 
+                    :class="((isMuted === 0 || vols.vol == 0) && !ischoose) ? 
+                    'void-icon-ss' : '' || 
+                    ((isMuted === 0 || vols.vol == 0) && ischoose) ? 
+                    'void-icon-red': '' || 
+                    ((isMuted !== 0 || vols.vol != 0) && ischoose ? 
+                    'void-icon-red-s' : '')" 
+                    @click="isMute">
+                </p>
                 <p class="void-icon" v-if="index == 13" :class="vols.vol == 0 ? 'void-icon-ss' : ''" @click="isMute"></p>
                 <p 
                     v-if="index != 13" 
@@ -101,7 +110,7 @@
                     }
                     this.http.post('./biz/ybk/setVolume', req)
                     .then((res)=> {
-                        if(res.code === 0) {
+                        if(res.code === 200) {
                             this.$message({
                                 message: '修改音量成功！',
                                 type: 'success'
@@ -138,7 +147,7 @@
                 if (this.isMuted === 0) {   // 取消静音
                     this.http.post('./biz/ybk/setMute', {id:this.vols.playerId,mute: 0})
                     .then((res)=> {
-                        if(res.code == 0) {
+                        if(res.code == 200) {
                             let obj = {
                                 id: this.vols.playerId,
                                 type: 'mute'
@@ -153,7 +162,7 @@
                 } else {
                     this.http.post('./biz/ybk/setMute', {id:this.vols.playerId,mute: 1})
                     .then((res)=> {
-                        if(res.code == 0) {
+                        if(res.code == 200) {
                             let obj = {
                                 id: this.vols.playerId,
                                 type: 'mute'
@@ -196,7 +205,7 @@
                     let sync = Number(this.$store.state.playSync);
                     this.http.post('./biz/ybk/setMute', {id:this.vols.playerId,mute: 0,sync: sync})
                     .then((res)=> {
-                        if(res.code == 0) {
+                        if(res.code == 200) {
                             let obj = {
                                 id: this.vols.playerId,
                                 type: 'switch'

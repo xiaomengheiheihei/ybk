@@ -385,7 +385,7 @@
                 }
                 this.http.post('./biz/ybk/setChannelInfo',data)
                 .then((response) => {
-                    if(response.code === 0) {
+                    if(response.code === 200) {
                         this.$loading.end();
                         this.playerData.url = '';
                         this.$alert('删除成功！', '温馨提示', {
