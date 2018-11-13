@@ -68,7 +68,7 @@
                             }
                         });
                         let sync = Number(this.$store.state.playSync);
-                        this.http.post('./biz/ybk/switch2PGM', {"id": pvwObj.id,sync: sync})
+                        this.http.post('./biz/ybk/switch2PGM', {"id": pvwObj.playerId,sync: sync})
                         .then((response) => {
                             this.$store.dispatch('changePgm', pvwObj);
                             // this.playerData.isPgm = 1;
