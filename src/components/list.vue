@@ -114,7 +114,11 @@ export default {
    let uid = JSON.parse(Base64.decode(Cookies.get('Authorization').split('.')[1])).sub;
    this.http.get('./biz/manager/user/single', {userId: uid})
    .then(res => {
-     this.sliderData = res.data;
+     if (res.code === 200) {
+       this.sliderData = res.data;
+     } else {
+       this.$message.error(res.message);
+     }
    })
    .catch(error => {
 
@@ -130,6 +134,8 @@ export default {
         if (res.code === 200) {
           this.$message.success('任务已结束！');
           this.getTableList();
+        } else {
+          this.$message.error(res.message);
         }
       })
       .catch(error => {
@@ -155,7 +161,7 @@ export default {
           this.getTableList();
           this.dialogVisible = false;
         } else {
-          this.$message.error('创建失败，请稍后重试！');
+          this.$message.error(res.message);
           this.dialogVisible = false;
         }
       })
@@ -167,7 +173,11 @@ export default {
     getTableList() {
       this.http.get('./biz/manager/ybk/ownerlist', {})
       .then(res => {
-        this.tableData = res.data;
+        if(res.code === 200) {
+          this.tableData = res.data;
+        } else {
+          this.$message.error(res.message);
+        }
       })
       .catch(error => {
         this.$message.error('请求数据失败');

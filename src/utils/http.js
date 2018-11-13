@@ -10,8 +10,12 @@ axios.defaults.headers = {
 
 axios.interceptors.response.use(
     response => {
-        // console.log(response)
-        return response;
+        if (response.data.code === 700) {
+            Cookies.remove('Authorization');
+            window.location.reload();
+        } else {
+            return response;
+        }
     }
 )
 

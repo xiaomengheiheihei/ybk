@@ -178,16 +178,16 @@
                     height: this.height,
                     muted: true,
                     sources: [
-                        // {
-                        //     type: "video/mp4",
-                        //     src: (this.playerData.url.indexOf('http') >= 0 && this.playerData.url.indexOf('.m3u8') < 0) ? 
-                        //     this.playerData.url : '',     // 非rtmp协议用h5播放
-                        // },
-                        // {
-                        //     withCredentials: false,
-                        //     type: 'application/x-mpegURL',
-                        //     src: this.playerData.url.indexOf('.m3u8') >= 0 ? this.playerData.url : '',
-                        // },
+                        {
+                            type: "video/mp4",
+                            src: (this.playerData.url.indexOf('http') >= 0 && this.playerData.url.indexOf('.m3u8') < 0) ? 
+                            this.playerData.url : '',     // 非rtmp协议用h5播放
+                        },
+                        {
+                            withCredentials: false,
+                            type: 'application/x-mpegURL',
+                            src: this.playerData.url.indexOf('.m3u8') >= 0 ? this.playerData.url : '',
+                        },
                         {
                             type: "rtmp/mp4",
                             src: this.isPgm || this.isPvw ? this.playerData.url : this.playerData.playUrl, //"rtmp://live.hkstv.hk.lxdns.com/live/hks"
