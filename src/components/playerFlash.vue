@@ -73,7 +73,7 @@
                 <span @click="dialogVisible = false">关闭</span>
             </div>
             <div class="content">
-                <div class="name">名称：<input type="text" :placeholder="playerData.title"></div>
+                <div class="name">名称：<input ref="titleInput" type="text" :value="playerData.title"></div>
                 <div class="radio-wrap">
                     <template>
                         <div class="radio01">
@@ -213,7 +213,7 @@
                 monitor02: false,
                 addLivePLayerData: null,
                 clickTimer: null,
-                addUrl: window.location.href,
+                addUrl: this.playerData.pushUrl,
                 showBar: true,          // 是否显示播控按钮
             }
         },
@@ -266,40 +266,42 @@
                 }, 300)
             },
             addLiveList () {    // 添加直播源
-                if (this.addLivePLayerData === null) return;
-                this.playerData.url = this.addLivePLayerData.url;
-                this.dialogVisible = false;
-                this.showBar = !this.showBar;
-                let obj = {
-                    id: this.addLivePLayerData.id,
-                    title: this.addLivePLayerData.title,
-                    url: this.addLivePLayerData.url,
-                }
-                this.$store.dispatch('changeSettingStatus', 0);
-                this.$store.dispatch('addLivePlayerUrl', obj);
-            },
-            addLivePlay () {
                 this.$loading();
                 let data = {
                     id: this.playerData.id,
-                    url: this.pullSteam.value,
-                    title: this.playerData.title,
-                    streamType: '1',
+                    url: this.steamRadio == 1 ? this.playerData.pushUrl : this.pullSteam.value,
+                    title: this.$refs.titleInput.value,
+                    streamType: this.steamRadio == 1 ? '0' : '1'
                 };
                 this.http.post('./biz/ybk/setChannelInfo',data)
                 .then((response) => {
                     if(response.code === 200) {
-                        this.$loading.end();
-                        this.addLivePLayerData = JSON.parse(JSON.stringify(this.playerData ));
-                        this.addLivePLayerData.isPvw = 0;
-                        this.addLivePLayerData.isPgm = 0;
-                        this.addLivePLayerData.url =  this.pullSteam.value;  
+                        this.$loading.end();  
                     }
                 })
                 .catch((error) => {
                     this.$loading.end();
                     console.error(error + '请求数据有误');
                 });
+                if (this.addLivePLayerData === null && this.steamRadio == 2) return;
+                this.playerData.url = this.steamRadio == 1 ? this.playerData.pushUrl : this.pullSteam.value;
+                this.dialogVisible = false;
+                this.showBar = !this.showBar;
+                let obj = {
+                    id: this.playerData.id,
+                    title: this.$refs.titleInput.value,
+                    url: this.steamRadio == 1 ? this.playerData.pushUrl : this.pullSteam.value
+                }
+                this.playerData.title = this.$refs.titleInput.value;
+                this.$store.dispatch('changeSettingStatus', 0);
+                this.$store.dispatch('addLivePlayerUrl', obj);
+            },
+            addLivePlay () {
+                this.addLivePLayerData = JSON.parse(JSON.stringify(this.playerData ));
+                this.addLivePLayerData.isPvw = 0;
+                this.addLivePLayerData.isPgm = 0;
+                this.addLivePLayerData.url =  this.pullSteam.value; 
+                this.addLivePLayerData.title = this.$refs.titleInput.value;
             },
             closePvw () {
                 if (!this.value1) {
