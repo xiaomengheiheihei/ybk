@@ -4,6 +4,7 @@
   </div>
 </template>
 
+
 <style lang="scss">
 $--color-primary: rgb(66, 206, 37);
 html, body {
