@@ -14,7 +14,7 @@
                 :show-tooltip="false"
                 height="150px">
                 </el-slider>
-                <el-checkbox @change="changeSync" v-model="isSync">音视频同步切换</el-checkbox>
+                <el-checkbox @change="changeSync" v-model="sync">音视频同步切换</el-checkbox>
             </div>
         </div>
     </div>
@@ -34,20 +34,28 @@
             
         },
         computed: {
-            sync () {
-                return this.$store.state.playSync
+            sync: {
+                get () {
+                    return this.$store.state.playSync
+                },
+                set () {
+                    this.$store.dispatch('changePlaySync', !this.sync);
+                }
             }
         },
         methods: {
-            changeSync (sync) {
-                this.http.post('./biz/ybk/setAudioVedioSync', {id:this.$store.state.ybkId,sync: Number(this.isSync)})
+            changeSync () {
+                this.http.post('./biz/ybk/setAudioVedioSync', {id:this.$store.state.ybkId,sync: Number(this.sync)})
                     .then((res)=> {
                         if(res.code == 200) {
-                            this.$store.dispatch('changePlaySync', this.isSync);
+                            this.$message.success('切换成功！')
+                            // this.$store.dispatch('changePlaySync', !this.sync);
+                        } else {
+                            this.$message.error(res.message)
                         }
                     })
                     .catch((err)=> {
-                        console.log(err);
+                        this.$message.error('网络连接失败，请稍后重试！')
                     })
             },
             changeRange (num) {

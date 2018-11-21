@@ -32,7 +32,10 @@
                 <div class="add-d"></div>
             </div> -->
         </div>
-        <el-row v-if="(showBar || playerData.url != '') && !isPlayBar" class="play-bar-wrap" :class="isPreview &&  !isRed ? 'play-bar-wrap-h' : '' || isPreview &&  isRed ? 'play-bar-wrap-r' : ''">
+        <el-row v-if="(showBar || playerData.url != '') && 
+            !isPlayBar" class="play-bar-wrap" 
+            :class="isPreview &&  !isRed ? 'play-bar-wrap-h' : '' || 
+            isPreview &&  isRed ? 'play-bar-wrap-r' : ''">
             <el-col :span="8" v-if="!isPreview">
                 {{ playerData.seqNo+1 }}
             </el-col>
@@ -248,10 +251,14 @@
         methods: {
             onTimeupdate(e) {
                 // this.isPgm && console.log(this.player.currentTime());
-                this.isPgm && this.player && this.player.volume(this.vol.vol);
-                if (this.listening) {
-                    this.listening.isListening ? this.player && this.player.volume(this.listening.vol) : this.player.volume(0);
-                } 
+                try {
+                    this.isPgm && this.player && this.player.volume(this.vol.vol);
+                    if (this.listening) {
+                        this.listening.isListening ? this.player && this.player.volume(this.listening.vol) : this.player.volume(0);
+                    } 
+                } catch (error) {
+                    
+                }
             },
             cancelAdd () {
                 this.addLivePLayerData = null;
@@ -376,16 +383,20 @@
                     if(response.code === 200) {
                         this.$loading.end();
                         this.playerData.url = '';
+                        this.addLivePLayerData = null;
+                        this.showBar = true;
                         this.$alert('删除成功！', '温馨提示', {
                             confirmButtonText: '确定',
                             callback: ()=>{}
                         })
                         this.$store.dispatch('changeSettingStatus', 0);
+                    } else {
+                        this.$message.error(res.message);
                     }
                 })
                 .catch((error) => {
                     this.$loading.end();
-                    console.error(error + '请求数据有误');
+                    this.$message.error('网络连接失败，请稍后重试！');
                 });
             }
         }

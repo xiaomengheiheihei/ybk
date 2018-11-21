@@ -267,7 +267,7 @@
             .then((response) => {
                if (response.code === 200) {
                     // 保存音视频同步与否状态
-                let isSync = response.data.isSync === '1' ? true : false;  
+                let isSync = response.data.isSync === 1 ? true : false;  
                 this.$store.dispatch('changePlaySync', isSync);
                 this.$store.dispatch('addYbkId', response.data.id);
                 // 组装store所需信息
