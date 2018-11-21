@@ -261,6 +261,7 @@
             // this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
             //     loadingInstance.close();
             // });
+            document.body.style.backgroundColor = '#505050';
         },
         created () {
             this.http.get('/biz/ybkBase/' + this.$router.history.current.query.id , {})
@@ -301,7 +302,6 @@
                 }
                } else {
                    this.$message.error(response.message);
-                   this.$router.push({path: '/setting'})
                }
                this.loadingInstance.close();
             })
@@ -318,7 +318,7 @@
         methods: {
             changeLock (event) {
                 this.isLock = !this.isLock;
-                document.body.appendChild(document.createElement('div'))
+                // document.body.appendChild(document.createElement('div'))
             },
             getNowDate () {
                 let date = new Date();
@@ -354,7 +354,10 @@
                 }
             },
             cutdown () {
-                alert('结束')
+                this.$message.warning(`播控时间已结束，即将返回控制台！`)
+                setTimeout(() => {
+                    this.$router.push({path: '/setting'})
+                }, 5000)
             },
             createStorePlayList (original, islocal = false) {
                 for (let i = 0; i < original.length; i++) {
@@ -435,6 +438,7 @@
                 })
                 .catch((err)=> {
                     this.$loading.end();
+                    this.$message.error(`网络连接失败，请稍后重试！`)
                 });
             },
             addShim () {
@@ -459,6 +463,7 @@
                 })
                 .catch((err)=> {
                     this.$loading.end();
+                    this.$message.error(`网络连接失败，请稍后重试！`)
                 });
             },
             addFlashVideo () {

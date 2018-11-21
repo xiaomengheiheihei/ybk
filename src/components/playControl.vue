@@ -92,7 +92,7 @@
                             },2000);
                         })
                         .catch((error) => {
-
+                            this.$message.error(`网络连接失败，请稍后重试！`)
                         });
                    }
                 }

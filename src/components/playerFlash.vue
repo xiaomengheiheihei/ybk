@@ -280,6 +280,7 @@
                     })
                     .catch((error) => {
                         //this.$loading.end();
+                        this.$message.error(`网络连接失败，请稍后重试！`)
                     });
                 }, 300)
             },
@@ -299,7 +300,7 @@
                 })
                 .catch((error) => {
                     this.$loading.end();
-                    console.error(error + '请求数据有误');
+                    this.$message.error(`网络连接失败，请稍后重试！`)
                 });
                 if (this.addLivePLayerData === null && this.steamRadio == 2) return;
                 this.playerData.url = this.steamRadio == 1 ? this.playerData.pushUrl : this.pullSteam.value;
