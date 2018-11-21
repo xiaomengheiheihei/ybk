@@ -5,7 +5,7 @@
         :style="isPreview ? {height: '223px'} : {}">
         <div class="video-player-con" 
             :class="isAdd ? 'video-player-con-n' : '' || isPreview ? 'video-player-con-l' : ''">
-            <div class="bg" v-if="!isPreview && addLivePLayerData === null && playerData.url != ''" v-show="vol" 
+            <div class="bg" v-if="!isPreview && addLivePLayerData === null && playerData.url != ''" v-show="vol && isaddv" 
                 @click.stop="addPvw" @dblclick.stop="addPgm"></div>
             <div class="setting-bg" v-if="isSetting && !isPreview && 
             !playerData.isPgm && !playerData.isPvw && playerData.url != ''">
@@ -70,7 +70,7 @@
             >
             <div slot="title" class="title">
                 添加直播源
-                <span @click="dialogVisible = false">关闭</span>
+                <span @click="cancelAdd">关闭</span>
             </div>
             <div class="content">
                 <div class="name">名称：<input ref="titleInput" type="text" :value="playerData.title"></div>
@@ -90,10 +90,12 @@
                             <input type="text" ref="pull" id="pull-stream" placeholder="请输入拉流地址"><span @click="addLivePlay">添加</span>
                         </div>
                         <div class="preview-wrap">
-                            <Flash v-if="addLivePLayerData != null"  :isLive= 1
+                            <Flash v-if="addLivePLayerData != null"  
+                                    :isLive= 1
                                     :playerData= addLivePLayerData
                                     :isAdd = false
                                     :isBlank = false
+                                    :isaddv = false
                                     :height = '133'>
                             </Flash>
                         </div>
@@ -119,7 +121,7 @@
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button class="cancel-btn" @click="dialogVisible = false">取 消</el-button>
+                <el-button class="cancel-btn" @click="cancelAdd">取 消</el-button>
                 <el-button class="add-btn" type="primary" @click="addLiveList">确 定</el-button>
             </span>
         </el-dialog>
@@ -168,6 +170,11 @@
                 type: Boolean,
                 require: false,
                 default: false,
+            },
+            isaddv: {
+                type: Boolean,
+                require: false,
+                default: true,
             }
         },
         data() {
@@ -246,6 +253,10 @@
                     this.listening.isListening ? this.player && this.player.volume(this.listening.vol) : this.player.volume(0);
                 } 
             },
+            cancelAdd () {
+                this.addLivePLayerData = null;
+                this.dialogVisible = false
+            },
             addPvw () {
                 clearTimeout(this.clickTimer);
                 this.clickTimer = setTimeout(() => {
@@ -300,6 +311,7 @@
                 this.addLivePLayerData = JSON.parse(JSON.stringify(this.playerData ));
                 this.addLivePLayerData.isPvw = 0;
                 this.addLivePLayerData.isPgm = 0;
+                this.addLivePLayerData.playUrl =  this.pullSteam.value; 
                 this.addLivePLayerData.url =  this.pullSteam.value; 
                 this.addLivePLayerData.title = this.$refs.titleInput.value;
             },
