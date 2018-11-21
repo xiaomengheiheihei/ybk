@@ -129,6 +129,7 @@ export default {
   },
   methods: {
     stop (i, v) {
+      this.$loading();
       this.http.post('/biz/ybkBase/stop/' + v.id, {})
       .then(res => {
         if (res.code === 200) {
@@ -137,9 +138,11 @@ export default {
         } else {
           this.$message.error(res.message);
         }
+        this.$loading.end();
       })
       .catch(error => {
-        console.log(error)
+        this.$loading.end();
+        this.$message.error(`网络连接失败，请稍后重试！`);
       })
     },
     start (i, v) {

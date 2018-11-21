@@ -24,7 +24,7 @@
         name: 'PlayControl',
         data () {
             return {
-                isSync: true,
+                isSync: false,
                 sliderValue: 0,
                 showTips: false,
                 ybkId: this.$router.history.current.query.id

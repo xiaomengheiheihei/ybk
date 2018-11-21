@@ -11,7 +11,7 @@ export default new Vuex.Store({
       pgm: {},                 
       pvw: {},
       mutis: [],            // 多视窗界面数据
-      playSync: true,       // 音视频是否同步切换
+      playSync: false,       // 音视频是否同步切换
       settingStatus: false,   // 设置视频浮层状态
       currentTime: 0,       // 保存当前时间
   },

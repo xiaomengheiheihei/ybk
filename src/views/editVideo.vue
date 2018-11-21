@@ -10,7 +10,9 @@
                         <span class="edit-title clear">智能播控</span>
                     </div>
                     <div class="edit-top-right">
-                        <div class="edit-top-save-time">剩余时长：<span>01:30:45</span></div>
+                        <div class="edit-top-save-time">剩余时长：<span>
+                            <count-down :endTime="parseExpressDate.toString()" :callback="cutdown"  endText="已经结束了"></count-down>
+                        </span></div>
                         <div class="edit-top-icon-con">
                             <span class="edit-add">续期</span>
                             <span class="edit-lock" :class="{'edit-lock-f' : !isLock}" @click="changeLock"></span>
@@ -133,7 +135,7 @@
                    </div>
                    <div><el-radio v-model="pullRadio" label="1">固定地址</el-radio></div>
                    <div class="address-wrap" v-if="pullRadio == 1">
-                        <div class="address-con" :copyData = "resData.pgm.url">{{resData.pgm.url}}</div>
+                        <div class="address-con" :copyData = "resData.pgm.url">{{resData.onairUrl}}</div>
                         <span class="copy-btn" 
                             v-clipboard:copy="resData.pgm.url" 
                             v-clipboard:success="onCopy" 
@@ -193,6 +195,8 @@
     import PlayControl from '@/components/playControl.vue'
     import ResourceCenter from '@/components/resourceCenter.vue'
     import Flash from '@/components/playerFlash.vue'
+    import countDown from '@/components/cutDown.vue'
+    import { Loading } from 'element-ui'
     export default {
         name: 'editVideo',
         data () {
@@ -233,6 +237,7 @@
             PlayControl,
             ResourceCenter,
             Flash,
+            countDown
         },
         computed: {
             settingStatus () {
@@ -243,16 +248,26 @@
             },
             h5Player () {
                 return this.$refs.h5Player;
+            },
+            parseExpressDate () {
+                if (!!this.resData.expireTime) {
+                    let date = new Date(this.resData.expireTime.replace(/-/g, '/'));
+                    return date.getTime()
+                }
             }
         },
         beforeCreate () {
-            this.resData === null ? this.$loading() : this.$loading.end();
+            this.loadingInstance = Loading.service({ fullscreen: true });
+            // this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+            //     loadingInstance.close();
+            // });
         },
         created () {
             this.http.get('/biz/ybkBase/' + this.$router.history.current.query.id , {})
             .then((response) => {
-                // 保存音视频同步与否状态
-                let isSync = response.data.isSync === 1 ? true : false;  
+               if (response.code === 200) {
+                    // 保存音视频同步与否状态
+                let isSync = response.data.isSync === '1' ? true : false;  
                 this.$store.dispatch('changePlaySync', isSync);
                 this.$store.dispatch('addYbkId', response.data.id);
                 // 组装store所需信息
@@ -284,20 +299,26 @@
                         this.shimPlayerData.url = item.url;
                     }
                 }
+               } else {
+                   this.$message.error(response.message);
+                   this.$router.push({path: '/setting'})
+               }
+               this.loadingInstance.close();
             })
             .catch((error) => {
-                console.error(error + '请求数据有误');
+                this.$message.error('网络连接失败，请稍后重试！')
+                this.loadingInstance.close();
             });
         },
         mounted () {
             this.$nextTick(() => {
                 setInterval(this.getNowDate, 1000);
             });
-            
         },
         methods: {
             changeLock (event) {
                 this.isLock = !this.isLock;
+                document.body.appendChild(document.createElement('div'))
             },
             getNowDate () {
                 let date = new Date();
@@ -331,6 +352,9 @@
                     week: week,
                     time: hour + sign + minutes + sign + seconds,
                 }
+            },
+            cutdown () {
+                alert('结束')
             },
             createStorePlayList (original, islocal = false) {
                 for (let i = 0; i < original.length; i++) {
